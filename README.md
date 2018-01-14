@@ -1,6 +1,6 @@
-# Nadia-R.S# Nadia-R.S Rule/Inference Engine
+# Nadia-R.S Rule/Inference Engine
 Open source project Nadia Rule/Policy Engine with React.js and Spring.
-This project is based on original project [Nadia.](https://github.com/DeanLee77/Nadia) 
+This project is based on original project [Nadia Rule/Inference Engine.](https://github.com/DeanLee77/Nadia) 
 
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:

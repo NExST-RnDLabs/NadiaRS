@@ -33,14 +33,17 @@ var config = {
         'bundle': [
             'webpack-hot-middleware/client?reload=true',
             'babel-polyfill',
-            path.resolve(appPath, 'shim.js'),
-            path.resolve(appPath, 'main.js')
+            // path.resolve(appPath, 'shim.js'),
+            path.resolve(appPath, 'index.js')
         ]
     },
  
     resolve: {
         modules: [path.resolve(__dirname), nodeModulesPath],
-        alias: {'src': path.resolve( __dirname, 'src')}
+        alias: {            
+                'semantic-ui-less': path.resolve(__dirname, 'src/Interface/Ui/Styles/semantic-ui-less'),
+                'src': path.resolve( __dirname, 'src')
+        }
     },
  
     output: {

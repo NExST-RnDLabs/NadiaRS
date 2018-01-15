@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import { Button, Header, Icon } from 'semantic-ui-react';
 
 // styles

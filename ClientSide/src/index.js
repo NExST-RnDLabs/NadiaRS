@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import './index.css';
+//Style
+import 'semantic-ui-css/semantic.min.css';
+
+//Component
 import App from './Interface/Ui/App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+
+ReactDOM.render(<App />, document.getElementById('content'));

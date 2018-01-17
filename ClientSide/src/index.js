@@ -1,5 +1,7 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom'; 
 //Style
 import 'semantic-ui-css/semantic.min.css';
 
@@ -7,4 +9,8 @@ import 'semantic-ui-css/semantic.min.css';
 import App from './Interface/Ui/App';
 
 
-ReactDOM.render(<App />, document.getElementById('content'));
+ReactDOM.render(
+<Router>
+    <App />
+</Router>
+, document.getElementById('content'));

@@ -1,0 +1,44 @@
+#content{
+    .segment.basic.center.aligned{
+        margin-bottom: 18rem;
+        .welcome{
+            .header{
+                margin-top: 9rem;
+                font-size: 3rem;
+            }
+        }
+        .Nadia-Logo-Item{
+            display: flex !important;
+            margin: auto;
+            align-items: center;
+            justify-content: center;
+            .header{
+                font-size: 5rem;
+                margin-bottom: .4rem;
+                .Nadia{
+                    color:rgb(28, 164, 252) !important;
+                }
+            }
+            
+        }
+    }
+
+    .card{
+        .header{
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            color: rgba(4, 7, 12, 0.502);
+        }
+        .description{
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .meta{
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            font-size: 1.7rem;
+        }
+    }
+    
+}

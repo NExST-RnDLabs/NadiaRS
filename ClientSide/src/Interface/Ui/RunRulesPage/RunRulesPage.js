@@ -5,9 +5,8 @@ import {Icon , Card , Segment, Item , Image} from 'semantic-ui-react';
 
 import NadiaLogo from 'src/Infrastructure/Images/NadiaLogo.png';
 
-import './App.scss'
+import '../App.scss'
 
-import RunRulesPage from './RunRulesPage/RunRulesPage'
 export default class App extends React.Component {
     constructor(props) {
       super(props);
@@ -38,9 +37,10 @@ export default class App extends React.Component {
     }
     
     _createdCards=()=>{
+        
       return(
       <Card.Group className='cards group' stackable itemsPerRow ={3}>
-        <Card as= {Link} to={RunRulesPage}>
+        <Card as= {Link} to='/'>
           <Card.Content textAlign='center'>
             <Card.Header>
               Run Rules
@@ -104,7 +104,7 @@ export default class App extends React.Component {
             <Segment className="basic center aligned">
               <Item className ='welcome'>
                   <Item.Content verticalAlign='middle'>
-                    <Item.Header as='h2'><strong >Welocme to</strong></Item.Header>
+                    <Item.Header as='h2'><strong >this is run rules page</strong></Item.Header>
                   </Item.Content>
               </Item>
               <Item className ='Nadia-Logo-Item'>

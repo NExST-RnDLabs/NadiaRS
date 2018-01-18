@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Link} from 'react-router-dom'
-import {Icon , Card , Segment, Item , Image} from 'semantic-ui-react';
+import { Link , Switch, Route } from 'react-router-dom';
+import {Icon , Card , Segment, Item , Image , Sidebar , Menu , Dimmer} from 'semantic-ui-react';
 
-import NadiaLogo from 'src/Infrastructure/Images/NadiaLogo.png';
 
+//style
 import './App.scss'
 
-import RunRulesPage from './RunRulesPage/RunRulesPage'
+//components
+import MenuSideBarComponent from './MenuBar/MenuSideBarComponent';
+import MenuTop from './MenuBar/MenuTop';
+import InitialPage from './InitialPage/InitialPage'
+
+import RunRulesPage from './RunRulesPage/RunRulesPage';
 export default class App extends React.Component {
     constructor(props) {
       super(props);
@@ -20,7 +25,7 @@ export default class App extends React.Component {
 
     // initialise component state
     state = {
-
+      sidebarVisible:false,
     }
 
     // prop types and default values
@@ -33,91 +38,27 @@ export default class App extends React.Component {
 
     // private methods
     _onClick = () => {
-
-
-    }
-    
-    _createdCards=()=>{
-      return(
-      <Card.Group className='cards group' stackable itemsPerRow ={3}>
-        <Card as= {Link} to={RunRulesPage}>
-          <Card.Content textAlign='center'>
-            <Card.Header>
-              Run Rules
-            </Card.Header>
-            <Card.Description>
-              <Icon color='blue' name='cogs' size='massive' />
-            </Card.Description>
-            <Card.Meta>
-              Assessment
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-        <Card as= {Link} to='/'>
-          <Card.Content textAlign='center'>
-            <Card.Header>
-              View Rule Sets
-            </Card.Header>
-            <Card.Description>
-              <Icon color='blue' name='database' size='massive' />
-            </Card.Description>
-            <Card.Meta>
-              Management
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-        <Card as= {Link} to='/'>
-          <Card.Content textAlign='center'>
-            <Card.Header>
-              Learn Nadia
-            </Card.Header>
-            <Card.Description>
-              <Icon color='blue' name='student' size='massive' />
-            </Card.Description>
-            <Card.Meta>
-              Assistance
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-        <Card as= {Link} to='/'>
-          <Card.Content textAlign='center'>
-            <Card.Header>
-              Nadia Demo
-            </Card.Header>
-            <Card.Description>
-              <Icon color='blue' name='browser' size='massive' />
-            </Card.Description>
-            <Card.Meta>
-              Demonstration
-            </Card.Meta>
-          </Card.Content>
-        </Card>
-      </Card.Group>
-     );
+      this.setState({sidebarVisible: !this.state.sidebarVisible})
     }
 
     // component render method
     render() {
-      let component = this;
         return (
           <div>
-            <Segment className="basic center aligned">
-              <Item className ='welcome'>
-                  <Item.Content verticalAlign='middle'>
-                    <Item.Header as='h2'><strong >Welocme to</strong></Item.Header>
-                  </Item.Content>
-              </Item>
-              <Item className ='Nadia-Logo-Item'>
-                <Item.Image size='tiny' src={NadiaLogo} />
-                <Item.Content verticalAlign='middle'>
-                  <Item.Header as='h2'><strong className='Nadia'>Nadia</strong><strong>-R.S</strong></Item.Header>
-                </Item.Content>
-              </Item>
-            </Segment>
-
-            <Segment className="basic">
-              {component._createdCards()}
-            </Segment>
+            <Sidebar.Pushable as={Segment}>
+              <MenuSideBarComponent visible={this.state.sidebarVisible} onSelection = {this._onClick}/>
+              <Sidebar.Pusher>
+                <Dimmer.Dimmable as={Segment} blurring dimmed={this.state.sidebarVisible}>
+                <Dimmer active={this.state.sidebarVisible} onClickOutside={this._onClick} />
+                  <MenuTop onClick = {this._onClick}/>
+                  <Switch>
+                    <Route exact path="/" component={InitialPage} />
+                    <Route path="/RunRulesPage" component={RunRulesPage} />
+                  </Switch>
+                </Dimmer.Dimmable>
+              </Sidebar.Pusher>
+            </Sidebar.Pushable>
+            
           </div>
         );
     }

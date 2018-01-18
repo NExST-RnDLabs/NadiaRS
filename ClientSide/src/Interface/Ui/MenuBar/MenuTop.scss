@@ -1,0 +1,15 @@
+.menu{
+    .item{
+        font-size: 1.3rem;
+        &.nadia-logo{
+            padding:0 .8rem;
+            .header{
+                font-size: 2rem;
+                .Nadia{
+                    font-size: 3rem;
+                    color:rgb(54, 146, 244) !important;
+                }
+            }
+        }
+    }        
+}

@@ -8,7 +8,6 @@ import 'semantic-ui-css/semantic.min.css';
 //Component
 import App from './Interface/Ui/App';
 
-
 ReactDOM.render(
 <Router>
     <App />

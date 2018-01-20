@@ -12,7 +12,10 @@ import MenuSideBarComponent from './MenuBar/MenuSideBarComponent';
 import MenuTop from './MenuBar/MenuTop';
 import InitialPage from './InitialPage/InitialPage'
 
+//pages
 import RunRulesPage from './RunRulesPage/RunRulesPage';
+import ViewRulesPage from './ViewRulesPage/ViewRulesPage';
+
 export default class App extends React.Component {
     constructor(props) {
       super(props);
@@ -52,8 +55,9 @@ export default class App extends React.Component {
                 <Dimmer active={this.state.sidebarVisible} onClickOutside={this._onClick} />
                   <MenuTop onClick = {this._onClick}/>
                   <Switch>
-                    <Route exact path="/" component={InitialPage} />
-                    <Route path="/RunRulesPage" component={RunRulesPage} />
+                    <Route exact path='/' component={InitialPage} />
+                    <Route path='/RunRulesPage' component={RunRulesPage} />
+                    <Route path='/ViewRulespage' component={ViewRulesPage}/>
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

@@ -1,0 +1,14 @@
+
+.runRuleSegment{
+    .ruleComponentSegment{
+        margin: 1rem 0 !important;
+        
+        .buttonField{
+            justify-content: flex-end;
+            
+            .right.floated.button{
+                margin-right: .5rem;                
+            }
+        }
+    }
+}

@@ -18,7 +18,6 @@ export default class MenuSideBarComponent extends React.Component {
     }
 
     componentWillReceiveProps=(nextProps)=>{
-      console.log('nextProps',nextProps);
       this.setState({visible: nextProps.visible})
     }
 
@@ -26,7 +25,6 @@ export default class MenuSideBarComponent extends React.Component {
     // component render method
     render() {
       let component = this;
-      console.log('sidebar com visible',this.state.visible);
         return (
             <Sidebar as={Menu} animation='slide out' width='thin' visible={this.state.visible} icon='labeled' vertical inverted>
               <Menu.Item name='Run Rules' as={Link} to='/RunRulesPage' onClick={this.props.onSelection}>

@@ -48,7 +48,7 @@ export default class InitialPage extends React.Component {
                             </Card.Meta>
                         </Card.Content>
                     </Card>
-                    <Card as= {Link} to='/'>
+                    <Card as= {Link} to='/ViewRulesPage'>
                         <Card.Content textAlign='center'>
                             <Card.Header>
                                 View Rule Sets

@@ -40,6 +40,12 @@ export default class Nadia {
                     name: 'testing 6'
                 }];
             callback(res);
+        },
+
+        getRuleByName: (ruleName, callback)=>{
+            Bus.query('/findRuleByName/',ruleName).done((res)=>{
+                callback(res);
+            });
         }
     }
 }

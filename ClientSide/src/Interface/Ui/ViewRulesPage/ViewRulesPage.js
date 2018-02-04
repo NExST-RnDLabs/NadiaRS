@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Link} from 'react-router-dom'
 import {Form, Icon , Button, Segment , Header , Divider} from 'semantic-ui-react';
 import Clone from 'clone';
 

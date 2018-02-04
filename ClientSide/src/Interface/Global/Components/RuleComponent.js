@@ -57,7 +57,9 @@ export default class RuleComponent extends React.Component {
         this.setState({editable: !this.state.editable, category: this.state.ruleDescription.category, name: this.state.ruleDescription.name});
     }
 
+    _onView=()=>{
 
+    }
     _createFields=()=>{
         let fields;
         let buttonGroup;
@@ -71,7 +73,7 @@ export default class RuleComponent extends React.Component {
         }
         else if(this.state.type = 'view rules'){
             buttonGroup = <Form.Group widths='equal' className='buttonField'>
-                                <Button floated='right' color='twitter' onClick= {this._onRun}>
+                                <Button floated='right' color='twitter' as={Link} to='/RuleEditorPage'>
                                     <Icon name='comments outline'/>
                                     View 
                                 </Button>

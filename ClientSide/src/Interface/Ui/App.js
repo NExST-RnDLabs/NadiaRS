@@ -15,6 +15,7 @@ import InitialPage from './InitialPage/InitialPage'
 //pages
 import RunRulesPage from './RunRulesPage/RunRulesPage';
 import ViewRulesPage from './ViewRulesPage/ViewRulesPage';
+import RuleEditorPage from './RuleEditorPage/RuleEditorPage';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -58,6 +59,7 @@ export default class App extends React.Component {
                     <Route exact path='/' component={InitialPage} />
                     <Route path='/RunRulesPage' component={RunRulesPage} />
                     <Route path='/ViewRulespage' component={ViewRulesPage}/>
+                    <Route path='/RuleEditorPage' component={RuleEditorPage}/>
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

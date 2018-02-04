@@ -31,7 +31,7 @@ export default class MenuSideBarComponent extends React.Component {
                 <Icon name='cogs' />
                 Run Rules
               </Menu.Item>
-              <Menu.Item name='View Rule Sets' as={Link} to='/' onClick={this.props.onSelection}>
+              <Menu.Item name='View Rule Sets' as={Link} to='/ViewRulesPage' onClick={this.props.onSelection}>
                 <Icon name='database' />
                 View Rule Sets
               </Menu.Item>

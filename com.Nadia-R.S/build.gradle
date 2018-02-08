@@ -51,6 +51,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-web-services')
 	compile('org.springframework.boot:spring-boot-starter-websocket')
-	runtime('org.postgresql:postgresql')
+	runtime('org.postgresql:postgresql:42.1.4')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	
 }

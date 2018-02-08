@@ -1,0 +1,44 @@
+@import 'src/Interface/Styles/Styles';
+
+.toast-container {
+    z-index: 999;
+    position: fixed;
+    padding: .2rem;
+    width: 20rem;
+    box-sizing: border-box;
+    color: #fff;
+
+    &.top {
+        &.left {
+            top: 1em;
+            left: 1em;
+        }
+
+        &.center {
+            top: 1em;
+            left: 50%;
+            margin-left: -(20rem / 2);
+        }
+
+        &.right {
+            top: 1em;
+            right: 1em;
+        }
+    }
+   
+    &.bottom{
+        &.left {
+            bottom: 1em;
+            left: 1em;
+        }
+        &.center {
+            bottom: 1em;
+            left: 50%;
+            margin-left: -(20rem / 2);
+        }
+        &.right {
+            bottom: 1em;
+            right: 1em;
+        }
+    }   
+}

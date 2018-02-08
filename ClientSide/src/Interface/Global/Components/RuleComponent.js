@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom'
 import {Segment, Form , Label , Input , Icon , Button } from 'semantic-ui-react';
 
-
+//application
+import Nadia from 'src/Application/Nadia';
 
 //style
 import './RuleComponent.scss';
@@ -54,9 +55,29 @@ export default class RuleComponent extends React.Component {
         this.setState({editable: !this.state.editable});
     }
     _onCancel=()=>{
-        this.setState({editable: !this.state.editable, category: this.state.ruleDescription.category, name: this.state.ruleDescription.name});
+        if(!this.state.category || !this.state.name){
+            this.setState({editable: !this.state.editable});
+        }
+        else{
+            this.setState({editable: !this.state.editable, category: this.state.category, name: this.state.name});
+        }
+        
     }
-
+    _onSave=()=>{
+        this.setState({process: !this.state.process});
+        debugger;
+        Nadia.command.ruleDescriptionChange(this.state.name, this.state.category, (res) =>{
+            if(res.category == this.state.category && res.ruleName == this.state.name)
+            {
+                this.setState({process: !this.state.process});
+                //we need toast message for this.
+            }
+            else{
+                //we need error screen for this.
+            }
+        });  
+      }
+  
     _onView=()=>{
 
     }
@@ -84,7 +105,7 @@ export default class RuleComponent extends React.Component {
                                             <Icon name='cancel'/>
                                             Cancel 
                                         </Button>
-                                        <Button floated='right' color='teal' onClick= {this._onCancel}>
+                                        <Button floated='right' color='teal' onClick= {this._onSave}>
                                             <Icon name='save'/>
                                             Save 
                                         </Button>

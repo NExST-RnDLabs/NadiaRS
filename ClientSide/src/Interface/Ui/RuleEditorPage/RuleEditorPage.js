@@ -70,6 +70,7 @@ export default class RuleEditorPage extends React.Component {
                 onChange={this._onChange}
                 name="UNIQUE_ID_OF_DIV"
                 width="100%"
+                fontSize={18}
                 editorProps={{
                     $blockScrolling: true
                 }}
@@ -87,6 +88,7 @@ export default class RuleEditorPage extends React.Component {
                 onChange={this._onChange}
                 name="UNIQUE_ID_OF_DIV"
                 width="100%"
+                fontSize={18}
                 editorProps={{
                     $blockScrolling: true
                 }}
@@ -108,6 +110,7 @@ export default class RuleEditorPage extends React.Component {
                 onChange={this._onChange}
                 name="UNIQUE_ID_OF_DIV"
                 width="100%"
+                fontSize={18}
                 editorProps={{
                     $blockScrolling: true
                 }}
@@ -125,6 +128,7 @@ export default class RuleEditorPage extends React.Component {
                 onChange={this._onChange}
                 name="UNIQUE_ID_OF_DIV"
                 width="100%"
+                fontSize={18}
                 editorProps={{
                     $blockScrolling: true
                 }}

@@ -5,47 +5,38 @@ export default class Nadia {
 
 // commands (async - return via optional callback when done)
     static command = {
-
+        ruleDescriptionChange:(ruleName, ruleCategory)=>{
+            debugger;
+            Bus.command('rule/createRule',{ruleName: ruleName, category: ruleCategory}).done((res)=>{
+                console.log('res: ',res)
+                if(res.ruleName = ruleName && res.category == ruleCategory)//success case of redirect
+                {
+                  Bus.publish('Toast', {
+                    status: 'info',
+                    text: 'The rule has been successfully created.'
+                  });
+      
+                  Bus.publish('Refresh');
+                }
+            })
+        },
     }
 
     // query (async - return via callback)
     static query = {
         getAllRules: (callback) =>{
-            // Bus.query('rule/getAllRules').done((res) => {
-            //     callback(res);
-            // })
-            var res = [
-                {
-                    category: 'Proposition',
-                    name:'testing 1'
-                },
-                {
-                    category: 'Calculation',
-                    name: 'testing 2'
-                },
-                {
-                    category: 'Proposition',
-                    name: 'testing 3'
-                },
-                {
-                    category: 'Proposition',
-                    name: 'testing 4'
-                },
-                {
-                    category: 'Proposition',
-                    name: 'testing 5'
-                },
-                {
-                    category: 'Proposition',
-                    name: 'testing 6'
-                }];
-            callback(res);
+            Bus.query('rule/findAllRules').done((res) => {
+                callback(res);
+            });            
         },
 
         getRuleByName: (ruleName, callback)=>{
-            Bus.query('/findRuleByName/',ruleName).done((res)=>{
+            Bus.query('rule/findRuleByName/',ruleName).done((res)=>{
                 callback(res);
             });
-        }
+        },
+
+
+        
     }
 }

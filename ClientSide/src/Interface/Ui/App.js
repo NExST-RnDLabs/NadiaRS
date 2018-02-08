@@ -10,7 +10,8 @@ import './App.scss'
 //components
 import MenuSideBarComponent from './MenuBar/MenuSideBarComponent';
 import MenuTop from './MenuBar/MenuTop';
-import InitialPage from './InitialPage/InitialPage'
+import InitialPage from './InitialPage/InitialPage';
+import ToastList from '../Global/Components/Toast Notification/ToastList';
 
 //pages
 import RunRulesPage from './RunRulesPage/RunRulesPage';
@@ -49,10 +50,11 @@ export default class App extends React.Component {
     render() {
         return (
           <div>
+            <ToastList bottom right/>
             <Sidebar.Pushable as={Segment}>
               <MenuSideBarComponent visible={this.state.sidebarVisible} onSelection = {this._onClick}/>
               <Sidebar.Pusher>
-                <Dimmer.Dimmable as={Segment} blurring dimmed={this.state.sidebarVisible}>
+                <Dimmer.Dimmable basic as={Segment} blurring dimmed={this.state.sidebarVisible}>
                 <Dimmer active={this.state.sidebarVisible} onClickOutside={this._onClick} />
                   <MenuTop onClick = {this._onClick}/>
                   <Switch>

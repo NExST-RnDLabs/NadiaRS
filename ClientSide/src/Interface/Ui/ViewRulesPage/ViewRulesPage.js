@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import {Form, Icon , Button, Segment , Header , Divider} from 'semantic-ui-react';
 import Clone from 'clone';
 
-//application
-import Nadia from 'src/Application/Nadia';
-
 //style
 import './ViewRulesPage.scss';
+
+//application
+import Nadia from 'src/Application/Nadia';
 
 //component
 import RuleComponent from 'src/Interface/Global/Components/RuleComponent'
@@ -48,20 +48,6 @@ export default class ViewRulesPage extends React.Component {
       this.setState({fields: tempFields, itemAdded: !this.state.itemAdded});
     }
 
-    _onSave=()=>{
-      this.setState({process: !this.state.process});
-      Nadia.command.ruleDescriptionChange(this.state.category, this.state.name, res =>{
-          if(res.category == this.state.category && res.name == this.state.name)
-          {
-              this.setState({process: !this.state.process});
-              //we need toast message for this.
-          }
-          else{
-              //we need error screen for this.
-          }
-      });  
-    }
-
     _onCancel=()=>{
         if(this.state.itemAdded)
         {
@@ -85,10 +71,6 @@ export default class ViewRulesPage extends React.Component {
               <Icon name='cancel'/>
               Cancel
             </Button>
-            <Button floated='right' color='blue' onClick={this._onSave}>
-              <Icon name='save'/>
-              Save
-            </Button>
             <Button negative floated='right' onClick={this._onAdd}>
                 <Icon corner name='add' />
                 Add
@@ -101,7 +83,7 @@ export default class ViewRulesPage extends React.Component {
     render() {
         return (
           <div>
-            <Segment basic padded='very' className='runRuleSegment'>
+            <Segment basic className='runRuleSegment'>
               <Header as='h3'>
                 <Icon circular inverted color='teal' name='database' size='tiny' />
                 <Header.Content>

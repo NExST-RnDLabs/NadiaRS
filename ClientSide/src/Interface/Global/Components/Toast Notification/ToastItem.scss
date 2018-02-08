@@ -1,0 +1,59 @@
+@import 'src/Interface/Styles/Styles';
+
+.toast {
+  position: relative;
+  min-height: 48px;
+  margin-bottom: 1rem;
+  padding: .3rem;
+  border-radius: 1px;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .1), 0 2px 15px 0 rgba(0, 0, 0, .05);
+  display: flex;
+  justify-content: space-between;
+  max-height: 800px;
+  overflow: hidden;
+  font-family: sans-serif;
+  cursor: pointer;
+  background: $background-color;
+  color: $white;
+  border-radius: 10px;
+
+ 
+  &.info {
+    background: $toast-info-color;
+  }
+  &.success {
+    background: $toast-success-color;
+    color: $white;
+  }
+  &.warning {
+    background: $toast-warning-color;
+  }
+  &.error {
+    background: $toast-error-color;
+  }
+
+  i{
+
+    font-size: 2rem;
+    padding-top: .5rem;
+    padding-right: .5rem;
+
+    &.fa.fa-times{
+      font-size: 1rem;
+      margin-left:.3rem;
+      padding: 0;
+    }
+  }
+  
+ 
+  
+}
+
+.toast-body {
+  margin: auto 0;
+  padding: 0;
+  flex: 1;
+
+}
+
+

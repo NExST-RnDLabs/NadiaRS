@@ -185,17 +185,17 @@ export default class Bus {
 
     // file upload
     static upload(service, data) {
-      return Bus._send(service, data);
+      return Bus._send('FORMDATA', service, data);
     }
 
     // query service
     static query(service, data) {
-      return Bus._send(service, data);
+      return Bus._send('GET', service, data);
     }
 
     // command service
     static command(service, data) {
-      return Bus._send(service, data);
+      return Bus._send('POST', service, data);
     }
 
     // gets or sets the security realm
@@ -223,12 +223,12 @@ export default class Bus {
 
     static _subscriptions = {};
 
-    static _send(service, data) {
+    static _send(type, service, data) {
 
         // handle extrnal query:
         // there is no difference between
         // query and command, now you know!
-        var deferred = Transport.send(service, data);
+        var deferred = Transport.send(type, service, data);
 
         // handle and raise transport fail event
         deferred.fail((xhr, status, statusText) => {

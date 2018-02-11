@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,41 +33,41 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 @RestController
-@RequestMapping("service/rule")
+@RequestMapping("service/rule/*")
 public class RuleController {
 	
 	@Autowired
 	RuleRepository ruleRepository;
 	
-	@RequestMapping(value="/findRuleByName")
+	@RequestMapping(value="findRuleByName", produces="application/json")
 	@ResponseBody
 	public Rule getRuleByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
 		return ruleRepository.findByName(ruleName);
 	}
 	
-	@RequestMapping(value="/findTheLatestRuleFileByName")
+	@RequestMapping(value="findTheLatestRuleFileByName", produces="application/json")
 	@ResponseBody
 	public RuleFile getTheLatestRuleFileByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
 		return ruleRepository.findByName(ruleName).getTheLatestFile();
 	}
 	
-	@RequestMapping(value="/findTheLatestRuleHistoryByName")
+	@RequestMapping(value="findTheLatestRuleHistoryByName", produces="application/json")
 	@ResponseBody
 	public RuleHistory getTheLatestRuleHistoryByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
 		return ruleRepository.findByName(ruleName).getTheLatestHistory();
 	}
 	
-	@RequestMapping(value="/findAllRules")
+	@RequestMapping(value="findAllRules", produces="application/json")
 	@ResponseBody
 	public List<Rule> getAllRules(RuleRepository ruleRepository)
 	{
 		return ruleRepository.findAllRules();
 	}
 	
-	@RequestMapping(value="/createRule")
+	@RequestMapping(value="createRule", method =RequestMethod.POST)
 	public JsonNode createRule(@RequestParam(value="ruleName", required=true) String ruleName, @RequestParam(value="category", required=true) String category)
 	{
 		if(ruleRepository.findByName(ruleName) == null) {
@@ -84,7 +85,7 @@ public class RuleController {
 		return on;
 	}
 
-	@RequestMapping(value="/createFile")
+	@RequestMapping(value="createFile", method =RequestMethod.POST )
 	public void createFile(@RequestParam(value="ruleName", required=true) String ruleName, @RequestParam(value="ruleText", required=true) String ruleText)
 	{
 		byte[] byteArray = ruleText.getBytes();
@@ -92,7 +93,7 @@ public class RuleController {
 		ruleRepository.createRuleFile(ruleRepository.findIdByName(ruleName), byteArray);
 	}
 	
-	@RequestMapping(value="/createHistory")
+	@RequestMapping(value="createHistory", method =RequestMethod.POST)
 	public void createHistory(@RequestParam(value="ruleName", required=true) String ruleName, @ModelAttribute("inference") InferenceEngine IE)
 	{
 		HashMap<String, FactValue> workingMemory = IE.getAssessmentState().getWorkingMemory();

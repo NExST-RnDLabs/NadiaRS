@@ -2,7 +2,7 @@
  
 const path = require('path');
 const express = require('express');
-//const proxy = require('express-http-proxy');
+const proxy = require('express-http-proxy');
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -17,6 +17,7 @@ if (isDeveloping) {
     const middleware = webpackMiddleware(compiler, {
         publicPath: config.output.publicPath,
         contentBase: 'src',
+        hot: true,
         stats: {
             colors: true,
             hash: false,
@@ -29,22 +30,16 @@ if (isDeveloping) {
  
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
-    /*app.use('/service', proxy('localhost:3030', {
+    app.use('/service', proxy('localhost:8080', {
  
         // This is needed to stop the proxy from corrupting byte streams particularly on upload.
         reqBodyEncoding: null,
- 
-        forwardPath: function(req, res) {
-            return '/service' + req.path;
+        proxyReqPathResolver: function(req){
+            return '/service'+require('url').parse(req.url).path;
         },
-        intercept: function(responseIn, data, req, responseOut, callback) {
-            let key = 'WWW-Authenticate';
-            responseOut.set(key, responseOut.get(key) ? responseOut.get(key).split(',') : []);
- 
-            callback(null, data);
-        },
-                limit: '50mb'
-})); */
+
+        limit: '50mb'
+})); 
     app.use('/', express.static('public/'));
  
 } else {

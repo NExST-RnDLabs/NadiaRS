@@ -2,7 +2,8 @@
  
 const path = require('path');
 const express = require('express');
-const proxy = require('express-http-proxy');
+const httpProxy = require('http-proxy');
+const Agent = require('agentkeepalive')
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -30,16 +31,34 @@ if (isDeveloping) {
  
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
-    app.use('/service', proxy('localhost:8080', {
- 
-        // This is needed to stop the proxy from corrupting byte streams particularly on upload.
-        reqBodyEncoding: null,
-        proxyReqPathResolver: function(req){
-            return '/service'+require('url').parse(req.url).path;
-        },
 
-        limit: '50mb'
-})); 
+    var LOCAL_SERVER_ENDPOINT = '/service/';
+    var JAVA_SERVER_ENDPOINT = 'http://localhost:8080/service/';
+
+    var agent = new Agent({
+        maxSockets: 100,
+        keepAlive :true,
+        maxFreeSockets: 10,
+        keepAliveMsecs:1000,
+        timeout: 60000,
+        keepAliveTimeout: 30000 // free socket keepalive for 30 seconds
+    })
+
+    var proxyKeepAlive = httpProxy.createProxy({ target: JAVA_SERVER_ENDPOINT, agent: agent});
+    proxyKeepAlive.on('proxyRes', function (proxyRes) {
+        var key = 'www-authenticate';
+        
+        proxyRes.headers[key] = proxyRes.headers[key] ? proxyRes.headers[key].split(',') : [];
+        
+    });
+
+    app.all(LOCAL_SERVER_ENDPOINT+'*', function (req, res) {
+        // This hack re-sets the base url in the proxy request
+        req.url = req.url.substring(LOCAL_SERVER_ENDPOINT.length);
+        proxyKeepAlive.web(req, res);
+    });
+      
+     
     app.use('/', express.static('public/'));
  
 } else {

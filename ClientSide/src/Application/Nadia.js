@@ -6,8 +6,7 @@ export default class Nadia {
 // commands (async - return via optional callback when done)
     static command = {
         ruleDescriptionChange:(ruleName, ruleCategory)=>{
-            debugger;
-            Bus.command('rule/createRule',{ruleName: ruleName, category: ruleCategory}).done((res)=>{
+            Bus.command('rule/createRule',{name: ruleName, category: ruleCategory}).done((res)=>{
                 console.log('res: ',res)
                 if(res.ruleName = ruleName && res.category == ruleCategory)//success case of redirect
                 {

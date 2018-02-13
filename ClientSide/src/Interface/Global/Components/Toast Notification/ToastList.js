@@ -40,7 +40,7 @@ export default class ToastList extends React.Component {
             setTimeout(()=>{let tempToastList = Clone(this.state.toastList);
                             tempToastList.shift();
                             this.setState({toastList: tempToastList});}
-                        , 10000) 
+                        , 1000000) 
         })
     }
 

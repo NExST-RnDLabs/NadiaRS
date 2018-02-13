@@ -1,7 +1,5 @@
 package com.NadiaRS.domain;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +17,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SuppressWarnings("serial")
+
+
 @Entity
 @Table(name="rule")
-public class Rule implements Serializable{
+public class Rule {
 
 	@Id
 	@JsonIgnore
@@ -35,9 +31,11 @@ public class Rule implements Serializable{
 	private Long ruleId;
 	
 	@NotNull
+	@Column(name = "name")
 	private String ruleName;
 	
 	@NotNull
+	@Column(name = "category")
 	private String category;
 	
 	@OneToMany(mappedBy = "rule", 
@@ -61,18 +59,18 @@ public class Rule implements Serializable{
 		return this.ruleId;
 	}
 	
-	public String getRuleName() {
+	public String getName() {
 		return ruleName;
 	}
-	public void setRuleName(String ruleName) {
+	public void setName(String ruleName) {
 		this.ruleName = ruleName;
 	}
 	
-	public String getRuleCategory()
+	public String getCategory()
 	{
 		return category;
 	}
-	public void setRuleCategory(String category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 	
@@ -141,24 +139,24 @@ public class Rule implements Serializable{
         return eb.isEquals();
     }
     
-	@Override
-	public String toString() {
-		ObjectMapper mapper = new ObjectMapper();
-		String ruleString = "";
-		try {
-			ruleString =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ruleString;
-	}
+//	@Override
+//	public String toString() {
+//		ObjectMapper mapper = new ObjectMapper();
+//		String ruleString = "";
+//		try {
+//			ruleString =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+//		} catch (JsonGenerationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return ruleString;
+//	}
 	
 	
 

@@ -65,7 +65,6 @@ export default class RuleComponent extends React.Component {
     }
     _onSave=()=>{
         this.setState({process: !this.state.process});
-        debugger;
         Nadia.command.ruleDescriptionChange(this.state.name, this.state.category, (res) =>{
             if(res.category == this.state.category && res.ruleName == this.state.name)
             {

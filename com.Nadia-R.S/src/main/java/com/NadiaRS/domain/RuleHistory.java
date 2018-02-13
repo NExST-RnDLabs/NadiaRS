@@ -1,6 +1,5 @@
 package com.NadiaRS.domain;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -16,14 +15,13 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@SuppressWarnings("serial")
+
 @Entity
 @Table(name="history")
-public class RuleHistory implements Serializable{
+public class RuleHistory{
 	
 	@Id
 	@JsonIgnore

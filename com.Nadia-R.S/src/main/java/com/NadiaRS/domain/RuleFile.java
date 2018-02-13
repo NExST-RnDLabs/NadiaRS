@@ -1,6 +1,5 @@
 package com.NadiaRS.domain;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -21,10 +20,10 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@SuppressWarnings("serial")
+
 @Entity
 @Table(name="file")
-public class RuleFile implements Serializable{
+public class RuleFile{
 
 	@Id
 	@JsonIgnore

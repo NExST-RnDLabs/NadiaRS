@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +38,7 @@ import jersey.repackaged.com.google.common.collect.Lists;
 public class RuleController {
 	
 	@Autowired
-	RuleRepository ruleRepository;
+	private RuleRepository ruleRepository;
 	
 	@RequestMapping(value="findRuleByName", produces="application/json")
 	@ResponseBody
@@ -62,25 +63,30 @@ public class RuleController {
 	
 	@RequestMapping(value="findAllRules", produces="application/json")
 	@ResponseBody
-	public List<Rule> getAllRules(RuleRepository ruleRepository)
+	public List<Rule> getAllRules()
 	{
-		return ruleRepository.findAllRules();
+		return ruleRepository.findAll();
 	}
 	
 	@RequestMapping(value="createRule", method =RequestMethod.POST)
-	public JsonNode createRule(@RequestParam(value="ruleName", required=true) String ruleName, @RequestParam(value="category", required=true) String category)
+	public JsonNode createRule(@RequestBody Rule rule)
 	{
-		if(ruleRepository.findByName(ruleName) == null) {
+		String ruleName = rule.getName();
+		String category = rule.getCategory();
+		Rule ruleFromDatabase = ruleRepository.searchRuleByName(ruleName); 
+		if(ruleFromDatabase == null) {
 			ruleRepository.createRule(ruleName, category);
 		}
-		else
+		else if(ruleFromDatabase.getCategory().equals(category))
 		{
 			ruleRepository.updateRuleNameAndCategory(ruleName, category);
 		}
 		
+		ruleFromDatabase = ruleRepository.searchRuleByName(ruleName);
+		
 		ObjectNode on = new ObjectMapper().createObjectNode();
-		on.put("ruleName", ruleName);
-		on.put("category", category);
+		on.put("ruleName", ruleFromDatabase.getName());
+		on.put("category", ruleFromDatabase.getCategory());
 		
 		return on;
 	}

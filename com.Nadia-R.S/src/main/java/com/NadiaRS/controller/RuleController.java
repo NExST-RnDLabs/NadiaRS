@@ -20,9 +20,11 @@ import com.NadiaRS.InferenceEngine.factValuePackage.FactValue;
 import com.NadiaRS.InferenceEngine.factValuePackage.FactValueType;
 import com.NadiaRS.InferenceEngine.inferencePackage.InferenceEngine;
 import com.NadiaRS.InferenceEngine.nodePackage.Record;
+import com.NadiaRS.domain.CreateFile;
 import com.NadiaRS.domain.Rule;
 import com.NadiaRS.domain.RuleFile;
 import com.NadiaRS.domain.RuleHistory;
+import com.NadiaRS.domain.UpdateRuleDescription;
 import com.NadiaRS.repository.RuleRepository;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,11 +42,27 @@ public class RuleController {
 	@Autowired
 	private RuleRepository ruleRepository;
 	
-	@RequestMapping(value="findRuleByName", produces="application/json")
+	@RequestMapping(value="searchRuleByName", produces="application/json")
 	@ResponseBody
-	public Rule getRuleByName(@RequestParam(value="ruleName", required=true) String ruleName)
+	public Rule searchRuleByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
-		return ruleRepository.findByName(ruleName);
+		return ruleRepository.searchRuleByName(ruleName);
+	}
+	
+	@RequestMapping(value="findRuleTextByName", produces="application/json")
+	@ResponseBody
+	public JsonNode findRuleTextByName(@RequestParam(value="ruleName", required=true) String ruleName)
+	{
+
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		Rule rule = ruleRepository.findByNameForRuleText(ruleName);
+		if(rule != null)
+		{
+			RuleFile rf = ruleRepository.findByNameForRuleText(ruleName).getTheLatestFile();
+			on.put("ruleText", new String(rf.getFile()));
+		}
+		
+		return on;
 	}
 	
 	@RequestMapping(value="findTheLatestRuleFileByName", produces="application/json")
@@ -67,22 +85,32 @@ public class RuleController {
 	{
 		return ruleRepository.findAll();
 	}
+	@RequestMapping(value="updateRule", method =RequestMethod.POST)
+	public JsonNode updateRule(@RequestBody UpdateRuleDescription updateRule)
+	{
+		String oldRuleName = updateRule.getOldRuleName();
+		String newRuleName = updateRule.getNewRuleName();
+		String newCategory = updateRule.getNewRuleCategory();
+		ruleRepository.updateRuleNameAndCategory(oldRuleName, newRuleName, newCategory);
+		
+		Rule ruleFromDatabase = ruleRepository.searchRuleByName(newRuleName);
+		
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		on.put("newRuleName", ruleFromDatabase.getName());
+		on.put("newCategory", ruleFromDatabase.getCategory());
+		
+		return on;
+	}
 	
-	@RequestMapping(value="createRule", method =RequestMethod.POST)
-	public JsonNode createRule(@RequestBody Rule rule)
+	
+	@RequestMapping(value="createNewRule", method =RequestMethod.POST)
+	public JsonNode createNewRule(@RequestBody Rule rule)
 	{
 		String ruleName = rule.getName();
 		String category = rule.getCategory();
-		Rule ruleFromDatabase = ruleRepository.searchRuleByName(ruleName); 
-		if(ruleFromDatabase == null) {
-			ruleRepository.createRule(ruleName, category);
-		}
-		else if(ruleFromDatabase.getCategory().equals(category))
-		{
-			ruleRepository.updateRuleNameAndCategory(ruleName, category);
-		}
+		ruleRepository.createNewRule(ruleName, category);
 		
-		ruleFromDatabase = ruleRepository.searchRuleByName(ruleName);
+		Rule ruleFromDatabase = ruleRepository.searchRuleByName(ruleName);
 		
 		ObjectNode on = new ObjectMapper().createObjectNode();
 		on.put("ruleName", ruleFromDatabase.getName());
@@ -92,11 +120,25 @@ public class RuleController {
 	}
 
 	@RequestMapping(value="createFile", method =RequestMethod.POST )
-	public void createFile(@RequestParam(value="ruleName", required=true) String ruleName, @RequestParam(value="ruleText", required=true) String ruleText)
+	public JsonNode createFile( @RequestBody CreateFile createFile)
 	{
+		
+		String ruleName = createFile.getRuleName();
+		String ruleText = createFile.getRuleText();
+		
+		
 		byte[] byteArray = ruleText.getBytes();
 
-		ruleRepository.createRuleFile(ruleRepository.findIdByName(ruleName), byteArray);
+		long ruleId = ruleRepository.findIdByName(ruleName);
+		ruleRepository.createRuleFile(ruleId, byteArray);
+		
+		RuleFile ruleFileFromDatabase = ruleRepository.findByNameForRuleText(ruleName).getTheLatestFile();
+		
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		on.put("ruleText", new String(ruleFileFromDatabase.getFile()));
+		
+		
+		return on;
 	}
 	
 	@RequestMapping(value="createHistory", method =RequestMethod.POST)
@@ -193,7 +235,7 @@ public class RuleController {
 				childObjectNode.put("TRUE", Integer.toString(record.getTrueCount()));
 				childObjectNode.put("FALSE", Integer.toString(record.getFalseCount()));
 				childObjectNode.put("TYPE", record.getType());
-				parentObjectNode.put(record.getName(), childObjectNode);
+				parentObjectNode.set(record.getName(), childObjectNode);
 			});
 		}
 		else // case of the rule file has never been used so that there is a no record history.
@@ -222,7 +264,7 @@ public class RuleController {
 
 				
 				childObjectNode.put("TYPE", workingMemory.get(item).getType().toString().toLowerCase());
-				parentObjectNode.put(item, childObjectNode);
+				parentObjectNode.set(item, childObjectNode);
 			});
 		}
 				

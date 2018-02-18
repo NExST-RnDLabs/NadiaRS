@@ -20,7 +20,7 @@ export default class ViewRulesPage extends React.Component {
     componentDidMount = () => {
       Nadia.query.getAllRules((res)=>{
         let fields = res.map((item, index)=>{
-          return(<div key={index}><RuleComponent key={index} type='view rules' ruleDescription={item} /> </div>)
+          return(<div key={index}><RuleComponent key={index} type='view rules' ruleDescription={item} onSelectRule={this._onSelectRule}/> </div>)
           });
         this.setState({fields: fields, rules: res});
       });
@@ -40,11 +40,16 @@ export default class ViewRulesPage extends React.Component {
 
     }
    
+    _onSelectRule=(ruleName)=>{
+      if(this.props.onSelectRule){
+        this.props.onSelectRule(ruleName);
+      }
+    }
 
     _onAdd=()=>{
       let tempFields = Clone(this.state.fields);
 
-      tempFields.push(<div key={this.state.fields.length+1}><RuleComponent key={this.state.fields.length+1} type='view rules' /> </div>);
+      tempFields.push(<div key={this.state.fields.length+1}><RuleComponent key={this.state.fields.length+1} type='view rules' onSelectRule={this._onSelectRule}/> </div>);
       this.setState({fields: tempFields, itemAdded: !this.state.itemAdded});
     }
 
@@ -52,7 +57,7 @@ export default class ViewRulesPage extends React.Component {
         if(this.state.itemAdded)
         {
           let tempFields = Clone(this.state.fields);
-          tempFields.pop();
+          let temp = tempFields.pop(); // this causes issue with remove the last component form current list even it was saved.
           this.setState({fields: tempFields, editable: !this.state.editable});
         }
     }

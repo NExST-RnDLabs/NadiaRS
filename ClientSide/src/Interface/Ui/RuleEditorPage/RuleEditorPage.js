@@ -8,7 +8,7 @@ import {Form, Icon , Button, Segment , Header , Divider} from 'semantic-ui-react
 // Import Brace and the AceEditor Component
 import brace from 'brace';
 import AceEditor from 'react-ace';
-import 'brace/mode/java';
+import 'brace/mode/javascript';
 import 'brace/theme/chrome';
 
 //application
@@ -21,13 +21,16 @@ import Nadia from 'src/Application/Nadia';
 export default class RuleEditorPage extends React.Component {
     constructor(props) {
       super(props);
+      
     }
 
     componentDidMount = () => {
+
       this.setState({ruleName: this.props.ruleName});
-      Nadia.query.getRuleByName(this.props.ruleName,(res)=>{
+      
+      Nadia.query.findRuleTextByName(this.props.ruleName,(res)=>{
         if(res){
-          this.setState({ruleText : res})
+          this.setState({ruleText : res.ruleText});
         }
       })
     }
@@ -50,97 +53,66 @@ export default class RuleEditorPage extends React.Component {
     }
    
 
+    _onChange=(newValue)=>{
+      this.setState({ruleText: newValue});
+    }
    
+    _onEdit=()=>{
+      this.setState({edit:!this.state.edit});
+    }
+
+    
 
     _onSave=()=>{
-      
+      // this.setState({save: true});
+      Nadia.command.saveRuleText(this.state.ruleName, this.state.ruleText);
+      this.setState({edit:!this.state.edit});
+
     }
 
     _onCancel=()=>{
-       
+      this.setState({edit:!this.state.edit});
     }
 
     _createEditor=()=>{
-      if(this.state.ruleText.length > 0){ //new rule set
-        return(
-          this.state.edit?
-            <AceEditor
-                mode='java'
-                theme='twilight'
-                onChange={this._onChange}
-                name="UNIQUE_ID_OF_DIV"
-                width="100%"
-                fontSize={18}
-                editorProps={{
-                    $blockScrolling: true
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.setReadOnly(false);
-                  // editor.getSession().setValue();
-                  editor.getSession().setUseWrapMode(true);
-                }}
-            />
-            :
-            <AceEditor
-                mode='java'
-                theme='twilight'
-                onChange={this._onChange}
-                name="UNIQUE_ID_OF_DIV"
-                width="100%"
-                fontSize={18}
-                editorProps={{
-                    $blockScrolling: true
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.setReadOnly(true);
-                  // editor.getSession().setValue();
-                  editor.getSession().setUseWrapMode(true);
-                }}
-            />
-        );
-      }
-      else{// rule set exists
-        return(
-          this.state.edit?
-            <AceEditor
-                mode='java'
-                theme='twilight'
-                onChange={this._onChange}
-                name="UNIQUE_ID_OF_DIV"
-                width="100%"
-                fontSize={18}
-                editorProps={{
-                    $blockScrolling: true
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.setReadOnly(false);
-                  editor.getSession().setValue(this.state.ruleText);
-                  editor.getSession().setUseWrapMode(true);
-                }}
-            />
-            :
-            <AceEditor
-                mode='java'
-                theme='twilight'
-                onChange={this._onChange}
-                name="UNIQUE_ID_OF_DIV"
-                width="100%"
-                fontSize={18}
-                editorProps={{
-                    $blockScrolling: true
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.setReadOnly(true);
-                  editor.getSession().setValue(this.state.ruleText);
-                  editor.getSession().setUseWrapMode(true);
-                }}
-            />
-        );
-      }
+      return(
+        this.state.edit?
+          <AceEditor
+              mode='javascript'
+              theme="chrome"
+              onChange={this._onChange}
+              name="UNIQUE_ID_OF_DIV"
+              readOnly = {false}
+              width="100%"
+              fontSize={18}
+              value={this.state.ruleText}
+              editorProps={{
+                  $blockScrolling: true
+              }}
+              onLoad={(editor) => {
+                editor.focus();
+                // editor.getSession().setValue(this.state.ruleText);
+                editor.getSession().setUseWrapMode(true);
+              }}
+          />
+          :
+          <AceEditor
+              mode='javascript'
+              theme="chrome"
+              name="UNIQUE_ID_OF_DIV"
+              readOnly = {true}
+              width="100%"
+              fontSize={18}
+              value={this.state.ruleText}
+              editorProps={{
+                  $blockScrolling: true
+              }}
+              onLoad={(editor) => {
+                editor.focus();
+                editor.getSession().setUseWrapMode(true);
+              }}
+          />
+      );
     }
     _createButtonGroup=()=>{
       return(
@@ -183,13 +155,13 @@ export default class RuleEditorPage extends React.Component {
               <Header as='h3'>
                 <Icon circular inverted color='teal' name='database' size='tiny' />
                 <Header.Content>
-                  View Rule Set - {this.setState.ruleName}
+                  View Rule Set - {this.state.ruleName}
                 </Header.Content>
               </Header>
               <Divider />
               {this._createButtonGroup()}
             </Segment>
-            <Segment basic className= 'viewRulePageButtonGroup'>
+            <Segment basic className= 'ruleEditor'>
                 {this._createEditor()}
             </Segment>
           </div>

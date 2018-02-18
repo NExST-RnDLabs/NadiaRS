@@ -58,10 +58,9 @@ export default class Transport {
         else if(type == 'GET')
         {
             var qryStr = Transport.serviceURL+service;
-
             if(data != null)
             {
-                qryStr = '?'+Utils.jsonToQueryString(data);
+                qryStr += '?'+Utils.jsonToQueryString(data);
             }
             xhr.open('GET', qryStr);
         }

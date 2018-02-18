@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-
-import {Link} from 'react-router-dom'
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import {Segment, Form , Label , Input , Icon , Button } from 'semantic-ui-react';
 
 //application
@@ -11,7 +11,7 @@ import Nadia from 'src/Application/Nadia';
 //style
 import './RuleComponent.scss';
 
-export default class RuleComponent extends React.Component {
+class RuleComponent extends React.Component {
     constructor(props) {
       super(props);
     }
@@ -20,15 +20,17 @@ export default class RuleComponent extends React.Component {
     // initialise component state
     state = {
         editable: false,
-        process: false,
+        saved: false,
         category:'',
         name:'',
         type:'',
+        redirect: false,
     }
 
     // prop types and default values
     static propTypes = {
         // ruleDescription: PropTypes.object,
+        onSelectRule: PropTypes.func.isRequired,
     }
 
     componentDidMount=()=>{
@@ -37,13 +39,7 @@ export default class RuleComponent extends React.Component {
                         name:  this.props.ruleDescription?this.props.ruleDescription.name:'',
                         type: this.props.type,});
     }
-    componentWillReceiveProps=(nextProps)=>{
-       this.setState({type: nextProps.type, 
-                      ruleDescription: nextProps.ruleDescription, 
-                      category: nextProps.ruleDescription?nextProps.ruleDescription.category:'', 
-                      name: nextProps.ruleDescription?nextProps.ruleDescription.name:'', 
-                      });
-   }
+    
     _onCategoryChange=(e)=>{
         this.setState({category: e.target.value, edited: true});
     }
@@ -59,25 +55,28 @@ export default class RuleComponent extends React.Component {
             this.setState({editable: !this.state.editable});
         }
         else{
-            this.setState({editable: !this.state.editable, category: this.state.category, name: this.state.name});
+            this.setState({editable: !this.state.editable, category: this.props.ruleDescription.category, name: this.props.ruleDescription.name});
         }
         
     }
     _onSave=()=>{
-        this.setState({process: !this.state.process});
-        Nadia.command.ruleDescriptionChange(this.state.name, this.state.category, (res) =>{
-            if(res.category == this.state.category && res.ruleName == this.state.name)
-            {
-                this.setState({process: !this.state.process});
-                //we need toast message for this.
+        if(this.props.ruleDescription 
+            && (this.state.name != this.props.ruleDescription.name || this.state.category != this.props.ruleDescription.category)){
+                Nadia.command.ruleDescriptionUpdate(this.props.ruleDescription.name, this.state.name, this.state.category);
             }
-            else{
-                //we need error screen for this.
-            }
-        });  
+        else{
+            Nadia.command.createNewRule(this.state.name, this.state.category);
+        }
+        this.setState({editable: !this.state.editable, saved: !this.state.saved});
       }
   
     _onView=()=>{
+
+        if(this.props.onSelectRule){
+            this.props.onSelectRule(this.state.name);
+            this.props.history.push('/RuleEditorPage');
+        }
+        
 
     }
     _createFields=()=>{
@@ -93,11 +92,10 @@ export default class RuleComponent extends React.Component {
         }
         else if(this.state.type = 'view rules'){
             buttonGroup = <Form.Group widths='equal' className='buttonField'>
-                                <Button floated='right' color='twitter' as={Link} to='/RuleEditorPage'>
+                                <Button floated='right' color='twitter' onClick={this._onView}>
                                     <Icon name='comments outline'/>
                                     View 
-                                </Button>
-                                
+                                </Button>                                    
                                 {this.state.editable?
                                     <div>
                                         <Button floated='right' onClick= {this._onCancel}>
@@ -157,6 +155,7 @@ export default class RuleComponent extends React.Component {
     // component render method
     render() {
       let component = this;
+      
         return (
           <div>
             {this._createFields()}
@@ -164,3 +163,5 @@ export default class RuleComponent extends React.Component {
         );
     }
 }
+export default withRouter(RuleComponent);
+

@@ -31,6 +31,7 @@ export default class App extends React.Component {
     // initialise component state
     state = {
       sidebarVisible:false,
+      selectedRule:'',
     }
 
     // prop types and default values
@@ -41,6 +42,9 @@ export default class App extends React.Component {
 
     }
 
+    _onSelectRule=(ruleName)=>{
+      this.setState({selectedRule: ruleName});
+    }
     // private methods
     _onClick = () => {
       this.setState({sidebarVisible: !this.state.sidebarVisible})
@@ -50,18 +54,19 @@ export default class App extends React.Component {
     render() {
         return (
           <div>
-            <ToastList bottom right/>
+
             <Sidebar.Pushable as={Segment}>
               <MenuSideBarComponent visible={this.state.sidebarVisible} onSelection = {this._onClick}/>
               <Sidebar.Pusher>
                 <Dimmer.Dimmable basic as={Segment} blurring dimmed={this.state.sidebarVisible}>
                 <Dimmer active={this.state.sidebarVisible} onClickOutside={this._onClick} />
+                  <ToastList bottom right/>
                   <MenuTop onClick = {this._onClick}/>
                   <Switch>
                     <Route exact path='/' component={InitialPage} />
-                    <Route path='/RunRulesPage' component={RunRulesPage} />
-                    <Route path='/ViewRulespage' component={ViewRulesPage}/>
-                    <Route path='/RuleEditorPage' component={RuleEditorPage}/>
+                    <Route path='/RunRulesPage' component={()=> <RunRulesPage key={Date.now()}/>} />
+                    <Route path='/ViewRulespage' component={()=> <ViewRulesPage key={Date.now()} onSelectRule={this._onSelectRule}/>}/>
+                    <Route path='/RuleEditorPage' component={()=> <RuleEditorPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

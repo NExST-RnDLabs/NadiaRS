@@ -35,6 +35,12 @@ export default class QuestionItem extends React.Component {
         questionDataType: PropTypes.object.isRequired,
     }
 
+    _onSaveClick=(question, inputValue)=>{
+
+    }
+
+    
+
     _createQuestionItem=()=>{
         let questionItem;
         let questionText = this.props.questionData.questionText;
@@ -80,7 +86,7 @@ export default class QuestionItem extends React.Component {
     render() {
         return (
             <Segment className='questionItem'>
-              {this._createQuestionItem()}
+                {this._createQuestionItem()}
             </Segment>
         );
     }

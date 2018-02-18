@@ -22,8 +22,16 @@ export default class QuestionIntType extends React.Component {
         
     // }
     _onChange=(newValue)=>{
+        let regEx = /\d/;
+        if(regEx.test(newValue))
+        {
+            this.setState({inputError: !this.state.inputError});
+        }
+        else
+        {
+            this.setState({inputValue: newValue, inputError: !this.state.inputError});
+        }
         
-        this.setState({inputValue: newValue});
     }
 
     _onSave=()=>{
@@ -52,8 +60,11 @@ export default class QuestionIntType extends React.Component {
                             <Icon name='sort numeric ascending' />
                             <input />
                         </Input>}
-                    <Button onClick={this._onSave}>Save</Button>
-                    <Button onClick={this._onCancel}>Cancel</Button>
+                        <Button.Group>
+                            <Button onClick={this._onSave}>Save</Button>
+                            <Button.Or />
+                            <Button onClick={this._onCancel}>Cancel</Button>
+                        </Button.Group>
                 </Segment>
             </Segment.Group>
         );

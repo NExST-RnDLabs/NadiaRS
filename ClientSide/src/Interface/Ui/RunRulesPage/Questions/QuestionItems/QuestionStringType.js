@@ -17,11 +17,6 @@ export default class QuestionStringType extends React.Component {
         question: PropTypes.string.isRequired,
     }
 
-    // _onChange=(e)={
-    //     console.log(e.target);
-        
-        
-    // }
     _onChange=(newValue)=>{
         
         this.setState({inputValue: newValue});
@@ -44,19 +39,19 @@ export default class QuestionStringType extends React.Component {
                 <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
                 <Segment>
                     {this.state.inputError?
-                        <Input error iconPosition='left' placeholder='enter numerics' onChange={this._onChange}>
+                        <Input error iconPosition='left' placeholder='Please enter alphabetical characters' onChange={this._onChange}>
                             <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>
                         :
-                        <Input iconPosition='left' placeholder='enter numerics' onChange={this._onChange}>
+                        <Input iconPosition='left' placeholder='Please enter alphabetical characters' onChange={this._onChange}>
                             <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>}
                     <Button.Group>
-                        <Button onClick={this._onSave}>Save</Button>
+                        <Button positive onClick={this._onSave}>Save</Button>
                         <Button.Or />
-                        <Button onClick={this._onCancel}>Cancel</Button>
+                        <Button negative onClick={this._onCancel}>Cancel</Button>
                     </Button.Group>
                 </Segment>
             </Segment.Group>

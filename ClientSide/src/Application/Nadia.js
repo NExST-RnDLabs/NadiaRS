@@ -40,6 +40,12 @@ export default class Nadia {
                 }
             })
         },
+
+        feedAnswer:(question, answer, callback)=>{
+            Bus.command('rule/feedAnswer',{question: question, answer: answer}).done(()=>{
+                callback();
+            });
+        }
     }
 
     // query (async - return via callback)

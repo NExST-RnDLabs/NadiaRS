@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 
 
-export default class QuestionIntType extends React.Component {
+export default class QuestionDoubleType extends React.Component {
     constructor(props) {
       super(props);
     }
@@ -17,7 +17,7 @@ export default class QuestionIntType extends React.Component {
     }
 
     _onChange=(newValue)=>{
-        let regEx = /\d/;
+        let regEx = /^\d+.?\d*$/;
         if(!regEx.test(newValue))
         {
             this.setState({inputError: !this.state.inputError});
@@ -46,12 +46,12 @@ export default class QuestionIntType extends React.Component {
                 <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
                 <Segment>
                     {this.state.inputError?
-                        <Input error iconPosition='left' placeholder='Please enter numerics' onChange={this._onChange}>
+                        <Input error iconPosition='left' placeholder='Please enter decimal numerics' onChange={this._onChange}>
                             <Icon name='sort numeric ascending' />
                             <input />
                         </Input>
                         :
-                        <Input iconPosition='left' placeholder='Please enter numerics' onChange={this._onChange}>
+                        <Input iconPosition='left' placeholder='Please enter decimal numerics' onChange={this._onChange}>
                             <Icon name='sort numeric ascending' />
                             <input />
                         </Input>}

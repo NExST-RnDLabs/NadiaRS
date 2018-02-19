@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Form, FInput, Icon , Segment} from 'semantic-ui-react';
+import {Form, Label} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 

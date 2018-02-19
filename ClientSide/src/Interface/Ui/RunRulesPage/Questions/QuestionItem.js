@@ -36,7 +36,9 @@ export default class QuestionItem extends React.Component {
     }
 
     _onSaveClick=(question, inputValue)=>{
-
+        if(this.props.feedAnswer){
+            this.props.feedAnswer(question, inputValue, callback);
+        }
     }
 
     
@@ -47,36 +49,36 @@ export default class QuestionItem extends React.Component {
         switch(this.state.questionData.type)
         {
             case 'integer':
-                questionItem = <QuestionIntType question = {questionText}/>
+                questionItem = <QuestionIntType question = {questionText} onSave={this._onSaveClick}/>
                 break;
             
             case 'boolean':
-                questionItem = <QuestionBoolType question = {questionText}/>
+                questionItem = <QuestionBoolType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'date':
-                questionItem = <QuestionDateType question = {questionText}/>
+                questionItem = <QuestionDateType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'defistring':
             case 'string':
-                questionItem = <QuestionStringType question = {questionText}/>
+                questionItem = <QuestionStringType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'double':
-                questionItem = <QuestionDoubleType question = {questionText}/>
+                questionItem = <QuestionDoubleType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'hash':
-                questionItem = <QuestionHashType question = {questionText}/>
+                questionItem = <QuestionHashType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'url':
-                questionItem = <QuestionUrlType question = {questionText}/>
+                questionItem = <QuestionUrlType question = {questionText} onSave={this._onSaveClick}/>
                 break;
 
             case 'uuid':
-                questionItem = <QuestionUuidType question = {questionText}/>
+                questionItem = <QuestionUuidType question = {questionText} onSave={this._onSaveClick}/>
                 break;
         }
         return questionItem;

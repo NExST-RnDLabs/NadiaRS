@@ -83,7 +83,7 @@ export default class RuleEditorPage extends React.Component {
               onChange={this._onChange}
               name="UNIQUE_ID_OF_DIV"
               readOnly = {false}
-              width="100%"
+              style={{height: '790px'}}
               fontSize={18}
               value={this.state.ruleText}
               editorProps={{

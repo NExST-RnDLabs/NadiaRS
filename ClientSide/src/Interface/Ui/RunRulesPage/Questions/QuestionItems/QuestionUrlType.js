@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 
 
-export default class QuestionIntType extends React.Component {
+
+export default class QuestionUrlType extends React.Component {
     constructor(props) {
       super(props);
     }
@@ -17,7 +18,8 @@ export default class QuestionIntType extends React.Component {
     }
 
     _onChange=(newValue)=>{
-        let regEx = /\d/;
+        
+        let regEx = /^(ht|f)tps?\\:(\\p{Graph}|\\p{XDigit}|\\p{Space})*$/;
         if(!regEx.test(newValue))
         {
             this.setState({inputError: !this.state.inputError});
@@ -26,7 +28,6 @@ export default class QuestionIntType extends React.Component {
         {
             this.setState({inputValue: newValue, inputError: !this.state.inputError});
         }
-        
     }
 
     _onSave=()=>{
@@ -46,20 +47,20 @@ export default class QuestionIntType extends React.Component {
                 <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
                 <Segment>
                     {this.state.inputError?
-                        <Input error iconPosition='left' placeholder='Please enter numerics' onChange={this._onChange}>
-                            <Icon name='sort numeric ascending' />
+                        <Input error iconPosition='left' placeholder='Please enter URL' onChange={this._onChange}>
+                            <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>
                         :
-                        <Input iconPosition='left' placeholder='Please enter numerics' onChange={this._onChange}>
-                            <Icon name='sort numeric ascending' />
+                        <Input iconPosition='left' placeholder='Please enter URL' onChange={this._onChange}>
+                            <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>}
-                        <Button.Group>
-                            <Button positive onClick={this._onSave}>Save</Button>
-                            <Button.Or />
-                            <Button negative onClick={this._onCancel}>Cancel</Button>
-                        </Button.Group>
+                    <Button.Group>
+                        <Button positive onClick={this._onSave}>Save</Button>
+                        <Button.Or />
+                        <Button negative onClick={this._onCancel}>Cancel</Button>
+                    </Button.Group>
                 </Segment>
             </Segment.Group>
         );

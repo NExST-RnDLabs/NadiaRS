@@ -76,9 +76,15 @@ class RuleComponent extends React.Component {
             this.props.onSelectRule(this.state.name);
             this.props.history.push('/RuleEditorPage');
         }
-        
-
     }
+
+    _onRun=()=>{
+        if(this.props.onSelectRule){
+            this.props.onSelectRule(this.state.name);
+            this.props.history.push('/RuleExecutionPage');
+        }
+    }
+
     _createFields=()=>{
         let fields;
         let buttonGroup;

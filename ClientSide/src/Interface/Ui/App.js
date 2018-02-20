@@ -17,6 +17,7 @@ import ToastList from '../Global/Components/Toast Notification/ToastList';
 import RunRulesPage from './RunRulesPage/RunRulesPage';
 import ViewRulesPage from './ViewRulesPage/ViewRulesPage';
 import RuleEditorPage from './RuleEditorPage/RuleEditorPage';
+import RuleExecutionPage from './RuleExecutionPage/RuleExecutionPage';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -64,9 +65,10 @@ export default class App extends React.Component {
                   <MenuTop onClick = {this._onClick}/>
                   <Switch>
                     <Route exact path='/' component={InitialPage} />
-                    <Route path='/RunRulesPage' component={()=> <RunRulesPage key={Date.now()}/>} />
+                    <Route path='/RunRulesPage' component={()=> <RunRulesPage key={Date.now()} onSelectRule={this._onSelectRule}/>} />
                     <Route path='/ViewRulespage' component={()=> <ViewRulesPage key={Date.now()} onSelectRule={this._onSelectRule}/>}/>
                     <Route path='/RuleEditorPage' component={()=> <RuleEditorPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
+                    <Route path='/RuleEditorPage' component={()=> <RuleExecutionPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

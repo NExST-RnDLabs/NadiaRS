@@ -8,6 +8,10 @@ import PropTypes from 'prop-types';
 export default class Questionnaire extends React.Component {
     constructor(props) {
       super(props);
+
+      state ={
+          questionList:[],
+      }
     }
 
 
@@ -16,18 +20,6 @@ export default class Questionnaire extends React.Component {
 
     }
 
-    _onChange=(newValue)=>{
-        let regEx = /\d/;
-        if(!regEx.test(newValue))
-        {
-            this.setState({inputError: !this.state.inputError});
-        }
-        else
-        {
-            this.setState({inputValue: newValue, inputError: !this.state.inputError});
-        }
-        
-    }
 
     _onSave=()=>{
         if(this.props.onSave){

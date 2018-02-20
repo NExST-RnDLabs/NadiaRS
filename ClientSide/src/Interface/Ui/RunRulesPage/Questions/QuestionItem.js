@@ -32,7 +32,7 @@ export default class QuestionItem extends React.Component {
 
     // prop types and default values
     static propTypes = {
-        questionDataType: PropTypes.object.isRequired,
+        questionData: PropTypes.object.isRequired,
     }
 
     _onSaveClick=(question, inputValue)=>{

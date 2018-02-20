@@ -9,6 +9,10 @@ import PropTypes from 'prop-types';
 export default class QuestionUuidType extends React.Component {
     constructor(props) {
       super(props);
+
+      state = {
+        answered: false,
+      }
     }
 
 
@@ -33,36 +37,18 @@ export default class QuestionUuidType extends React.Component {
     _onSave=()=>{
         if(this.props.onSave){
             this.props.onSave(this.props.question, this.state.inputValue);
+            this.setState({answered: !this.state.answered});
         }
     }
 
     _onCancel=()=>{
-        this.setState({inputValue:''});
+        this.setState({inputValue:'', answered: !this.state.answered});
     }
      
     // component render method
     render() {
-        return (
-            <Segment.Group raised className='questionIntItem'>
-                <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
-                <Segment>
-                    {this.state.inputError?
-                        <Input error iconPosition='left' placeholder='Please enter UUID value' onChange={this._onChange}>
-                            <Icon name='sort alphabet ascending' />
-                            <input />
-                        </Input>
-                        :
-                        <Input iconPosition='left' placeholder='Please enter UUID value' onChange={this._onChange}>
-                            <Icon name='sort alphabet ascending' />
-                            <input />
-                        </Input>}
-                    <Button.Group>
-                        <Button positive onClick={this._onSave}>Save</Button>
-                        <Button.Or />
-                        <Button negative onClick={this._onCancel}>Cancel</Button>
-                    </Button.Group>
-                </Segment>
-            </Segment.Group>
-        );
+        this.state.answered?
+
+        
     }
 }

@@ -22,6 +22,7 @@ export default class DateInputFields extends React.Component {
         onDayChange: PropTypes.func.isRequired,
         onMonthChange: PropTypes.func.isRequired,
         onYearChange: PropTypes.func.isRequired,
+        readOnly: PropTypes.bool,
     }
 
    
@@ -47,6 +48,26 @@ export default class DateInputFields extends React.Component {
     // component render method
     render() {
         return (
+                this.props.readOnly?
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Field>
+                            <Label size='small'>Day</Label>
+                            <Form.Input readOnly fluid value={this.props.dayInputValue} placeholder='DD' onChange={this._onDayChange}/>
+                        </Form.Field>
+                        /
+                        <Form.Field>
+                            <Label size='small'>Month</Label>
+                            <Form.Input readOnly fluid value={this.props.monthInputValue} placeholder='MM' onChange={this._onMonthChange}/>
+                        </Form.Field>
+                        /
+                        <Form.Field>
+                            <Label size='small'>Year</Label>
+                            <Form.Input readOnly fluid value={this.props.yearInputValue} placeholder='YYYY' onChange={this._onYearChange}/>
+                        </Form.Field>
+                    </Form.Group>
+                </Form>
+                :
                 this.props.dateInvalid?
                     <Form>
                         <Form.Group widths='equal'>

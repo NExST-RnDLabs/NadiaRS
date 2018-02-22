@@ -10,28 +10,53 @@ export default class QuestionBoolType extends React.Component {
       super(props);
     }
 
-
+    state ={
+        answered: false,
+    }
     // prop types and default values
     static propTypes = {
         question: PropTypes.string.isRequired,
     }
 
+   
     _onTrue=()=>{
         if(this.props.onSave){
             this.props.onSave(this.props.question, true);
+            this.setState({answered: true, answer: true});
+
         }
     }
 
     _onFalse=()=>{
-        this.props.onSave(this.props.question, false);
+        if(this.props.onSave){
+            this.props.onSave(this.props.question, false);
+            this.setState({answered: true, answer: false});
+        }
     }
      
     // component render method
     render() {
         return (
+            this.state.answered?
+                this.state.answer?
+                <Segment.Group raised className='questionIntItem'>
+                    <Message attached='top' info header='Is the following statement true?'/>
+                    <Segment attached='bottom' inverted color='blue'>
+                        <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
+                    </Segment>
+                </Segment.Group>
+                :
+                <Segment.Group raised className='questionIntItem'>
+                    <Message attached='top' info header='Is the following statement true?'/>
+                    <Segment attached='bottom' inverted color='red'>
+                        <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
+                    </Segment>
+                </Segment.Group>
+
+            :
             <Segment.Group raised className='questionIntItem'>
-                <Segment color='orange'><strong>Is the following statement true?</strong></Segment>
-                <Segment>
+                <Message attached='top' info header='Is the following statement true?'/>
+                <Segment attached='bottom'>
                     <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
                     <Button.Group>
                         <Button positive onClick={this._onTrue}>True</Button>

@@ -21,6 +21,7 @@ export default class QuestionDateType extends React.Component {
         yearIsDirty: false,
         yearInputValue: '',
         dateInvalid: false,
+        answered: false,
     }
     
     // prop types and default values
@@ -58,6 +59,7 @@ export default class QuestionDateType extends React.Component {
         let dateValue = this.state.dayInputValue+'/'+this.state.monthInputValue+'/'+this.state.yearInputValue;
         if(this.props.onSave){
             this.props.onSave(this.props.question, dateValue);
+            this.setState({answered: !this.state.answered});
         }
     }
 
@@ -68,15 +70,40 @@ export default class QuestionDateType extends React.Component {
                         monthInputValue: '',
                         yearIsDirty: false,
                         yearInputValue: '',
-                        dateInvalid: false});
+                        dateInvalid: false,
+                        answered: !this.state.answered});
     }
      
     // component render method
     render() {
+        let question = this.props.question+'?';
         return (
+            this.state.answered?
             <Segment.Group raised className='questionIntItem'>
-                <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
-                <Segment>
+                <Message attached='top' info header= {question}/>
+                <Segment attached='bottom'>
+                   <DateInputFields 
+                        dayIsDirty= {false}
+                        dayInputValue= {this.state.dayInputValue}
+                        monthIsDirty= {false}
+                        monthInputValue= {this.state.monthInputValue}
+                        yearIsDirty= {false}
+                        yearInputValue= {this.state.dayInputValue}
+                        dateInvalid= {false}
+                        onDayChange ={this._onDayChange} 
+                        onMonthChange = {this._onMonthChange} 
+                        onYearChange = {this._onYearChange}/>
+                    <Button.Group>
+                        <Button onClick={this._onSave}>Save</Button>
+                        <Button.Or />
+                        <Button onClick={this._onCancel}>Cancel</Button>
+                    </Button.Group>
+                </Segment>
+            </Segment.Group>
+            :
+            <Segment.Group raised className='questionIntItem'>
+                <Message attached='top' info header= {question}/>
+                <Segment attached='bottom'>
                    <DateInputFields 
                         dayIsDirty= {false}
                         dayInputValue= {''}

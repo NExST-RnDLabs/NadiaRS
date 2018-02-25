@@ -18,10 +18,13 @@ export default class QuestionBoolType extends React.Component {
         question: PropTypes.string.isRequired,
     }
 
+    defaultProps = {
+        foo: "default"
+      };
    
     _onTrue=()=>{
         if(this.props.onSave){
-            this.props.onSave(this.props.question, true);
+            this.props.onSave(this.props.question, {answer:true, type:'boolean'});
             this.setState({answered: true, answer: true});
 
         }
@@ -29,7 +32,7 @@ export default class QuestionBoolType extends React.Component {
 
     _onFalse=()=>{
         if(this.props.onSave){
-            this.props.onSave(this.props.question, false);
+            this.props.onSave(this.props.question, {answer:false, type:'boolean'});
             this.setState({answered: true, answer: false});
         }
     }
@@ -41,7 +44,7 @@ export default class QuestionBoolType extends React.Component {
                 this.state.answer?
                 <Segment.Group raised className='questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
-                    <Segment attached='bottom' inverted color='blue'>
+                    <Segment attached='bottom' inverted color='green'>
                         <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
                     </Segment>
                 </Segment.Group>

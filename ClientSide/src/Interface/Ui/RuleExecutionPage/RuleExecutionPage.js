@@ -20,21 +20,17 @@ export default  class RuleExecutionPage extends React.Component {
     componentDidMount = () => {
 
       this.setState({ruleName: this.props.ruleName});
+      this._getNextQuestion();
       
-      Nadia.query.getNextQuestion(this.props.ruleName,(res)=>{
-        if(res){
-
-          this.setState({goalRule : res.goalRule, nextQuestion : res.nextQuestion});
-        }
-      });
     }
 
 
     // initialise component state
     state = {
-        goalRule:'',
-        nextQuestion:'',
+        goalRule:{},
         hasMoreQuestion: true,
+        questions:[],
+        answeredQuestionList:[],
         questionList:[],
     }
 
@@ -42,6 +38,9 @@ export default  class RuleExecutionPage extends React.Component {
     static propTypes = {
       ruleName: PropTypes.string,
     }
+
+
+
 
     _createButtonGroup=()=>{
       return(
@@ -62,12 +61,62 @@ export default  class RuleExecutionPage extends React.Component {
       );
     }
 
+    _getNextQuestionFromBuffer=()=>{
+      return this.state.questions.shift();
+    }
+
+    _getNextQuestion=()=>{
+      debugger;
+      let questionData;
+      if(this.state.questions.length != 0)
+      {
+        questionData = this._getNextQuestionFromBuffer();
+        let tempQuestionList = Clone(this.state.questionList);
+        tempQuestionList.push(questionData);
+        this.setState({questionList: tempQuestionList});
+      }
+      else{
+        Nadia.query.getNextQuestion(this.props.ruleName,(res)=>{
+           /*
+            * 'res' is an array of questions
+            * if a certain node(rule) contains a number of variables(questions) to be asked then
+            * 'res' contains a number of elements, otherwise the 'res' would be a length one array in other words,
+            * it will contain only one question
+            */
+          questionData = res.shift();
+          let tempQuestionList = Clone(this.state.questionList);
+          tempQuestionList.push(questionData);
+          this.setState({questions: res, questionList: tempQuestionList});
+        });
+      }
+    }
+
+    _feedAnswer=(question, answer)=>{
+      Nadia.command.feedAnswer(question, answer,(res)=>{
+        if(res.hasMoreQuestion === true){
+          this._getNextQuestion();
+        }
+        else{
+          this.setState(
+            {
+              hasMoreQuestion: !this.state.hasMoreQuestion, 
+              goalRule: 
+                      {
+                        goalRuleName: res.goalRuleName, 
+                        goalRuleValue: res.goalRuleValue
+                      }
+            }
+          );
+        }
+      });
+    }
+
     _createQuestionnaire=()=>{
         let questionnaire = this.questionList.map((item, index)=>{
-            return(<div key={index}><QuestionItem questionData = {this.state.nextQuestion}/> </div>)
+            return(<div key={index}><QuestionItem questionData = {item} feedAnswer={this._feedAnswer}/> </div>)
         });
         this.setState({questionnaire: questionnaire});
-
+        return (questionList);
     }
     
     // component render method

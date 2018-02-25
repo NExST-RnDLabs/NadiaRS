@@ -30,8 +30,8 @@ export default class QuestionDateType extends React.Component {
     }
 
     _isDateValid=()=>{
-        let checkDateValidation = new Moment(yearInputValue+'-'+monthInputValue+'-'+dayInputValue,'YYYY-MM-DD').isValid();
-        if(!((dayIsDirty && monthIsDirty && yearIsDirty) && checkDateValidation)){
+        let checkDateValidation = new Moment(this.state.yearInputValue+'-'+this.state.monthInputValue+'-'+this.state.dayInputValue,'YYYY-MM-DD').isValid();
+        if(!((this.state.dayIsDirty && this.state.monthIsDirty && this.state.yearIsDirty) && checkDateValidation)){
             this.setState({dateInvalid: !this.state.dateInvalid});
         }
         else{
@@ -58,14 +58,14 @@ export default class QuestionDateType extends React.Component {
     _onSave=()=>{
         let dateValue = this.state.dayInputValue+'/'+this.state.monthInputValue+'/'+this.state.yearInputValue;
         if(this.props.onSave){
-            this.props.onSave(this.props.question, dateValue);
+            this.props.onSave(this.props.question, {answer:dateValue, type:'date'});
             this.setState({answered: !this.state.answered});
         }
     }
 
     _onCancel=()=>{
         this.setState({dayIsDirty: false,
-                        dayInputValue: '',
+                        dayInputValue: {},
                         monthIsDirty: false,
                         monthInputValue: '',
                         yearIsDirty: false,
@@ -81,23 +81,13 @@ export default class QuestionDateType extends React.Component {
             this.state.answered?
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Segment attached='bottom'>
+                <Segment attached='bottom' inverted color='green'>
                    <DateInputFields 
-                        dayIsDirty= {false}
+                        readOnly
                         dayInputValue= {this.state.dayInputValue}
-                        monthIsDirty= {false}
                         monthInputValue= {this.state.monthInputValue}
-                        yearIsDirty= {false}
                         yearInputValue= {this.state.dayInputValue}
-                        dateInvalid= {false}
-                        onDayChange ={this._onDayChange} 
-                        onMonthChange = {this._onMonthChange} 
-                        onYearChange = {this._onYearChange}/>
-                    <Button.Group>
-                        <Button onClick={this._onSave}>Save</Button>
-                        <Button.Or />
-                        <Button onClick={this._onCancel}>Cancel</Button>
-                    </Button.Group>
+                        dateInvalid= {this.state.dateInvalid}/>
                 </Segment>
             </Segment.Group>
             :
@@ -111,15 +101,23 @@ export default class QuestionDateType extends React.Component {
                         monthInputValue= {''}
                         yearIsDirty= {false}
                         yearInputValue= {''}
-                        dateInvalid= {false}
+                        dateInvalid= {this.state.dateInvalid}
                         onDayChange ={this._onDayChange} 
                         onMonthChange = {this._onMonthChange} 
                         onYearChange = {this._onYearChange}/>
-                    <Button.Group>
-                        <Button onClick={this._onSave}>Save</Button>
-                        <Button.Or />
-                        <Button onClick={this._onCancel}>Cancel</Button>
-                    </Button.Group>
+                    {this.state.dateInvalid?
+                        <Button.Group>
+                            <Button positive disabled>Save</Button>
+                            <Button.Or />
+                            <Button onClick={this._onCancel}>Cancel</Button>
+                        </Button.Group>
+                    :
+                        <Button.Group>
+                            <Button positive onClick={this._onSave}>Save</Button>
+                            <Button.Or />
+                            <Button onClick={this._onCancel}>Cancel</Button>
+                        </Button.Group>
+                    }
                 </Segment>
             </Segment.Group>
         );

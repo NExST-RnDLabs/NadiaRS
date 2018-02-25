@@ -5,6 +5,8 @@ export default class Nadia {
 
 // commands (async - return via optional callback when done)
     static command = {
+        
+
         ruleDescriptionUpdate: (oldRuleName, ruleName, ruleCategory)=>{
             Bus.command('rule/updateRule', {oldRuleName:oldRuleName, newRuleName: ruleName, newRuleCategory: ruleCategory}).done((res)=>{
                 if(res.newRuleName = ruleName && res.newCategory == ruleCategory)//success case of redirect
@@ -41,11 +43,26 @@ export default class Nadia {
             })
         },
 
+        setNadia:(ruleName)=>{
+            Bus.query('inference/setInferenceEngine',{ruleName: ruleName}).done((res)=>{
+                if(res.inferenceEngine=='created'){
+                    Bus.publish('Toast', {
+                        status: 'info',
+                        text: 'Nadia has been successfully set.'
+                      });
+                }
+            })
+        },
+
         feedAnswer:(question, answer, callback)=>{
-            Bus.command('rule/feedAnswer',{question: question, answer: answer}).done(()=>{
-                callback();
-            });
-        }
+            Bus.command('inference/feedAnswer',{question: question, answer: answer}).done((res)=>{
+                Bus.publish('Toast', {
+                    status: 'info',
+                    text: 'The question has been successfully answered.'
+                  });
+                callback(res);
+            })
+        },
     }
 
     // query (async - return via callback)
@@ -66,6 +83,12 @@ export default class Nadia {
             Bus.query('rule/searchRuleByName/',{ruleName:ruleName}).done((res)=>{
                 callback(res);
             });
+        },
+
+        getNextQuestion: (ruleName, callback)=>{
+            Bus.query('inference/getNextQuestion',{ruleName: ruleName}).done((res)=>{
+                callback(res);
+            })
         }
 
 

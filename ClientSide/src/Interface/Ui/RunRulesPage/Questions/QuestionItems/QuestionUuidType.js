@@ -21,7 +21,7 @@ export default class QuestionUuidType extends React.Component {
         question: PropTypes.string.isRequired,
     }
 
-    _onChange=(newValue)=>{
+    _onChange=(event, newValue)=>{
         
         let regEx = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/;
         if(!regEx.test(newValue))
@@ -36,19 +36,57 @@ export default class QuestionUuidType extends React.Component {
 
     _onSave=()=>{
         if(this.props.onSave){
-            this.props.onSave(this.props.question, this.state.inputValue);
+            this.props.onSave(this.props.question, {answer:this.state.inputValue, type:'uuid'});
             this.setState({answered: !this.state.answered});
         }
     }
 
     _onCancel=()=>{
-        this.setState({inputValue:'', answered: !this.state.answered});
+        this.setState({inputValue:{}, answered: !this.state.answered});
     }
      
     // component render method
     render() {
-        this.state.answered?
-
+        let question = this.props.question+'?';
+        return (
+            <Segment.Group raised className='questionIntItem'>
+                <Message attached='top' info header= {question}/>
+                
+                {this.state.answered?
+                    <Segment attached='bottom' inverted color='green'>
+                        <Input disabled iconPosition='left' placeholder='Please enter numerical values' value={this.state.inputValue}>
+                            <Icon name='sort alphabet ascending' />
+                            <input />
+                        </Input>
+                    </Segment>
+                    :
+                    this.state.inputError?
+                        <Segment attached='bottom'>
+                            <Input error iconPosition='left' placeholder='Please enter numerical values' value={this.state.inputValue} onChange={this._onChange}>
+                                <Icon name='sort alphabet ascending' />
+                                <input />
+                            </Input>
+                            <Button.Group>
+                                <Button positive disabled>Save</Button>
+                                <Button.Or />
+                                <Button negative onClick={this._onCancel}>Cancel</Button>
+                            </Button.Group>
+                        </Segment>
+                        :
+                        <Segment attached='bottom'>
+                            <Input iconPosition='left' placeholder='Please enter numerical values' value={this.state.inputValue} onChange={this._onChange}>
+                                <Icon name='sort alphabet ascending' />
+                                <input />
+                            </Input>
+                            <Button.Group>
+                                <Button positive onClick={this._onSave}>Save</Button>
+                                <Button.Or />
+                                <Button negative onClick={this._onCancel}>Cancel</Button>
+                            </Button.Group>
+                        </Segment>}
+                
+            </Segment.Group>
+        );
         
     }
 }

@@ -1,5 +1,6 @@
 package com.NadiaRS.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.NadiaRS.InferenceEngine.factValuePackage.FactValueType;
@@ -43,7 +46,7 @@ public class InferenceController {
 	
 	
 	@RequestMapping(value="/feedAnswer", method = RequestMethod.POST)
-	public ObjectNode feedAnswer(@RequestBody ObjectNode answers, @ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass)
+	public ObjectNode feedAnswer(@RequestBody ObjectNode answers, @SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass)
 	{
 		List<Entry<String, JsonNode>> answerList = Lists.newArrayList(answers.arrayNode().fields());
 		answerList.stream().forEach(item->{
@@ -54,27 +57,44 @@ public class InferenceController {
 			IE.feedAnswerToNode(ass.getNodeToBeAsked(), item.getKey(), item.getValue().get("answer") , fvt, ass);	
 		});
 		
-		return answers;
+		ObjectNode objectNode = new ObjectMapper().createObjectNode();
+		if(IE.getAssessmentState().getWorkingMemory().get(ass.getGoalNode().getNodeName())==null  || !IE.getAssessmentState().allMandatoryNodeDetermined())
+		{
+			objectNode.put("hasMoreQuestion", "true");
+		}
+		else
+		{
+			String goalNodeName = ass.getGoalNode().getNodeName();
+			objectNode.put("hasMoreQuestion", "false");
+			objectNode.put("goalRuleName", goalNodeName);
+			objectNode.put("goalRuleValue", IE.getAssessmentState().getWorkingMemory().get(goalNodeName).getValue().toString());
+			
+			
+		}
+		return objectNode;
 	}
 	
 	@RequestMapping(value="/getNextQuestion", method = RequestMethod.GET)
-	public ObjectNode getNextQuestion(@ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass, String ruleName)
+	public ObjectNode[] getNextQuestion(@SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass, String ruleName)
 	{
 		ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		Node nextQuestionNode = IE.getNextQuestion(ass);
 		HashMap<String,FactValueType> questionFvtMap = IE.findTypeOfElementToBeAsked(nextQuestionNode);
 		List<String> questionnaire = IE.getQuestionsFromNodeToBeAsked(nextQuestionNode);
+		List<ObjectNode> questionnaireList = new ArrayList<>();
 		questionnaire.stream().forEach(question->{
-			objectNode.put("question", question);
-			objectNode.put("type", questionFvtMap.get(question).toString());
+			objectNode.put("questionText", question);
+			objectNode.put("questionValueType", questionFvtMap.get(question).toString());
+			questionnaireList.add(objectNode);
 		});
-		return objectNode;
+		return questionnaireList.stream().toArray(ObjectNode[]::new);
 	}
 	
 	@RequestMapping(value="/setInferenceEngine", method = RequestMethod.GET)
-	public ObjectNode setInferenceEngine(@ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass, String ruleName)
+	public ObjectNode setInferenceEngine(@SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass, @RequestParam(value="ruleName", required=true) String ruleName)
 	{
-		ilr.setStringSource(ruleController.getTheLatestRuleFileByName(ruleName).getFile().toString());
+		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
+		ilr.setStringSource(ruleText);
 		rsc = new RuleSetScanner(ilr,isf);
 		rsc.scanRuleSet();
 		rsc.establishNodeSet();

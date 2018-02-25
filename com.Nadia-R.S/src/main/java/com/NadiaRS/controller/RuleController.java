@@ -69,7 +69,7 @@ public class RuleController {
 	@ResponseBody
 	public RuleFile getTheLatestRuleFileByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
-		return ruleRepository.findByName(ruleName).getTheLatestFile();
+		return ruleRepository.findByNameForRuleText(ruleName).getTheLatestFile();
 	}
 	
 	@RequestMapping(value="findTheLatestRuleHistoryByName", produces="application/json")

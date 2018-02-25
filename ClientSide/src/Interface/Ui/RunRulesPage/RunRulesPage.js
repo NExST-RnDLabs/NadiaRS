@@ -20,7 +20,7 @@ export default class RunRulesPage extends React.Component {
     componentDidMount = () => {
       Nadia.query.getAllRules((res)=>{
         let fields = res.map((item, index)=>{
-          return(<div key={index}><RuleComponent type='run rules' ruleDescription={item} editable={this.state.editable}/> </div>)
+          return(<div key={index}><RuleComponent key={index} type='run rules' ruleDescription={item} onSelectRule={this._onSelectRule}/> </div>)
           });
         this.setState({fields: fields});
       });
@@ -38,6 +38,12 @@ export default class RunRulesPage extends React.Component {
     // prop types and default values
     static propTypes = {
 
+    }
+
+    _onSelectRule=(ruleName)=>{
+      if(this.props.onSelectRule){
+        this.props.onSelectRule(ruleName);
+      }
     }
 
     

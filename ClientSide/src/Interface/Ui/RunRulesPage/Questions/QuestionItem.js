@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-//component
+//Application
 import Nadia from 'src/Application/Nadia';
+
+//component
 import QuestionIntType from './QuestionItems/QuestionIntType';
 import QuestionBoolType from './QuestionItems/QuestionBoolType';
 import QuestionDateType from './QuestionItems/QuestionDateType';
@@ -37,7 +39,7 @@ export default class QuestionItem extends React.Component {
 
     _onSaveClick=(question, inputValue)=>{
         if(this.props.feedAnswer){
-            this.props.feedAnswer(question, inputValue, callback);
+            this.props.feedAnswer(question, inputValue);
         }
     }
 

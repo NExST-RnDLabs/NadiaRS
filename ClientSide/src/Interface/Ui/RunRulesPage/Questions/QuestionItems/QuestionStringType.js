@@ -12,48 +12,58 @@ export default class QuestionStringType extends React.Component {
     }
 
 
+    state ={
+        answered: false,
+    }
+
     // prop types and default values
     static propTypes = {
         question: PropTypes.string.isRequired,
     }
 
-    _onChange=(newValue)=>{
+    _onChange=(event, newValue)=>{
         
         this.setState({inputValue: newValue});
     }
 
     _onSave=()=>{
         if(this.props.onSave){
-            this.props.onSave(this.props.question, this.state.inputValue);
+            this.props.onSave(this.props.question, {answer:this.state.inputValue, type:'string'});
+            this.setState({answered: !this.state.answered});
+
         }
     }
 
     _onCancel=()=>{
-        this.setState({inputValue:''});
+        this.setState({inputValue:{}, answered: !this.state.answered});
     }
      
     // component render method
     render() {
+        let question = this.props.question+'?';
         return (
             <Segment.Group raised className='questionIntItem'>
-                <Segment color='orange'><strong>{this.props.question+' ?'}</strong></Segment>
-                <Segment>
-                    {this.state.inputError?
-                        <Input error iconPosition='left' placeholder='Please enter alphabetical characters' onChange={this._onChange}>
+                <Message attached='top' info header= {question}/>
+                {this.state.answered?
+                    <Segment attached='bottom' inverted color='green'>
+                        <Input iconPosition='left' placeholder='Please enter alphabetical characters' value={this.state.inputValue}>
                             <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>
+                    </Segment>
                         :
-                        <Input iconPosition='left' placeholder='Please enter alphabetical characters' onChange={this._onChange}>
+                    <Segment attached='bottom'>
+                        <Input iconPosition='left' placeholder='Please enter alphabetical characters' value={this.state.inputValue} onChange={this._onChange}>
                             <Icon name='sort alphabet ascending' />
                             <input />
-                        </Input>}
-                    <Button.Group>
-                        <Button positive onClick={this._onSave}>Save</Button>
-                        <Button.Or />
-                        <Button negative onClick={this._onCancel}>Cancel</Button>
-                    </Button.Group>
-                </Segment>
+                        </Input>
+                        <Button.Group>
+                            <Button positive onClick={this._onSave}>Save</Button>
+                            <Button.Or />
+                            <Button negative onClick={this._onCancel}>Cancel</Button>
+                        </Button.Group>
+                    </Segment>}
+                
             </Segment.Group>
         );
     }

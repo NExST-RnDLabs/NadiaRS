@@ -25,7 +25,9 @@ export default class DateInputFields extends React.Component {
         readOnly: PropTypes.bool,
     }
 
-   
+   componentWillReceiveProps=(newProps)=>{
+       this.setState({dateInvalid: newProps.dateInvalid});
+   }
     _onDayChange=(dayNewValue)=>{
         if(this.props.onDayChange){
            this.props.onDayChange(dayNewValue);
@@ -68,7 +70,7 @@ export default class DateInputFields extends React.Component {
                     </Form.Group>
                 </Form>
                 :
-                this.props.dateInvalid?
+                this.state.dateInvalid?
                     <Form>
                         <Form.Group widths='equal'>
                             <Form.Field>

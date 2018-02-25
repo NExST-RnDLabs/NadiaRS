@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
+import {Segment } from 'semantic-ui-react';
+
 //Application
 import Nadia from 'src/Application/Nadia';
 
@@ -48,7 +50,7 @@ export default class QuestionItem extends React.Component {
     _createQuestionItem=()=>{
         let questionItem;
         let questionText = this.props.questionData.questionText;
-        switch(this.state.questionData.type)
+        switch(this.state.questionData.questionValueType)
         {
             case 'integer':
                 questionItem = <QuestionIntType question = {questionText} onSave={this._onSaveClick}/>

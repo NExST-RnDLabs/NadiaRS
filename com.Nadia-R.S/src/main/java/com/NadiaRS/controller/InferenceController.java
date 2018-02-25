@@ -46,7 +46,7 @@ public class InferenceController {
 	
 	
 	@RequestMapping(value="/feedAnswer", method = RequestMethod.POST)
-	public ObjectNode feedAnswer(@RequestBody ObjectNode answers, @SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass)
+	public ObjectNode feedAnswer(@RequestBody ObjectNode answers, @ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass)
 	{
 		List<Entry<String, JsonNode>> answerList = Lists.newArrayList(answers.arrayNode().fields());
 		answerList.stream().forEach(item->{
@@ -75,7 +75,7 @@ public class InferenceController {
 	}
 	
 	@RequestMapping(value="/getNextQuestion", method = RequestMethod.GET)
-	public ObjectNode[] getNextQuestion(@SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass, String ruleName)
+	public ObjectNode[] getNextQuestion(@ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass, String ruleName)
 	{
 		ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		Node nextQuestionNode = IE.getNextQuestion(ass);
@@ -84,14 +84,14 @@ public class InferenceController {
 		List<ObjectNode> questionnaireList = new ArrayList<>();
 		questionnaire.stream().forEach(question->{
 			objectNode.put("questionText", question);
-			objectNode.put("questionValueType", questionFvtMap.get(question).toString());
+			objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
 			questionnaireList.add(objectNode);
 		});
 		return questionnaireList.stream().toArray(ObjectNode[]::new);
 	}
 	
 	@RequestMapping(value="/setInferenceEngine", method = RequestMethod.GET)
-	public ObjectNode setInferenceEngine(@SessionAttribute("inference") InferenceEngine IE, @SessionAttribute("assessment") Assessment ass, @RequestParam(value="ruleName", required=true) String ruleName)
+	public ObjectNode setInferenceEngine(@ModelAttribute("inference") InferenceEngine IE, @ModelAttribute("assessment") Assessment ass, @RequestParam(value="ruleName", required=true) String ruleName)
 	{
 		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
 		ilr.setStringSource(ruleText);
@@ -101,7 +101,9 @@ public class InferenceController {
 		IE.setNodeSet(isf.getNodeSet());
 		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
 		
-		return new ObjectMapper().createObjectNode().put("Inference Engine","created");
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		on.put("Inference Engine","created");
+		return on;
 	}
 	
 	

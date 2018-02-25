@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import Clone from 'clone';
 
 import {Form, Icon , Button, Segment , Header , Divider} from 'semantic-ui-react';
 
 //component
-import Questionnaire from '../RunRulesPage/Questions/Questionnaire';
+import QuestionItem from '../RunRulesPage/Questions/QuestionItem';
 
 //application
 import Nadia from 'src/Application/Nadia';
@@ -17,9 +18,9 @@ export default  class RuleExecutionPage extends React.Component {
       super(props);
     }
 
-    componentDidMount = () => {
-
+    componentWillMount = () => {
       this.setState({ruleName: this.props.ruleName});
+      Nadia.command.setNadia(this.props.ruleName);
       this._getNextQuestion();
       
     }
@@ -27,11 +28,12 @@ export default  class RuleExecutionPage extends React.Component {
 
     // initialise component state
     state = {
-        goalRule:{},
+        goalRule: {},
         hasMoreQuestion: true,
-        questions:[],
-        answeredQuestionList:[],
-        questionList:[],
+        questions: [],
+        answeredQuestionList: [],
+        nextQuestion: {},
+        questionnaire: [],
     }
 
     // prop types and default values
@@ -45,7 +47,7 @@ export default  class RuleExecutionPage extends React.Component {
     _createButtonGroup=()=>{
       return(
             <Form.Group widths='equal' className='buttonField'>
-              <Button floated='right' onClick={this._onCancel}>
+              <Button floated='right' color='green' onClick={this._onCancel}>
                 <Icon name='cancel'/>
                 Cancel
               </Button>
@@ -66,14 +68,14 @@ export default  class RuleExecutionPage extends React.Component {
     }
 
     _getNextQuestion=()=>{
-      debugger;
+
       let questionData;
       if(this.state.questions.length != 0)
       {
         questionData = this._getNextQuestionFromBuffer();
-        let tempQuestionList = Clone(this.state.questionList);
-        tempQuestionList.push(questionData);
-        this.setState({questionList: tempQuestionList});
+
+        this.setState({nextQuestion: questionData});
+        this._createQuestionnaire(questionData);
       }
       else{
         Nadia.query.getNextQuestion(this.props.ruleName,(res)=>{
@@ -84,9 +86,9 @@ export default  class RuleExecutionPage extends React.Component {
             * it will contain only one question
             */
           questionData = res.shift();
-          let tempQuestionList = Clone(this.state.questionList);
-          tempQuestionList.push(questionData);
-          this.setState({questions: res, questionList: tempQuestionList});
+
+          this.setState({questions: res, nextQuestion: questionData});
+          this._createQuestionnaire(questionData);
         });
       }
     }
@@ -111,12 +113,12 @@ export default  class RuleExecutionPage extends React.Component {
       });
     }
 
-    _createQuestionnaire=()=>{
-        let questionnaire = this.questionList.map((item, index)=>{
-            return(<div key={index}><QuestionItem questionData = {item} feedAnswer={this._feedAnswer}/> </div>)
-        });
-        this.setState({questionnaire: questionnaire});
-        return (questionList);
+    _createQuestionnaire=(questionData)=>{
+      let nextQuestionComponent = <QuestionItem key={questionData.questionText} questionData = {questionData} feedAnswer={this._feedAnswer}/>;
+      let tempQuestionnaire = Clone(this.state.questionnaire);
+      tempQuestionnaire.push(nextQuestionComponent);
+      
+      this.setState({questionnaire: tempQuestionnaire});
     }
     
     // component render method
@@ -134,7 +136,7 @@ export default  class RuleExecutionPage extends React.Component {
               {this._createButtonGroup()}
             </Segment>
             <Segment basic className= 'ruleEditor'>
-                {this._createQuestionnaire()}
+                {this.state.questionnaire}
             </Segment>
           </div>
         );

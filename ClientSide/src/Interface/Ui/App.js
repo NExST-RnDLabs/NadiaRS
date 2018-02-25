@@ -68,7 +68,7 @@ export default class App extends React.Component {
                     <Route path='/RunRulesPage' component={()=> <RunRulesPage key={Date.now()} onSelectRule={this._onSelectRule}/>} />
                     <Route path='/ViewRulespage' component={()=> <ViewRulesPage key={Date.now()} onSelectRule={this._onSelectRule}/>}/>
                     <Route path='/RuleEditorPage' component={()=> <RuleEditorPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
-                    <Route path='/RuleEditorPage' component={()=> <RuleExecutionPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
+                    <Route path='/RuleExecutionPage' component={()=> <RuleExecutionPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

@@ -82,7 +82,7 @@ class RuleComponent extends React.Component {
         if(this.props.onSelectRule){
             this.props.onSelectRule(this.state.name);
             this.props.history.push('/RuleExecutionPage');
-            Nadia.command.setNadia(this.state.name);
+           
         }
     }
 

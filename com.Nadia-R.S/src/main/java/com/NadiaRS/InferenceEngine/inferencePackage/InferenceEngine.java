@@ -21,6 +21,8 @@ import com.NadiaRS.InferenceEngine.nodePackage.LineType;
 import com.NadiaRS.InferenceEngine.nodePackage.Node;
 import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
 import com.NadiaRS.InferenceEngine.nodePackage.ValueConclusionLine;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 
@@ -966,7 +968,10 @@ public class InferenceEngine {
 	    				}
 	    				canDetermine = true;
 	    				ast.setFact(node.getVariableName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine));
+	    				ast.setFact(node.getNodeName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine)); //inserting same value for node's name is for the purpose of display equation
+	    				
 	    				ast.addItemToSummaryList(node.getVariableName());
+	    				ast.addItemToSummaryList(node.getNodeName()); // inserting node's name is to find its evaluated value from the workingMemory with its name
 	    			}
 	    		}
 	    		else if(!andToChildDependencies.isEmpty() && orToChildDependencies.isEmpty())// node has only 'AND' child nodes
@@ -982,7 +987,10 @@ public class InferenceEngine {
 	    				}
 	    				canDetermine = true;
 	    				ast.setFact(node.getVariableName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine));
+	    				ast.setFact(node.getNodeName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine)); //inserting same value for node's name is for the purpose of display equation
+	    				
 	    				ast.addItemToSummaryList(node.getVariableName());
+	    				ast.addItemToSummaryList(node.getNodeName()); // inserting node's name is to find its evaluated value from the workingMemory with its name
 	    			}
 	    		}
 	    		else
@@ -995,7 +1003,10 @@ public class InferenceEngine {
 	    				}
 	    				canDetermine = true;
 	    				ast.setFact(node.getVariableName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine));
+	    				ast.setFact(node.getNodeName(), node.selfEvaluate(ast.getWorkingMemory(), scriptEngine)); //inserting same value for node's name is for the purpose of display equation
+	    				
 	    				ast.addItemToSummaryList(node.getVariableName());
+	    				ast.addItemToSummaryList(node.getNodeName()); // inserting node's name is to find its evaluated value from the workingMemory with its name
 	    			}
 	    		}
 	    	}
@@ -1499,69 +1510,19 @@ public class InferenceEngine {
     
     /*
      * this is to generate Assessment Summary
-     * need to modify this method to have correct summary
      */
-//    public String generateAssessmentSummary()
-//    {    		    	
-//    	StringBuilder htmlText = new StringBuilder();
-//    	htmlText.append("<!DOCTYPE html>"+"\n"+
-//    	                "<html>"+"\n"+
-//    	                "<head><title></title></head>"+"\n"+
-//    	                "<body><h3> Assessment Summary</h3>"+"\n");
-//    	int summaryListSize = ast.getSummaryList().size();
-//    	if(summaryListSize != 0 )
-//    	{
-//    		htmlText.append("<ol type =\"1\">"+"\n");
-//    		
-//    		for(int i = summaryListSize; i > 0; i--)
-//        	{
-//        		Rule rule = ast.getSummaryList().get(i);
-//        		FactValue factValue = ast.getWorkingMemory().get(rule.getVariableName());
-//        		FactValueType factValueType = factValue.getType();
-//        		String printingValue = null;
-//        		if(factValue != null)
-//        		{
-//        			if(factValueType.equals(FactValueType.BOOLEAN))
-//            		{
-//            			printingValue = Boolean.toString(((FactBooleanValue)factValue).getValue());
-//            			printingValue = printingValue.toUpperCase();
-//            		}
-//            		else if(factValueType.equals(FactValueType.DATE))
-//            		{
-//            			printingValue =((FactDateValue)factValue).getValue().toString();
-//            		}
-//            		else if(factValueType.equals(FactValueType.DOUBLE))
-//            		{
-//            			printingValue = Double.toString(((FactDoubleValue)factValue).getValue());
-//            		}
-//            		else if(factValueType.equals(FactValueType.INTEGER))
-//            		{
-//            			printingValue = Integer.toString(((FactIntegerValue)factValue).getValue());
-//            		}
-//            		else if(factValueType.equals(FactValueType.LIST))
-//            		{
-//            			
-//            		}
-//        		}
-//        		
-//        		
-//        		
-//        		
-//        		if(ruleState != null)
-//        		{
-//        			
-//        			htmlText.append("<li>"+ruleName+" : "+ruleState+"</li>"+"\n");
-//        		}
-//        		
-//        	}    
-//        	htmlText.append("</ol>"+"\n");
-//    	}
-//    	htmlText.append("</body>"+"\n"+
-//						"</html>"+"\n");
-//    	
-//     	
-//    	return htmlText.toString();
-//    }
+	public ObjectNode[] generateAssessmentSummary()
+	{ 
+		List<ObjectNode> tempSummaryList = new ArrayList<>();
+		this.getAssessmentState().getSummaryList().stream().forEachOrdered((item)->{
+			ObjectNode objectNode = new ObjectMapper().createObjectNode();
+			objectNode.put("nodeText", item);
+			objectNode.put("nodeValue", this.getAssessmentState().getWorkingMemory().get(item).getValue().toString());
+			tempSummaryList.add(objectNode);
+		});
+		
+		return tempSummaryList.stream().toArray(ObjectNode[]::new);
+    }
     
     /*
      * this is to find a condition with a list of given keyword

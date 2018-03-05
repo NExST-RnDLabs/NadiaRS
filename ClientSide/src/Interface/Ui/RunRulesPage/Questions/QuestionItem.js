@@ -8,14 +8,18 @@ import {Segment } from 'semantic-ui-react';
 import Nadia from 'src/Application/Nadia';
 
 //component
-import QuestionIntType from './QuestionItems/QuestionIntType';
-import QuestionBoolType from './QuestionItems/QuestionBoolType';
-import QuestionDateType from './QuestionItems/QuestionDateType';
-import QuestionStringType from './QuestionItems/QuestionStringType';
+import QuestionIntType from './QuestionItems/QuestionIntType/QuestionIntType';
+import QuestionBoolType from './QuestionItems/QuestionBoolType/QuestionBoolType';
+import QuestionDateType from './QuestionItems/QuestionDateType/QuestionDateType';
+import QuestionStringType from './QuestionItems/QuestionStringType/QuestionStringType';
 import QuestionDoubleType from './QuestionItems/QuestionDoubleType';
 import QuestionHashType from './QuestionItems/QuestionHashType';
 import QuestionUrlType from './QuestionItems/QuestionUrlType';
 import QuestionUuidType from './QuestionItems/QuestionUuidType';
+
+import GoalRuleBoolType from './GoalRuleItems/GoalRuleBoolType';
+import GoalRuleDateType from './GoalRuleItems/GoalRuleDateType';
+import GoalRuleStringType from './GoalRuleItems/GoalRuleStringType';
 
 export default class QuestionItem extends React.Component {
     constructor(props) {
@@ -31,12 +35,15 @@ export default class QuestionItem extends React.Component {
     // initialise component state
     state = {
         questionData:null,
+        
 
     }
 
     // prop types and default values
     static propTypes = {
-        questionData: PropTypes.object.isRequired,
+        questionData: PropTypes.object,
+        // isGoalRule: PropTypes.boolean,
+        goalRuleData: PropTypes.object,
     }
 
     _onSaveClick=(question, inputValue)=>{
@@ -45,12 +52,39 @@ export default class QuestionItem extends React.Component {
         }
     }
 
-    
+    _displayGoalRule=()=>{
+        let goalRuleText = this.props.goalRuleData.goalRuleName;
+        let goalRuleValue = this.props.goalRuleData.goalRuleValue;
+        let questionItem;
+
+        switch(this.props.goalRuleData.goalRuleType)
+        {
+            case 'boolean':
+                questionItem = <GoalRuleBoolType goalRuleName = {goalRuleText} goalRuleValue={goalRuleValue}/>
+                break;
+
+            case 'date':
+                questionItem = <GoalRuleDateType goalRuleName = {goalRuleText} goalRuleValue={goalRuleValue}/>
+                break;
+
+            case 'uuid':
+            case 'url':
+            case 'hash':
+            case 'double':
+            case 'integer':
+            case 'defistring':
+            case 'string':
+                questionItem = <GoalRuleStringType goalRuleName = {goalRuleText} goalRuleValue={goalRuleValue}/>
+                break;
+
+        }
+        return questionItem;
+    }
 
     _createQuestionItem=()=>{
         let questionItem;
         let questionText = this.props.questionData.questionText;
-        switch(this.state.questionData.questionValueType)
+        switch(this.props.questionData.questionValueType)
         {
             case 'integer':
                 questionItem = <QuestionIntType question = {questionText} onSave={this._onSaveClick}/>
@@ -92,7 +126,10 @@ export default class QuestionItem extends React.Component {
     render() {
         return (
             <Segment className='questionItem'>
-                {this._createQuestionItem()}
+                {this.props.isGoalRule?
+                    this._displayGoalRule()
+                    :
+                    this._createQuestionItem()}
             </Segment>
         );
     }

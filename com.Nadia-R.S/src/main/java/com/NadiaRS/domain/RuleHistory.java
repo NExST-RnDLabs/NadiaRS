@@ -1,6 +1,11 @@
 package com.NadiaRS.domain;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -16,7 +21,13 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.NadiaRS.InferenceEngine.nodePackage.Record;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import jersey.repackaged.com.google.common.collect.Lists;
 
 
 @Entity
@@ -51,6 +62,31 @@ public class RuleHistory{
 	public String getHistory() {
 		return this.historyInString;
 	}
+	
+	public HashMap<String, Record> getHistoryMap(){
+		ObjectMapper mapper = new ObjectMapper();
+		HashMap<String, Record> historyMap = new HashMap<>();
+	    try {
+				JsonNode jsonNode = mapper.readTree(getHistory());
+				ObjectNode node = (ObjectNode) new ObjectMapper().readTree(jsonNode.asText());
+				
+				List<Entry<String, JsonNode>> historyList = Lists.newArrayList(node.fields());
+				historyList.stream().forEachOrdered(entry->{
+					
+					Record record = new Record(entry.getKey(), 
+											  entry.getValue().get("type").asText(), 
+											  Integer.parseInt(entry.getValue().get("true").asText()), 
+											  Integer.parseInt(entry.getValue().get("false").asText()));
+					historyMap.put(entry.getKey(), record);
+				});
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return historyMap;
+	}
+	
 	public void setHistory(String historyInString) {
 		this.historyInString = historyInString;
 	}

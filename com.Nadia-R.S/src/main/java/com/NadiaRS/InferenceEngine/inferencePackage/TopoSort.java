@@ -267,7 +267,7 @@ public class TopoSort {
 	 * the first version of topological sort used Kahn's algorithm which is based on Breadth First Search(BFS)
 	 * Topological sorted list is a fundamental part to get an order list of all questions.
 	 * However, it always provide same order at all times which might not be shortest path for a certain individual case therefore,
-	 * this topological sort based on historical record of each medical condition is suggested.
+	 * this topological sort based on historical record of each node/rule is suggested.
 	 * 
 	 * logic for the sorting is as follows; 
 	 * note: topological sort logic contains a recursive method 
@@ -288,7 +288,7 @@ public class TopoSort {
     public static List<Node> dfsTopoSort(HashMap<String, Node> nodeMap, HashMap<Integer, String> nodeIdMap, int[][] dependencyMatrix, HashMap<String, Record> recordMapOfNodes)
     {
 
-    	 List<Node> sortedList = new ArrayList<>();
+    	 	List<Node> sortedList = new ArrayList<>();
 
          if(recordMapOfNodes == null || recordMapOfNodes.isEmpty())
          {
@@ -320,84 +320,141 @@ public class TopoSort {
      */
     public static List<Node> visit(Node node, List<Node> sortedList, HashMap<String, Record> recordMapOfNodes, HashMap<String,Node> nodeMap, HashMap<Integer, String> nodeIdMap, List<Node> visitedNodeList, int[][] dependencyMatrix)
     {
-        sortedList.add(node);
-        int nodeId = node.getNodeId();
-        int orDependencyType = DependencyType.getOr();
-        int andDependencyType = DependencyType.getAnd();
-        List<Integer> orOutDependency = Arrays.stream(dependencyMatrix[nodeId]).filter(item -> (item & orDependencyType) == orDependencyType).boxed().collect(Collectors.toList());
-        List<Integer> andOutDependency = Arrays.stream(dependencyMatrix[nodeId]).filter(item -> (item & andDependencyType) == andDependencyType).boxed().collect(Collectors.toList());
+    		if(node != null)
+    		{
+    			sortedList.add(node);
+    	        int nodeId = node.getNodeId();
+    	        int orDependencyType = DependencyType.getOr();
+    	        int andDependencyType = DependencyType.getAnd();
+    	        List<Integer> dependencyMatrixAsList = Arrays.stream(dependencyMatrix[nodeId]).boxed().collect(Collectors.toList());
+    	        List<Integer> orOutDependency = IntStream.range(0, dependencyMatrixAsList.size())
+    	        											.filter(index->(dependencyMatrixAsList.get(index) & orDependencyType) == orDependencyType)
+    	        											.boxed().collect(Collectors.toList());
+    	        List<Integer> andOutDependency = IntStream.range(0, dependencyMatrixAsList.size())
+    													 .filter(index->(dependencyMatrixAsList.get(index) & andDependencyType) == andDependencyType)
+    													 .boxed().collect(Collectors.toList()); 
 
-        if(!orOutDependency.isEmpty() && !andOutDependency.isEmpty())
-        {
-            List<Node> childRuleList = new ArrayList<>();
-            for(int i = 0; i < dependencyMatrix[nodeId].length; i++)
-            {
-            	if(dependencyMatrix[nodeId][i] != 0)
-            	{
-            		childRuleList.add((nodeMap.get(nodeIdMap.get(i))));
-            	}
-            }
-            
-            if(!orOutDependency.isEmpty() && andOutDependency.isEmpty())
-            {
-                while(!childRuleList.isEmpty())
-                {
-                	/* 
-                	 * the reason for selecting an option having more number of 'yes' is as follows
-                	 * if it is 'OR' rule and it is 'TRUE' then it is the shortest path, and ignore other 'OR' rules
-                	 * Therefore, looking for more likely 'TRUE' rule would be the shortest one rather than
-                	 * looking for more likely 'FALSE' rule in terms of processing time
-                	 */
-                	Node theMostPositive = findTheMostPositive(childRuleList, recordMapOfNodes);
-                    if(!visitedNodeList.contains(theMostPositive))
-                    {
-                    	visitedNodeList.add(theMostPositive);
-                        sortedList = visit(theMostPositive, sortedList, recordMapOfNodes, nodeMap, nodeIdMap, visitedNodeList, dependencyMatrix);
-                    }
-                }
+    	        if(!orOutDependency.isEmpty() || !andOutDependency.isEmpty())
+    	        {
+    	            List<Node> childRuleList = new ArrayList<>();
+    	            IntStream.range(0, dependencyMatrixAsList.size())
+    	            									   .filter(childIndex->dependencyMatrixAsList.get(childIndex) != 0)
+    	            									   .boxed()
+    	            									   .collect(Collectors.toList())
+    	            									   .stream()
+    	            									   .forEach(item->childRuleList.add(nodeMap.get(nodeIdMap.get(item))));
+    	            
+    	            
+    	            if(!orOutDependency.isEmpty() && andOutDependency.isEmpty())
+    	            {
+    	                while(!childRuleList.isEmpty())
+    	                {
+    		                	/* 
+    		                	 * the reason for selecting an option having more number of 'yes' is as follows
+    		                	 * if it is 'OR' rule and it is 'TRUE' then it is the shortest path, and ignore other 'OR' rules
+    		                	 * Therefore, looking for more likely 'TRUE' rule would be the shortest one rather than
+    		                	 * looking for more likely 'FALSE' rule in terms of processing time
+    		                	 */
+    	                		Node theMostPositive = findTheMostPositive(childRuleList, recordMapOfNodes, dependencyMatrixAsList);
+//    		                	Node theMostPositive = findTheMostPositive(childRuleList, recordMapOfNodes);
+    	                    if(!visitedNodeList.contains(theMostPositive))
+    	                    {
+    	                    		visitedNodeList.add(theMostPositive);
+    	                        sortedList = visit(theMostPositive, sortedList, recordMapOfNodes, nodeMap, nodeIdMap, visitedNodeList, dependencyMatrix);
+    	                    }
+    	                }
 
-            }
-            else
-            {
-                if(orOutDependency.isEmpty() && !andOutDependency.isEmpty())
-                {
-                	/* 
-                	 * the reason for selecting an option having more number of 'yes' is as follows
-                	 * if it is 'AND' rule and it is 'FALSE' then it is the shortest path, and ignore other 'AND' rules
-                	 * Therefore, looking for more likely 'FALSE' rule would be the shortest one rather than
-                	 * looking for more likely 'TRUE' rule in terms of processing time
-                	 */
-                    while(!childRuleList.isEmpty())
-                    {
-                    	Node theMostNegative = findTheMostNegative(childRuleList, recordMapOfNodes);
-                        if(!visitedNodeList.contains(theMostNegative))
-                        {
-                        	visitedNodeList.add(theMostNegative);
-                            sortedList = visit(theMostNegative, sortedList, recordMapOfNodes, nodeMap, nodeIdMap, visitedNodeList, dependencyMatrix);
-                        }
-                    }
-                }
-            }
-        }
+    	            }
+    	            else
+    	            {
+    	                if(orOutDependency.isEmpty() && !andOutDependency.isEmpty())
+    	                {
+    		                	/* 
+    		                	 * the reason for selecting an option having more number of 'yes' is as follows
+    		                	 * if it is 'AND' rule and it is 'FALSE' then it is the shortest path, and ignore other 'AND' rules
+    		                	 * Therefore, looking for more likely 'FALSE' rule would be the shortest one rather than
+    		                	 * looking for more likely 'TRUE' rule in terms of processing time
+    		                	 */	
+    	                		while(!childRuleList.isEmpty())
+    	                		{
+    	                    		Node theMostNegative = findTheMostNegative(childRuleList, recordMapOfNodes, dependencyMatrixAsList);
+//    	                    		Node theMostNegative = findTheMostNegative(childRuleList, recordMapOfNodes);
+    	                    		if(!visitedNodeList.contains(theMostNegative))
+    	                    		{
+    	                    			visitedNodeList.add(theMostNegative);
+    	                    			sortedList = visit(theMostNegative, sortedList, recordMapOfNodes, nodeMap, nodeIdMap, visitedNodeList, dependencyMatrix);
+    	                    		}
+    	                		}
+    	                }
+    	            }
+    	        }
+    		}
+        
         
         return sortedList;
     }
     
-    public static Node findTheMostPositive(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes)
+    public static Node findTheMostPositive(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes, List<Integer> dependencyMatrixAsList)
     {
-    	Node theMostPositive = null;
+    		Node theMostPositive = null;
         int yesCount = 0;
         int noCount = 0;
         float theMostPossibility = 0;
         int sum = 0;
         float result = 0;
+        
         for(Node node: childNodeList)
         {
-            yesCount = recordListOfNodes.get(node.getNodeName()).getTrueCount();
-            noCount = recordListOfNodes.get(node.getNodeName()).getFalseCount();
-            
-            result = (float)yesCount/(yesCount + noCount);
-            if(analysis(result, theMostPossibility, yesCount + noCount, sum))
+        		String prefix = "";
+        		int dependencyType = dependencyMatrixAsList.get(node.getNodeId());
+        		if((dependencyType & DependencyType.getKnown()) == DependencyType.getKnown())
+        		{
+        			prefix = "known ";
+        		}
+        		else if((dependencyType & DependencyType.getNot()) == DependencyType.getNot())
+        		{
+        			prefix = "not ";
+        		}
+        		else if((dependencyType & (DependencyType.getNot()| DependencyType.getKnown())) == (DependencyType.getNot()| DependencyType.getKnown()))
+        		{
+        			prefix = "not known ";
+        		}
+        		
+        		Record recordOfNode = recordListOfNodes.get(prefix+node.getNodeName());
+            yesCount = recordOfNode != null?recordOfNode.getTrueCount(): 0;
+            noCount = recordOfNode != null? recordOfNode.getFalseCount(): 0;
+            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
+
+            result = (float)yesCount/yesPlusNoCount;
+            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
+            {
+                theMostPossibility = result;
+                sum =  yesCount + noCount;
+                theMostPositive = node;
+            }
+        }
+        childNodeList.remove(theMostPositive);
+        return theMostPositive;
+    }
+    
+    public static Node findTheMostPositive(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes)
+    {
+    		Node theMostPositive = null;
+        int yesCount = 0;
+        int noCount = 0;
+        float theMostPossibility = 0;
+        int sum = 0;
+        float result = 0;
+        
+        for(Node node: childNodeList)
+        {
+        		Record recordOfNode = recordListOfNodes.get(node.getNodeName());
+            yesCount = recordOfNode != null?recordOfNode.getTrueCount(): 0;
+            noCount = recordOfNode != null? recordOfNode.getFalseCount(): 0;
+            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
+
+            result = (float)yesCount/yesPlusNoCount;
+            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
             {
                 theMostPossibility = result;
                 sum =  yesCount + noCount;
@@ -409,27 +466,79 @@ public class TopoSort {
         
     }
     
-    public static Node findTheMostNegative(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes)
+    public static Node findTheMostNegative(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes, List<Integer> dependencyMatrixAsList)
     {
-    	Node theMostNegative = null;
+    		Node theMostNegative = null;
         int yesCount = 0;
         int noCount = 0;
         float theMostPossibility = 0;
         int sum = 0;
         float result = 0;
+       		
         for(Node node: childNodeList)
         {
-            yesCount = recordListOfNodes.get(node.getNodeName()).getTrueCount();
-            noCount = recordListOfNodes.get(node.getNodeName()).getFalseCount();
+	        	String prefix = "";
+	    		int dependencyType = dependencyMatrixAsList.get(node.getNodeId());
+	    		if((dependencyType & DependencyType.getKnown()) == DependencyType.getKnown())
+	    		{
+	    			prefix = "known ";
+	    		}
+	    		else if((dependencyType & DependencyType.getNot()) == DependencyType.getNot())
+	    		{
+	    			prefix = "not ";
+	    		}
+	    		else if((dependencyType & (DependencyType.getNot()| DependencyType.getKnown())) == (DependencyType.getNot()| DependencyType.getKnown()))
+	    		{
+	    			prefix = "not known ";
+	    		}
+	    		
+        		Record recordOfNode = recordListOfNodes.get(prefix+node.getNodeName());
+            yesCount = recordOfNode!= null?recordOfNode.getTrueCount(): 0;
+            noCount = recordOfNode!= null?recordOfNode.getFalseCount(): 0;
+            
+            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
+            result = (float)noCount/yesPlusNoCount;
 
-            result = (float)noCount/(yesCount+noCount);
-
-            if(analysis(result, theMostPossibility, yesCount + noCount, sum))
+            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
             {
                 theMostPossibility = result;
-                sum =  yesCount + noCount;
-                theMostNegative = node;
+                sum =  yesPlusNoCount==-1?yesPlusNoCount:yesCount + noCount;
+                theMostNegative = node;                
             }
+            
+            
+        }
+        childNodeList.remove(theMostNegative);
+        return theMostNegative;
+    }
+    
+    public static Node findTheMostNegative(List<Node> childNodeList, HashMap<String, Record> recordListOfNodes)
+    {
+    		Node theMostNegative = null;
+        int yesCount = 0;
+        int noCount = 0;
+        float theMostPossibility = 0;
+        int sum = 0;
+        float result = 0;
+       		
+        for(Node node: childNodeList)
+        {
+        		
+        		Record recordOfNode = recordListOfNodes.get(node.getNodeName());
+            yesCount = recordOfNode!= null?recordOfNode.getTrueCount(): 0;
+            noCount = recordOfNode!= null?recordOfNode.getFalseCount(): 0;
+            
+            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
+            result = (float)noCount/yesPlusNoCount;
+
+            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
+            {
+                theMostPossibility = result;
+                sum =  yesPlusNoCount==-1?yesPlusNoCount:yesCount + noCount;
+                theMostNegative = node;                
+            }
+            
+            
         }
         childNodeList.remove(theMostNegative);
         return theMostNegative;
@@ -441,20 +550,21 @@ public class TopoSort {
         /*
          * firstly select an option having more cases and high possibility
          */
-        if(result > theMostPossibility && yesCountNoCount > sum)
+        if(result > theMostPossibility && yesCountNoCount >= sum)
         {
             highlyPossible = true;
         }
-        else
+        /*
+	    	 * secondly, even though the number of being used case is fewer, and it has a high possibility
+	    	 * then still select the option
+	    	 */
+        else if(result >= theMostPossibility && result == 0 && theMostPossibility == 0 && yesCountNoCount > sum)
         {
-        	/*
-        	 * secondly, even though the number of being used case is fewer, if it has high possibility
-        	 * then still select the option
-        	 */
-            if(result > theMostPossibility )
-            {
-                highlyPossible = true;
-            }
+        	 	highlyPossible = true;
+        }
+        else if(result >= theMostPossibility && result == 0 && yesCountNoCount == -1 && sum <= 0 && sum != -1  )
+        {
+            highlyPossible = true;
         }
         
         return highlyPossible;

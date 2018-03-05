@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router';
-import {Link} from 'react-router-dom';
 import {Segment, Form , Label , Input , Icon , Button } from 'semantic-ui-react';
 
 //application
@@ -82,7 +81,6 @@ class RuleComponent extends React.Component {
         if(this.props.onSelectRule){
             this.props.onSelectRule(this.state.name);
             this.props.history.push('/RuleExecutionPage');
-           
         }
     }
 

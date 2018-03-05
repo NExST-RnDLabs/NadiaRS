@@ -1,11 +1,13 @@
 package com.NadiaRS.InferenceEngine.ruleParser;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
 import com.NadiaRS.InferenceEngine.inferencePackage.TopoSort;
 import com.NadiaRS.InferenceEngine.nodePackage.Node;
 import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
+import com.NadiaRS.InferenceEngine.nodePackage.Record;
 
 
 
@@ -13,7 +15,10 @@ import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
 public class RuleSetScanner {
 	private IScanFeeder scanFeeder = null;
     private ILineReader lineReader = null;
-
+    private boolean useHistoricalDataAnalytics = false;
+    private HashMap<String, Record> recordMapOfNodes; 
+    
+    
     public RuleSetScanner(ILineReader reader, IScanFeeder feeder) {
           scanFeeder = feeder;
           lineReader = reader;
@@ -105,29 +110,55 @@ public class RuleSetScanner {
     
     public void establishNodeSet()
     {
-   	 NodeSet ns = scanFeeder.getNodeSet();
-   	 ns.setDependencyMatrix(scanFeeder.createDependencyMatrix());
-   	 List<Node> sortedList = TopoSort.bfsTopoSort(ns.getNodeMap(), ns.getNodeIdMap(), ns.getDependencyMatrix().getDependencyMatrixArray()); 
-   	 if(sortedList.size() != 0)
-   	 {
-   	   	 ns.setNodeSortedList(sortedList);
-   	 }
-   	 else
-   	 {
-   		scanFeeder.handleWarning("RuleSet needs rewriting due to it is cyclic.");
-   	 }
-   	 //   	 scanFeeder.setNodeSet(ns);
+	   	 NodeSet ns = scanFeeder.getNodeSet();
+	   	 ns.setDependencyMatrix(scanFeeder.createDependencyMatrix());
+	   	 List<Node> sortedList = TopoSort.bfsTopoSort(ns.getNodeMap(), ns.getNodeIdMap(), ns.getDependencyMatrix().getDependencyMatrixArray()); 
+	   	 if(sortedList.size() != 0)
+	   	 {
+	   	   	 ns.setNodeSortedList(sortedList);
+	   	 }
+	   	 else
+	   	 {
+	   		scanFeeder.handleWarning("RuleSet needs rewriting due to it is cyclic.");
+	   	 }
+    }
+    
+    public void establishNodeSet(HashMap<String, Record> recordMapOfNodes)
+    {
+	   	 NodeSet ns = scanFeeder.getNodeSet();
+	   	 ns.setDependencyMatrix(scanFeeder.createDependencyMatrix());
+	   	 List<Node> sortedList = TopoSort.dfsTopoSort(ns.getNodeMap(), ns.getNodeIdMap(), ns.getDependencyMatrix().getDependencyMatrixArray(), recordMapOfNodes);
+	   	 if(sortedList.size() != 0)
+	   	 {
+	   	   	 ns.setNodeSortedList(sortedList);
+	   	 }
+	   	 else
+	   	 {
+	   		scanFeeder.handleWarning("RuleSet needs rewriting due to it is cyclic.");
+	   	 }
     }
     
     public Stack<String> handlingStackPop(Stack<String>parentStack, int indentationDifference)
     {
-   	 for(int i = 0; i < indentationDifference+1; i++)
-   	 {
-   		 parentStack.pop();
-   	 }
-   	 return parentStack;
+	   	 for(int i = 0; i < indentationDifference+1; i++)
+	   	 {
+	   		 parentStack.pop();
+	   	 }
+	   	 return parentStack;
     }
 
-
+    public void setHistoricalData()
+    {
+    		this.useHistoricalDataAnalytics = !this.useHistoricalDataAnalytics;
+    }
+    
+    public void setRecordMapOfNodes(HashMap<String, Record> recordMapOfNodes)
+    {
+    		this.recordMapOfNodes = recordMapOfNodes;
+    }
+    public HashMap<String, Record> getRecordMapOfNodes()
+    {
+    		return recordMapOfNodes;
+    }
 }
 

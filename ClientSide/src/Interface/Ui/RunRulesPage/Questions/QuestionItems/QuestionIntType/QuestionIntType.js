@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Input, Button, Icon , Segment} from 'semantic-ui-react';
+import {Input, Button, Icon , Segment, Message, Header} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
-
+//style
+import './QuestionIntType.scss';
 
 export default class QuestionIntType extends React.Component {
     constructor(props) {
@@ -13,6 +14,7 @@ export default class QuestionIntType extends React.Component {
 
     state ={
         answered: false,
+        inputValue: '',
     }
 
     // prop types and default values
@@ -21,14 +23,15 @@ export default class QuestionIntType extends React.Component {
     }
 
     _onChange=(event, newValue)=>{
-        let regEx = /\d/;
-        if(!regEx.test(newValue))
+        let regEx = /\d+(?!\w|\W)/;
+        let temp = regEx.test(newValue.value);
+        if(!regEx.test(newValue.value))
         {
-            this.setState({inputError: !this.state.inputError});
+            this.setState({inputError: true});
         }
         else
         {
-            this.setState({inputValue: newValue, inputError: !this.state.inputError});
+            this.setState({inputValue: newValue.value, inputError: false});
         }
         
     }
@@ -51,21 +54,18 @@ export default class QuestionIntType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 {this.state.answered?
-                    <Segment attached='bottom' inverted color='green'>
-                        <Input disabled iconPosition='left' placeholder='Please enter numerics' value={this.state.inputValue}>
-                            <Icon name='sort numeric ascending' />
-                            <input />
-                        </Input>
-                    </Segment>
+                    <Message className='intType-bottom-message' attached='bottom' color='olive'>
+                        <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
+                    </Message>
                     :
                     <Segment attached='bottom'>
                         {this.state.inputError?
                             <div>
-                                <Input error iconPosition='left' placeholder='Please enter numerics' value={this.state.inputValue} onChange={this._onChange}>
+                                <Input error iconPosition='left' size='large' placeholder='Please enter numerics' value={this.state.inputValue} onChange={this._onChange}>
                                     <Icon name='sort numeric ascending' />
                                     <input />
                                 </Input>
-                                <Button.Group>
+                                <Button.Group size='large' className='question-int-type-buttons'>
                                     <Button positive disabled>Save</Button>
                                     <Button.Or />
                                     <Button negative onClick={this._onCancel}>Cancel</Button>
@@ -73,11 +73,11 @@ export default class QuestionIntType extends React.Component {
                             </div>
                             :
                             <div>
-                                <Input iconPosition='left' placeholder='Please enter numerics' value={this.state.inputValue} onChange={this._onChange}>
+                                <Input iconPosition='left' size='large' placeholder='Please enter numerics' value={this.state.inputValue} onChange={this._onChange}>
                                     <Icon name='sort numeric ascending' />
                                     <input />
                                 </Input>
-                                <Button.Group>
+                                <Button.Group size='large' className='question-int-type-buttons'>
                                     <Button positive onClick={this._onSave}>Save</Button>
                                     <Button.Or />
                                     <Button negative onClick={this._onCancel}>Cancel</Button>

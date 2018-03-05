@@ -39,7 +39,7 @@ if (isDeveloping) {
         maxSockets: 100,
         keepAlive :true,
         maxFreeSockets: 10,
-        keepAliveMsecs:1000,
+        keepAliveMsecs:10000,
         timeout: 60000,
         keepAliveTimeout: 30000 // free socket keepalive for 30 seconds
     })

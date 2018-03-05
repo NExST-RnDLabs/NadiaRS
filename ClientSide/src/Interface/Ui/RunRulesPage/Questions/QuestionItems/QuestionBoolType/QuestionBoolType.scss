@@ -1,0 +1,10 @@
+@import 'src/Interface/Styles/Styles';
+
+.ui.raised.segments.questionIntItem{
+    .ui.bottom.attached.segment{
+        height: 7rem;
+        .question-bool-type-buttons{
+            margin-right: 2rem;
+        }
+    }
+}

@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button , Segment} from 'semantic-ui-react';
+import {Button , Segment, Header, Message} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
-
+//style
+import './QuestionBoolType.scss'
 
 export default class QuestionBoolType extends React.Component {
     constructor(props) {
@@ -18,7 +19,7 @@ export default class QuestionBoolType extends React.Component {
         question: PropTypes.string.isRequired,
     }
 
-    defaultProps = {
+    static defaultProps = {
         foo: "default"
       };
    
@@ -45,14 +46,14 @@ export default class QuestionBoolType extends React.Component {
                 <Segment.Group raised className='questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='green'>
-                        <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
+                        <Header size = 'medium'>{this.props.question}</Header>
                     </Segment>
                 </Segment.Group>
                 :
                 <Segment.Group raised className='questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='red'>
-                        <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
+                        <Header size = 'medium'>{this.props.question}</Header>
                     </Segment>
                 </Segment.Group>
 
@@ -60,8 +61,8 @@ export default class QuestionBoolType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header='Is the following statement true?'/>
                 <Segment attached='bottom'>
-                    <p>&nbsp;&nbsp;&nbsp;{this.props.question}</p>
-                    <Button.Group>
+                    <Header size = 'medium'>{this.props.question}</Header>
+                    <Button.Group size = 'large' floated = 'right' className='question-bool-type-buttons'>
                         <Button positive onClick={this._onTrue}>True</Button>
                         <Button.Or />
                         <Button negative onClick={this._onFalse}>False</Button>

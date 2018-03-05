@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,7 +77,8 @@ public class RuleController {
 	@ResponseBody
 	public RuleHistory getTheLatestRuleHistoryByName(@RequestParam(value="ruleName", required=true) String ruleName)
 	{
-		return ruleRepository.findByName(ruleName).getTheLatestHistory();
+		Rule rule = ruleRepository.findByName(ruleName); 
+		return rule!=null?rule.getTheLatestHistory():null;
 	}
 	
 	@RequestMapping(value="findAllRules", produces="application/json")
@@ -141,21 +143,26 @@ public class RuleController {
 		return on;
 	}
 	
-	@RequestMapping(value="createHistory", method =RequestMethod.POST)
-	public void createHistory(@RequestParam(value="ruleName", required=true) String ruleName, @ModelAttribute("inference") InferenceEngine IE)
+	
+	
+	@RequestMapping(value="updateHistory", method =RequestMethod.POST)
+	public ObjectNode updateHistory(@RequestBody CreateFile requestRule, HttpServletRequest httpRequest)
 	{
-		HashMap<String, FactValue> workingMemory = IE.getAssessmentState().getWorkingMemory();
+		InferenceEngine ie = (InferenceEngine)httpRequest.getSession().getAttribute("inferenceEngine");
+		HashMap<String, FactValue> workingMemory = ie.getAssessmentState().getWorkingMemory();
+		String ruleName = requestRule.getRuleName();
 		
 		RuleHistory rh = getTheLatestRuleHistoryByName(ruleName);
 		ObjectMapper mapper = new ObjectMapper();
-		ObjectNode parentObjectNode = new ObjectMapper().createObjectNode();
-		ObjectNode childObjectNode = new ObjectMapper().createObjectNode();
+		ObjectNode parentObjectNode = mapper.createObjectNode();
 		
 		if(rh != null) // case of the rule file has been used so that there is a record history.
 		{
 			JsonNode historyJsonNode = null;
+			ObjectNode objectNode = null;
 			try {
 				historyJsonNode = mapper.readTree(rh.getHistory());
+				objectNode = (ObjectNode)mapper.readTree(historyJsonNode.asText());
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -164,7 +171,7 @@ public class RuleController {
 				e.printStackTrace();
 			}
 			
-			List<Entry<String, JsonNode>> historyList = Lists.newArrayList(historyJsonNode.fields());
+			List<Entry<String, JsonNode>> historyList = Lists.newArrayList(objectNode.fields());
 			
 			List<Record> recordList = new ArrayList<>();
 
@@ -185,8 +192,8 @@ public class RuleController {
 
 				if(isInHistory)
 				{
-					record.setFalseCount(Integer.parseInt(filteredList.get(0).getValue().get("FALSE").asText()));
-					record.setTrueCount(Integer.parseInt(filteredList.get(0).getValue().get("TRUE").asText()));					
+					record.setFalseCount(Integer.parseInt(filteredList.get(0).getValue().get("false").asText()));
+					record.setTrueCount(Integer.parseInt(filteredList.get(0).getValue().get("true").asText()));					
 				}
 				
 				FactValue fv = workingMemory.get(rule);
@@ -218,23 +225,31 @@ public class RuleController {
 			historyList.stream().forEach(item->{
 				String rule = item.getKey();
 				
-				if(!item.getValue().get("TYPE").asText().toLowerCase().equals("boolean") && !workingMemory.containsKey(rule))
+				if(!item.getValue().get("type").asText().toLowerCase().equals("boolean") && !workingMemory.containsKey(rule))
 				{
 					Record record = new Record();
-					record.setFalseCount(Integer.parseInt(item.getValue().get("FALSE").asText()));
-					record.setTrueCount(Integer.parseInt(item.getValue().get("TRUE").asText()));
+					record.setFalseCount(Integer.parseInt(item.getValue().get("false").asText()));
+					record.setTrueCount(Integer.parseInt(item.getValue().get("true").asText()));
 					
 					record.incrementFalseCount();
 					
 					recordList.add(record);
 				}
+				else if(item.getValue().get("type").asText().toLowerCase().equals("boolean") && !workingMemory.containsKey(rule))
+				{
+					Record record = new Record();
+					record.setFalseCount(Integer.parseInt(item.getValue().get("false").asText()));
+					record.setTrueCount(Integer.parseInt(item.getValue().get("true").asText()));
+					recordList.add(record);
+
+				}
 			});
 			
 			recordList.stream().forEach(record->{
-
-				childObjectNode.put("TRUE", Integer.toString(record.getTrueCount()));
-				childObjectNode.put("FALSE", Integer.toString(record.getFalseCount()));
-				childObjectNode.put("TYPE", record.getType());
+				ObjectNode childObjectNode = mapper.createObjectNode();
+				childObjectNode.put("true", Integer.toString(record.getTrueCount()));
+				childObjectNode.put("false", Integer.toString(record.getFalseCount()));
+				childObjectNode.put("type", record.getType());
 				parentObjectNode.set(record.getName(), childObjectNode);
 			});
 		}
@@ -243,33 +258,37 @@ public class RuleController {
 			
 			workingMemory.keySet().stream().forEach(item ->{
 				FactValue fv = workingMemory.get(item);
+				ObjectNode childObjectNode = mapper.createObjectNode();
+
 				if(fv.getType().equals(FactValueType.BOOLEAN))
 				{
 					if(fv.getValue().equals(Boolean.TRUE))
 					{
-						childObjectNode.put("TRUE", "1");
-						childObjectNode.put("FALSE", "0");
+						childObjectNode.put("true", "1");
+						childObjectNode.put("false", "0");
 					}
 					else
 					{
-						childObjectNode.put("TRUE", "0");
-						childObjectNode.put("FALSE", "1");
+						childObjectNode.put("true", "0");
+						childObjectNode.put("false", "1");
 					}
 				}
 				else
 				{
-					childObjectNode.put("TRUE", "1");
-					childObjectNode.put("FALSE", "0");
+					childObjectNode.put("true", "1");
+					childObjectNode.put("false", "0");
 				}
 
 				
-				childObjectNode.put("TYPE", workingMemory.get(item).getType().toString().toLowerCase());
+				childObjectNode.put("type", workingMemory.get(item).getType().toString());
 				parentObjectNode.set(item, childObjectNode);
 			});
 		}
 				
-		try {
-			ruleRepository.createRuleHistory(ruleRepository.findIdByName(ruleName), mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parentObjectNode));
+		try 
+		{
+			String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parentObjectNode);
+			ruleRepository.createRuleHistory(ruleRepository.findIdByName(ruleName), jsonString);
 		} catch (JsonGenerationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -280,6 +299,11 @@ public class RuleController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		ObjectNode on = mapper.createObjectNode();
+		on.put("update", "done");
+		
+		return on;
 	}
 	
 	

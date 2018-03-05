@@ -1,34 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {withRouter} from 'react-router';
 import PropTypes from 'prop-types';
 import Clone from 'clone';
 
-import {Form, Icon , Button, Segment , Header , Divider} from 'semantic-ui-react';
+import {Form, Icon , Button, Segment , Header , Divider, List, Message} from 'semantic-ui-react';
 
 //component
 import QuestionItem from '../RunRulesPage/Questions/QuestionItem';
-
 //application
 import Nadia from 'src/Application/Nadia';
 
 
 
-export default  class RuleExecutionPage extends React.Component {
+class RuleExecutionPage extends React.Component {
     constructor(props) {
       super(props);
     }
 
     componentWillMount = () => {
       this.setState({ruleName: this.props.ruleName});
-      Nadia.command.setNadia(this.props.ruleName);
-      this._getNextQuestion();
-      
+      Nadia.query.setNadia(this.props.ruleName, (res)=>{
+        if(res.InferenceEngine == 'created'){
+          this._getNextQuestion();
+        }
+      });
     }
 
+    // componentDidMount=()=>{
+    //   this._getNextQuestion();
+    // }
 
     // initialise component state
     state = {
+        summaryView: false,
         goalRule: {},
+        nadiaReady: false,
         hasMoreQuestion: true,
         questions: [],
         answeredQuestionList: [],
@@ -41,21 +48,51 @@ export default  class RuleExecutionPage extends React.Component {
       ruleName: PropTypes.string,
     }
 
-
+    _reset=()=>{
+      this.setState({
+        summaryView: false,
+        goalRule: {},
+        nadiaReady: false,
+        hasMoreQuestion: true,
+        questions: [],
+        answeredQuestionList: [],
+        nextQuestion: {},
+        questionnaire: [],
+      })
+    }
 
 
     _createButtonGroup=()=>{
       return(
             <Form.Group widths='equal' className='buttonField'>
-              <Button floated='right' color='green' onClick={this._onCancel}>
+              <Button floated='right' color='red' onClick={this._onCancel}>
                 <Icon name='cancel'/>
                 Cancel
               </Button>
-              <Button floated='right' color='blue' onClick={this._onSummary}>
-                <Icon name='puzzle'/>
-                View Summary
-              </Button>
-              <Button floated='right' onClick={this._onRestart}>
+              {
+                
+                !this.state.hasMoreQuestion?
+                  <Button floated='right' color='yellow' onClick={this._onSaveSummary}>
+                    <Icon name='save'/>
+                    Save Summary
+                  </Button>
+                :
+                  null
+              }
+              {
+                this.state.summaryView?
+                  <Button floated='right' color='violet' onClick={this._onSummary}>
+                    <Icon name='puzzle'/>
+                    Hide Summary
+                  </Button>
+                :
+                  <Button floated='right' color='blue' onClick={this._onSummary}>
+                    <Icon name='puzzle'/>
+                    View Summary
+                  </Button>
+              }
+              
+              <Button floated='right' color='green' onClick={this._onRestart}>
                 <Icon name='settings' />
                 Restart
               </Button>                
@@ -63,6 +100,14 @@ export default  class RuleExecutionPage extends React.Component {
       );
     }
 
+    _onRestart=()=>{
+      this._reset();
+      Nadia.query.setNadia(this.props.ruleName, (res)=>{
+        if(res.InferenceEngine == 'created'){
+          this._getNextQuestion();
+        }
+      });
+    }
     _getNextQuestionFromBuffer=()=>{
       return this.state.questions.shift();
     }
@@ -70,10 +115,10 @@ export default  class RuleExecutionPage extends React.Component {
     _getNextQuestion=()=>{
 
       let questionData;
+
       if(this.state.questions.length != 0)
       {
         questionData = this._getNextQuestionFromBuffer();
-
         this.setState({nextQuestion: questionData});
         this._createQuestionnaire(questionData);
       }
@@ -95,18 +140,20 @@ export default  class RuleExecutionPage extends React.Component {
 
     _feedAnswer=(question, answer)=>{
       Nadia.command.feedAnswer(question, answer,(res)=>{
-        if(res.hasMoreQuestion === true){
+        if(res.hasMoreQuestion == 'true'){
           this._getNextQuestion();
         }
         else{
+          let goalRuleData = {goalRuleName: res.goalRuleName, goalRuleValue: res.goalRuleValue, goalRuleType: res.goalRuleType};
+          let goalRuleComponent = <QuestionItem key={res.goalRuleName} isGoalRule goalRuleData = {goalRuleData}/>
+          let tempQuestionnaire = Clone(this.state.questionnaire);
+          tempQuestionnaire.unshift(goalRuleComponent);
+  
           this.setState(
             {
               hasMoreQuestion: !this.state.hasMoreQuestion, 
-              goalRule: 
-                      {
-                        goalRuleName: res.goalRuleName, 
-                        goalRuleValue: res.goalRuleValue
-                      }
+              goalRule: goalRuleData,
+              questionnaire: tempQuestionnaire,
             }
           );
         }
@@ -114,15 +161,56 @@ export default  class RuleExecutionPage extends React.Component {
     }
 
     _createQuestionnaire=(questionData)=>{
+
       let nextQuestionComponent = <QuestionItem key={questionData.questionText} questionData = {questionData} feedAnswer={this._feedAnswer}/>;
       let tempQuestionnaire = Clone(this.state.questionnaire);
-      tempQuestionnaire.push(nextQuestionComponent);
+      tempQuestionnaire.unshift(nextQuestionComponent);
       
       this.setState({questionnaire: tempQuestionnaire});
     }
     
+    _viewSummary =()=>{
+
+      Nadia.query.viewSummary((res)=>{
+        let tempSummayrList = res?
+                                res.reverse().map((item, index)=>{
+                                  return(<List.Item key={index}>
+                                          <List.Icon name='pin' />
+                                          <List.Content>
+                                            <List.Header>{item.nodeValue.toUpperCase()}</List.Header>
+                                            <List.Description>{item.nodeText}</List.Description>
+                                          </List.Content>
+                                        </List.Item>);
+                                })
+                              :
+                              [];
+        let summaryBlock = tempSummayrList.length != 0?<Message color='teal'><List animated size='massive'>{tempSummayrList}</List></Message>: null;
+        this.setState({summaryBlock: summaryBlock});
+      });
+    }
+
+    _onSummary=()=>{
+      this.setState({summaryView: !this.state.summaryView});
+      this._viewSummary();
+    }
+
+    _onSaveSummary=()=>{
+      Nadia.command.updateHistory(this.props.ruleName,(res)=>{
+        if(res.update == 'done'){
+          this.setState({updateHistory: 'done'});
+          this._onRestart();
+        }
+      })
+    }
+
+
+    _onCancel=()=>{
+      debugger;
+      this.props.history.goBack();
+    }
     // component render method
     render() {
+      let summary = this.state.summaryView? this.state.summaryBlock : null;
         return (
           <div>
             <Segment basic size='mini' className='runRuleSegment'>
@@ -135,6 +223,7 @@ export default  class RuleExecutionPage extends React.Component {
               <Divider />
               {this._createButtonGroup()}
             </Segment>
+            {summary}
             <Segment basic className= 'ruleEditor'>
                 {this.state.questionnaire}
             </Segment>
@@ -142,3 +231,5 @@ export default  class RuleExecutionPage extends React.Component {
         );
     }
 }
+export default withRouter(RuleExecutionPage);
+

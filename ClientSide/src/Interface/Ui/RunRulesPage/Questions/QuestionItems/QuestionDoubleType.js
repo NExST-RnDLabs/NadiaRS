@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Input, Button, Icon , Segment} from 'semantic-ui-react';
+import {Input, Button, Icon , Segment, Message} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 

@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button, Icon , Segment} from 'semantic-ui-react';
+import {Button , Segment, Message} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import Moment from 'moment';
 
 //component
 import DateInputFields from './DateInputFields';
 
-
+//style
+import './QuestionDateType.scss';
 
 export default class QuestionDateType extends React.Component {
     constructor(props) {
@@ -35,7 +37,7 @@ export default class QuestionDateType extends React.Component {
             this.setState({dateInvalid: !this.state.dateInvalid});
         }
         else{
-            this.setState({dateValue: checkDateValidation.toString()})
+            this.setState({dateValue: checkDateValidation.toString(), dateInvalid: !this.state.dateInvalid})
         }
 
     }
@@ -81,44 +83,48 @@ export default class QuestionDateType extends React.Component {
             this.state.answered?
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Segment attached='bottom' inverted color='green'>
-                   <DateInputFields 
-                        readOnly
-                        dayInputValue= {this.state.dayInputValue}
-                        monthInputValue= {this.state.monthInputValue}
-                        yearInputValue= {this.state.dayInputValue}
-                        dateInvalid= {this.state.dateInvalid}/>
-                </Segment>
+                <Message className='dateField' attached='bottom' color='olive'>
+                    <DateInputFields 
+                            readOnly
+                            dayInputValue= {this.state.dayInputValue}
+                            monthInputValue= {this.state.monthInputValue}
+                            yearInputValue= {this.state.yearInputValue}
+                            dateInvalid= {this.state.dateInvalid}/>
+                </Message>
             </Segment.Group>
             :
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Segment attached='bottom'>
-                   <DateInputFields 
-                        dayIsDirty= {false}
-                        dayInputValue= {''}
-                        monthIsDirty= {false}
-                        monthInputValue= {''}
-                        yearIsDirty= {false}
-                        yearInputValue= {''}
-                        dateInvalid= {this.state.dateInvalid}
-                        onDayChange ={this._onDayChange} 
-                        onMonthChange = {this._onMonthChange} 
-                        onYearChange = {this._onYearChange}/>
-                    {this.state.dateInvalid?
-                        <Button.Group>
-                            <Button positive disabled>Save</Button>
-                            <Button.Or />
-                            <Button onClick={this._onCancel}>Cancel</Button>
-                        </Button.Group>
-                    :
-                        <Button.Group>
-                            <Button positive onClick={this._onSave}>Save</Button>
-                            <Button.Or />
-                            <Button onClick={this._onCancel}>Cancel</Button>
-                        </Button.Group>
-                    }
-                </Segment>
+                <Segment.Group attached='bottom' horizontal>
+                    <Segment basic className='dateField'>
+                        <DateInputFields 
+                                dayIsDirty= {false}
+                                dayInputValue= {this.state.dayInputValue}
+                                monthIsDirty= {false}
+                                monthInputValue= {this.state.monthInputValue}
+                                yearIsDirty= {false}
+                                yearInputValue= {this.state.yearInputValue}
+                                dateInvalid= {this.state.dateInvalid}
+                                onDayChange ={this._onDayChange} 
+                                onMonthChange = {this._onMonthChange} 
+                                onYearChange = {this._onYearChange}/>
+                        </Segment>
+                        <Segment basic>
+                        {this.state.dateInvalid?
+                            <Button.Group size='large' className='question-date-type-buttons'>
+                                <Button positive disabled>Save</Button>
+                                <Button.Or />
+                                <Button onClick={this._onCancel}>Cancel</Button>
+                            </Button.Group>
+                        :
+                            <Button.Group size='large' className='question-date-type-buttons'>
+                                <Button positive onClick={this._onSave}>Save</Button>
+                                <Button.Or />
+                                <Button onClick={this._onCancel}>Cancel</Button>
+                            </Button.Group>
+                        }
+                        </Segment>
+                </Segment.Group>
             </Segment.Group>
         );
     }

@@ -43,17 +43,6 @@ export default class Nadia {
             })
         },
 
-        setNadia:(ruleName)=>{
-            Bus.query('inference/setInferenceEngine',{ruleName: ruleName}).done((res)=>{
-                if(res.inferenceEngine=='created'){
-                    Bus.publish('Toast', {
-                        status: 'info',
-                        text: 'Nadia has been successfully set.'
-                      });
-                }
-            })
-        },
-
         feedAnswer:(question, answer, callback)=>{
             Bus.command('inference/feedAnswer',{question: question, answer: answer}).done((res)=>{
                 Bus.publish('Toast', {
@@ -62,6 +51,18 @@ export default class Nadia {
                   });
                 callback(res);
             })
+        },
+
+        updateHistory:(ruleName, callback)=>{
+            Bus.command('rule/updateHistory', {ruleName: ruleName, ruleText: ''}).done((res)=>{
+                if(res.update == 'done'){
+                    Bus.publish('Toast', {
+                        status: 'info',
+                        text: 'The result has been successfully saved.'
+                      });
+                    callback(res); 
+                }
+            });
         },
     }
 
@@ -85,11 +86,29 @@ export default class Nadia {
             });
         },
 
+        setNadia:(ruleName, callback)=>{
+            Bus.query('inference/setInferenceEngine',{ruleName: ruleName}).done((res)=>{
+                if(res.InferenceEngine == 'created'){
+                    Bus.publish('Toast', {
+                        status: 'info',
+                        text: 'Nadia has been successfully set.'
+                      });
+                      callback(res);
+                }  
+            })
+        },
+
         getNextQuestion: (ruleName, callback)=>{
             Bus.query('inference/getNextQuestion',{ruleName: ruleName}).done((res)=>{
                 callback(res);
             })
-        }
+        },
+
+        viewSummary: (callback)=>{
+            Bus.query('inference/viewSummary').done((res)=>{
+                callback(res);
+            })
+        },
 
 
         

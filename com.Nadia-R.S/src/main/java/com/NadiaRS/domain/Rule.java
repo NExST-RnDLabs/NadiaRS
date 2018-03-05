@@ -109,7 +109,7 @@ public class Rule {
 	public RuleHistory getTheLatestHistory()
 	{
 		List<RuleHistory> ruleHistoryList = getHistory();
-		RuleHistory rh = ruleHistoryList.size()>0?
+		RuleHistory rh = (ruleHistoryList!= null && ruleHistoryList.size()>0)?
 							ruleHistoryList.stream().max((h1, h2)-> h1.getCreatedDate().compareTo(h2.getCreatedDate())).get()
 							:
 							null;

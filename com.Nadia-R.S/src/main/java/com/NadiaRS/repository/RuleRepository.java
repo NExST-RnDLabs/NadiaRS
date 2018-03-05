@@ -62,9 +62,9 @@ public interface RuleRepository extends JpaRepository<Rule, Long>{
 	@Modifying
 	@Transactional
 	@Query(value="BEGIN; "
-				+ "INSERT INTO HISTORY (HISTORY) "
-				+ "VALUES(LOWER(:historyInString)) "
-				+ "WHERE RULE_ID=:ruleId; "
+				+ "INSERT INTO HISTORY (RULE_ID, HISTORY) "
+				+ "VALUES(:ruleId, to_json(LOWER(:historyInString))); "
 				+ "END;", nativeQuery = true)
 	public void createRuleHistory(@Param("ruleId") long rule_id, @Param("historyInString") String historyInString);
+	
 }

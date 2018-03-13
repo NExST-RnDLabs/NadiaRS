@@ -140,10 +140,51 @@ public class InferenceController {
 		rsc = new RuleSetScanner(ilr,isf);
 		rsc.scanRuleSet();
 		
+//		RuleHistory ruleHistory = ruleController.getTheLatestRuleHistoryByName(ruleName);
+//		HashMap<String, Record> historyMap = ruleHistory != null? ruleHistory.getHistoryMap(): null; 
+//		
+//		rsc.establishNodeSet(historyMap);
+		rsc.establishNodeSet();
+
+		ie.setNodeSet(isf.getNodeSet());
+		ie.getNodeSet().setNodeSetName(ruleName);
+
+		Assessment ass = new Assessment();
+
+		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
+		ie.setAssessment(ass);
+		
+		httpReq.getSession().setAttribute("inferenceEngine", ie);
+		httpReq.getSession().setAttribute("assessment", ass);
+		
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		on.put("InferenceEngine", "created");
+		
+		return on;
+		
+	}
+	
+	@RequestMapping(value="setMachineLearningInferenceEngine", method = RequestMethod.GET)
+	@ResponseBody
+	public ObjectNode setMachineLearningInferenceEngine(HttpServletRequest httpReq, String ruleName)
+	{	
+		
+		InferenceEngine ie = new InferenceEngine();
+		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
+		RuleSetReader ilr = new RuleSetReader();
+		RuleSetParser isf = new RuleSetParser();
+		RuleSetScanner rsc;
+		
+		ilr.setStringSource(ruleText);
+		rsc = new RuleSetScanner(ilr,isf);
+		rsc.scanRuleSet();
+		
 		RuleHistory ruleHistory = ruleController.getTheLatestRuleHistoryByName(ruleName);
 		HashMap<String, Record> historyMap = ruleHistory != null? ruleHistory.getHistoryMap(): null; 
 		
 		rsc.establishNodeSet(historyMap);
+//		rsc.establishNodeSet();
+
 		ie.setNodeSet(isf.getNodeSet());
 		ie.getNodeSet().setNodeSetName(ruleName);
 

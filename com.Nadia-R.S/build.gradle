@@ -53,5 +53,6 @@ dependencies {
 	runtime('org.postgresql:postgresql:42.1.4')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile 'edu.stanford.nlp:stanford-corenlp:3.9.1'
 	
 }

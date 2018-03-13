@@ -98,6 +98,18 @@ export default class Nadia {
             })
         },
 
+        setNadiaForMachineLearning:(ruleName, callback)=>{
+            Bus.query('inference/setMachineLearningInferenceEngine',{ruleName: ruleName}).done((res)=>{
+                if(res.InferenceEngine == 'created'){
+                    Bus.publish('Toast', {
+                        status: 'info',
+                        text: 'Nadia has been ready for Machine Learning!'
+                      });
+                      callback(res);
+                }  
+            })
+        },
+
         getNextQuestion: (ruleName, callback)=>{
             Bus.query('inference/getNextQuestion',{ruleName: ruleName}).done((res)=>{
                 callback(res);

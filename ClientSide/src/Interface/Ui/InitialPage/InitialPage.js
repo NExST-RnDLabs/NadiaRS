@@ -87,6 +87,19 @@ export default class InitialPage extends React.Component {
                             </Card.Meta>
                         </Card.Content>
                     </Card>
+                    <Card as= {Link} to='/MachineLearningOnPage'>
+                        <Card.Content textAlign='center'>
+                            <Card.Header>
+                                Thumbs UP!
+                            </Card.Header>
+                            <Card.Description>
+                                <Icon color='blue' name='thumbs up' size='massive' />
+                            </Card.Description>
+                            <Card.Meta>
+                                Demonstration
+                            </Card.Meta>
+                        </Card.Content>
+                    </Card>
                 </Card.Group> 
             </Segment>
             </div>

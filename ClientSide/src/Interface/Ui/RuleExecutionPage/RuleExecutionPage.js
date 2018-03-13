@@ -20,11 +20,22 @@ class RuleExecutionPage extends React.Component {
 
     componentWillMount = () => {
       this.setState({ruleName: this.props.ruleName});
-      Nadia.query.setNadia(this.props.ruleName, (res)=>{
-        if(res.InferenceEngine == 'created'){
-          this._getNextQuestion();
-        }
-      });
+      if(this.props.machineLearningOn == true)
+      {
+        Nadia.query.setNadiaForMachineLearning(this.props.ruleName, (res)=>{
+          if(res.InferenceEngine == 'created'){
+            this._getNextQuestion();
+          }
+        });
+      }
+      else{
+        Nadia.query.setNadia(this.props.ruleName, (res)=>{
+          if(res.InferenceEngine == 'created'){
+            this._getNextQuestion();
+          }
+        });
+      }
+      
     }
 
     // componentDidMount=()=>{
@@ -71,7 +82,7 @@ class RuleExecutionPage extends React.Component {
               </Button>
               {
                 
-                !this.state.hasMoreQuestion?
+                !this.state.hasMoreQuestion && this.props.machineLearningOn?
                   <Button floated='right' color='yellow' onClick={this._onSaveSummary}>
                     <Icon name='save'/>
                     Save Summary
@@ -101,12 +112,24 @@ class RuleExecutionPage extends React.Component {
     }
 
     _onRestart=()=>{
+
       this._reset();
-      Nadia.query.setNadia(this.props.ruleName, (res)=>{
-        if(res.InferenceEngine == 'created'){
-          this._getNextQuestion();
-        }
-      });
+      if(this.props.machineLearningOn == true)
+      {
+        Nadia.query.setNadiaForMachineLearning(this.props.ruleName, (res)=>{
+          if(res.InferenceEngine == 'created'){
+            this._getNextQuestion();
+          }
+        });
+      }
+      else{
+        Nadia.query.setNadia(this.props.ruleName, (res)=>{
+          if(res.InferenceEngine == 'created'){
+            this._getNextQuestion();
+          }
+        });
+      }
+      
     }
     _getNextQuestionFromBuffer=()=>{
       return this.state.questions.shift();
@@ -205,7 +228,6 @@ class RuleExecutionPage extends React.Component {
 
 
     _onCancel=()=>{
-      debugger;
       this.props.history.goBack();
     }
     // component render method

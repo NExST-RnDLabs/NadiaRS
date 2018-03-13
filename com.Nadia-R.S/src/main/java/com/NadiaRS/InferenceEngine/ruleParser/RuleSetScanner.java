@@ -15,8 +15,7 @@ import com.NadiaRS.InferenceEngine.nodePackage.Record;
 public class RuleSetScanner {
 	private IScanFeeder scanFeeder = null;
     private ILineReader lineReader = null;
-    private boolean useHistoricalDataAnalytics = false;
-    private HashMap<String, Record> recordMapOfNodes; 
+    
     
     
     public RuleSetScanner(ILineReader reader, IScanFeeder feeder) {
@@ -73,6 +72,11 @@ public class RuleSetScanner {
 	                	else 
 	                	{
 	                		int indentationDifference = previousWhitespace - currentWhitespace;
+	                		if(indentationDifference == -4) // this condition is for handling inputs from ACE text editor
+	                		{
+	                			indentationDifference = -1;
+	                		}
+	                		
 	                   	if(indentationDifference == 0 || indentationDifference > 0) //current line is at same level as previous line || current line is in upper level than previous line
 	                   	{
 	                   		parentStack = handlingStackPop(parentStack, indentationDifference);
@@ -147,18 +151,5 @@ public class RuleSetScanner {
 	   	 return parentStack;
     }
 
-    public void setHistoricalData()
-    {
-    		this.useHistoricalDataAnalytics = !this.useHistoricalDataAnalytics;
-    }
-    
-    public void setRecordMapOfNodes(HashMap<String, Record> recordMapOfNodes)
-    {
-    		this.recordMapOfNodes = recordMapOfNodes;
-    }
-    public HashMap<String, Record> getRecordMapOfNodes()
-    {
-    		return recordMapOfNodes;
-    }
 }
 

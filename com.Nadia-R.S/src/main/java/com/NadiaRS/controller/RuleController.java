@@ -228,6 +228,7 @@ public class RuleController {
 				if(!item.getValue().get("type").asText().toLowerCase().equals("boolean") && !workingMemory.containsKey(rule))
 				{
 					Record record = new Record();
+					record.setName(rule);
 					record.setFalseCount(Integer.parseInt(item.getValue().get("false").asText()));
 					record.setTrueCount(Integer.parseInt(item.getValue().get("true").asText()));
 					
@@ -238,6 +239,7 @@ public class RuleController {
 				else if(item.getValue().get("type").asText().toLowerCase().equals("boolean") && !workingMemory.containsKey(rule))
 				{
 					Record record = new Record();
+					record.setName(rule);
 					record.setFalseCount(Integer.parseInt(item.getValue().get("false").asText()));
 					record.setTrueCount(Integer.parseInt(item.getValue().get("true").asText()));
 					recordList.add(record);

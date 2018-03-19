@@ -9,22 +9,34 @@ This project is building a Rules(Policies)/Inference Engine with ease of use and
 * A rule author or business person does NOT need to implement the rules/policies separately like other rules engines
 * A user of the engine can carry out Foward-chaining and Backward-chaining with a given rule/policy set
 
-## 2. Roadmap
+## 2. Installation/Running Project in Local
+In order to install the project in your workspace, you may need to do followings;
+ 1. install Gradle for buidling your project;
+ 2. install Node.js including npm(node package manager);
+ 3. install one of your preferable text editor;
+ 4. once above tasks are done open up 'ClientSide' folder in command line/terminal then type 'npm install'. It will install all necessary packages for client side including 'React';
+ 5. when you done up until this point, then you may need to build the project at server side. Please import the project into your worksapce and go to Gradle build folder in Gradle Tasks window and open it up then click build then the project will be built;
+ 6. you now can run server for the project locally;
+ 7. you need to start Node server to see the actual GUI. Please open up 'ClientSide' folder in command line/terminal again and type 'npm start';
+ 8. you can now be able to play with 'Nadia' in your browser once you typed 'localhost:3000' in URL section of your browser.
+ 
+ *Please note that there will be Demo video available soon.
+## 3. Roadmap
 Add more features as follows;
 
 * GUI for Rule IDE (it is just more than editor. working as an development IDE)
-* Retrieving Rule/Policy file from database
+* Retrieving Rule/Policy file from database (DONE in this version)
 * Workflow engine with GUI based diagram editor 
-* Machine Learning type inference mechanism
+* Machine Learning type inference mechanism (DONE in this version)
 
-## 3. Contribution
-If you would like to contribute to this project, then please create your own branch and name the branch clearly. Once the work is done in the branch then do 'pull request' and send an email to 'suho2k12@icloud.com'.
+## 4. Contribution
+If you would like to contribute to this project, then please create your own branch and name the branch clearly. Once the work is done in the branch then do 'pull request' and send an email to 'nexst.rndlabs@gmail.com'.
 
-## 4. Make your own Rules/Policies
+## 5. Make your own Rules/Policies
 Please have a look at a file of testing rule. Within the example file, all indented rules uses 'Tab' key for indentation. The rule scanner considers of an indented rule as a child rule of previous rule in a rule text.
 
-## 5. How does it work
-There are a number of key components as follows;
+## 6. How does it work
+There is a number of key components as follows;
 
 * Rule reader     : reads a rule/policy file, stream source, string source
 * Rule scanner    : scans what 'Rule reader' reads
@@ -54,6 +66,6 @@ An inference engine using forward chaining searches the inference rules until it
 * 'B is true' statement is unknown
 * 'A is true' statement is unknown
 
-## 6. License
+## 7. License
 Copyright (c) 2017-2018 individual contributors.
 Nadia-R.S is open source project and released under AGPL 3.0 License.

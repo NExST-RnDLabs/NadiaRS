@@ -84,6 +84,7 @@ export default class RuleEditorPage extends React.Component {
               name="UNIQUE_ID_OF_DIV"
               readOnly = {false}
               width="100%"
+              height = '90rem'
               fontSize={18}
               value={this.state.ruleText}
               editorProps={{
@@ -102,6 +103,7 @@ export default class RuleEditorPage extends React.Component {
               name="UNIQUE_ID_OF_DIV"
               readOnly = {true}
               width="100%"
+              height = '90rem'
               fontSize={18}
               value={this.state.ruleText}
               editorProps={{

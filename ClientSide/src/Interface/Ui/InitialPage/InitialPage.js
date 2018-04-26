@@ -22,13 +22,13 @@ export default class InitialPage extends React.Component {
             <Segment className="basic center aligned">
                 <Item className ='welcome'>
                     <Item.Content verticalAlign='middle'>
-                    <Item.Header as='h2'><strong >Welocme to</strong></Item.Header>
+                    <Item.Header as='h2'><strong >Welcome to</strong></Item.Header>
                     </Item.Content>
                 </Item>
                 <Item className ='Nadia-Logo-Item'>
                 <Item.Image size='tiny' src={NadiaLogo} />
                 <Item.Content verticalAlign='middle'>
-                    <Item.Header as='h2'><strong className='Nadia'>Nadia</strong><strong>-R.S</strong></Item.Header>
+                    <Item.Header as='h2'><span className='Nadia'>NADIA</span><strong>-R.S</strong></Item.Header>
                 </Item.Content>
                 </Item>
             </Segment>

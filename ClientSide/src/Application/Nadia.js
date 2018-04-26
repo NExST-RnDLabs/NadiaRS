@@ -11,10 +11,10 @@ export default class Nadia {
             Bus.command('rule/updateRule', {oldRuleName:oldRuleName, newRuleName: ruleName, newRuleCategory: ruleCategory}).done((res)=>{
                 if(res.newRuleName = ruleName && res.newCategory == ruleCategory)//success case of redirect
                 {
-                  Bus.publish('Toast', {
-                    status: 'info',
-                    text: 'The rule has been successfully created.'
-                  });
+                //   Bus.publish('Toast', {
+                //     status: 'info',
+                //     text: 'The rule has been successfully created.'
+                //   });
                 }
             })
         },
@@ -23,10 +23,10 @@ export default class Nadia {
             Bus.command('rule/createNewRule',{name: ruleName, category: ruleCategory}).done((res)=>{
                 if(res.ruleName = ruleName && res.category == ruleCategory)//success case of redirect
                 {
-                  Bus.publish('Toast', {
-                    status: 'info',
-                    text: 'The rule has been successfully created.'
-                  });
+                //   Bus.publish('Toast', {
+                //     status: 'info',
+                //     text: 'The rule has been successfully created.'
+                //   });
                 }
             })
         },
@@ -35,20 +35,20 @@ export default class Nadia {
             Bus.command('rule/createFile',{ruleName:ruleName, ruleText:ruleText}).done((res)=>{
                 if(res.ruleText == ruleText)
                 {
-                    Bus.publish('Toast', {
-                        status: 'info',
-                        text: 'The rule text has been successfully updated.'
-                      });          
+                    // Bus.publish('Toast', {
+                    //     status: 'info',
+                    //     text: 'The rule text has been successfully updated.'
+                    //   });          
                 }
             })
         },
 
         feedAnswer:(question, answer, callback)=>{
             Bus.command('inference/feedAnswer',{question: question, answer: answer}).done((res)=>{
-                Bus.publish('Toast', {
-                    status: 'info',
-                    text: 'The question has been successfully answered.'
-                  });
+                // Bus.publish('Toast', {
+                //     status: 'info',
+                //     text: 'The question has been successfully answered.'
+                //   });
                 callback(res);
             })
         },
@@ -56,10 +56,10 @@ export default class Nadia {
         updateHistory:(ruleName, callback)=>{
             Bus.command('rule/updateHistory', {ruleName: ruleName, ruleText: ''}).done((res)=>{
                 if(res.update == 'done'){
-                    Bus.publish('Toast', {
-                        status: 'info',
-                        text: 'The result has been successfully saved.'
-                      });
+                    // Bus.publish('Toast', {
+                    //     status: 'info',
+                    //     text: 'The result has been successfully saved.'
+                    //   });
                     callback(res); 
                 }
             });
@@ -89,10 +89,10 @@ export default class Nadia {
         setNadia:(ruleName, callback)=>{
             Bus.query('inference/setInferenceEngine',{ruleName: ruleName}).done((res)=>{
                 if(res.InferenceEngine == 'created'){
-                    Bus.publish('Toast', {
-                        status: 'info',
-                        text: 'Nadia has been successfully set.'
-                      });
+                    // Bus.publish('Toast', {
+                    //     status: 'info',
+                    //     text: 'Nadia has been successfully set.'
+                    //   });
                       callback(res);
                 }  
             })
@@ -101,10 +101,10 @@ export default class Nadia {
         setNadiaForMachineLearning:(ruleName, callback)=>{
             Bus.query('inference/setMachineLearningInferenceEngine',{ruleName: ruleName}).done((res)=>{
                 if(res.InferenceEngine == 'created'){
-                    Bus.publish('Toast', {
-                        status: 'info',
-                        text: 'Nadia has been ready for Machine Learning!'
-                      });
+                    // Bus.publish('Toast', {
+                    //     status: 'info',
+                    //     text: 'Nadia has been ready for Machine Learning!'
+                    //   });
                       callback(res);
                 }  
             })

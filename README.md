@@ -1,6 +1,8 @@
 # Nadia-R.S Rule/Inference Engine
 Open source project Nadia Rule/Policy Engine with React.js and Spring.
 This project is based on original project [Nadia Rule/Inference Engine.](https://github.com/DeanLee77/Nadia).
+<br/>
+<br/>
 Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLabs](https://youtu.be/xyWjscJ3LxI) or another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
 
 ## 1. Introduction
@@ -50,23 +52,23 @@ There is a number of key components as follows;
 Suppose there are following rules:
 
 
-1. IF either 
-      'statement B' is true; or 
-      'statement C' is true 
-   THEN 
+1. IF either <br/>
+      'statement B' is true; or <br/>
+      'statement C' is true <br/>
+   THEN <br/>
       'statement A' is true.
-2. IF  both
-      'statement D' is true; and 
-      'statement E' is true 
-   THEN 
+2. IF  both<br/>
+      'statement D' is true; and <br/>
+      'statement E' is true <br/>
+   THEN <br/>
       'statement C' is true.
-3. IF 
-      'statement F' is true 
-   THEN 
+3. IF <br/>
+      'statement F' is true<br/> 
+   THEN <br/>
       'statement D' is false.
-4. IF 
-      'statement G' is false 
-   THEN 
+4. IF<br/> 
+      'statement G' is false <br/>
+   THEN <br/>
       'statement E' is true.
 
 #### Backward-chaining:

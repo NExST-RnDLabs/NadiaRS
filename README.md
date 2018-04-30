@@ -3,7 +3,9 @@ Open source project Nadia Rule/Policy Engine with React.js and Spring.
 This project is based on original project [Nadia Rule/Inference Engine.](https://github.com/DeanLee77/Nadia).
 <br/>
 <br/>
-Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLabs](https://youtu.be/xyWjscJ3LxI) or another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
+Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLabs](https://youtu.be/xyWjscJ3LxI) <br/>
+or <br/>
+another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
 
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:
@@ -53,23 +55,23 @@ Suppose there are following rules:
 
 
 1. IF either <br/>
-      'statement B' is true; or <br/>
-      'statement C' is true <br/>
+      &nbsp;&nbsp;'statement B' is true; or <br/>
+      &nbsp;&nbsp;'statement C' is true <br/>
    THEN <br/>
-      'statement A' is true.
+      &nbsp;&nbsp;'statement A' is true.
 2. IF  both<br/>
-      'statement D' is true; and <br/>
-      'statement E' is true <br/>
+      &nbsp;&nbsp;'statement D' is true; and <br/>
+      &nbsp;&nbsp;'statement E' is true <br/>
    THEN <br/>
-      'statement C' is true.
+      &nbsp;&nbsp;'statement C' is true.
 3. IF <br/>
-      'statement F' is true<br/> 
+      &nbsp;&nbsp;'statement F' is true<br/> 
    THEN <br/>
-      'statement D' is false.
+      &nbsp;&nbsp;'statement D' is false.
 4. IF<br/> 
-      'statement G' is false <br/>
+     &nbsp;&nbsp; 'statement G' is false <br/>
    THEN <br/>
-      'statement E' is true.
+      &nbsp;&nbsp;'statement E' is true.
 
 #### Backward-chaining:
 An inference engine when using backward chaining searches the inference rules until it finds one which has a consequent (Then clause) that matches a desired goal. For instance, if we want to know whether or not the rule of 'statement A' is 'true' or 'not true(false)', an engine finds out which rule has to be checked to conclude. In this case, the engine needs information about the rule of 'statement B' is 'true' or 'not true(false)', or 'statement F' and 'statement G' are 'true' or 'not true(false)' respectively.

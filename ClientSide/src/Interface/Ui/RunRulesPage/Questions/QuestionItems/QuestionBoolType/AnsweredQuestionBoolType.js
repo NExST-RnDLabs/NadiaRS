@@ -6,37 +6,27 @@ import PropTypes from 'prop-types';
 //style
 import './QuestionBoolType.scss'
 
-export default class QuestionBoolType extends React.Component {
+export default class AnsweredQuestionBoolType extends React.Component {
     constructor(props) {
         super(props);
         this.state ={
-            answered: false,
+
         }
     }
 
-    
+   
     // prop types and default values
     static propTypes = {
         question: PropTypes.string.isRequired,
+        answer: PropTypes.string.isRequired,
     }
 
     static defaultProps = {
-        foo: "default"
-      };
+
+    };
    
-    _onTrue=()=>{
-        if(this.props.onSave){
-            this.props.onSave(this.props.question, {answer:true, type:'boolean'});
-            this.setState({answered: true, answer: true});
-
-        }
-    }
-
-    _onFalse=()=>{
-        if(this.props.onSave){
-            this.props.onSave(this.props.question, {answer:false, type:'boolean'});
-            this.setState({answered: true, answer: false});
-        }
+    componentWillMount=()=>{
+        this.setState({question: this.props.question, answer: this.props.answer});
     }
 
     _onEditAnswer=()=>{
@@ -49,8 +39,7 @@ export default class QuestionBoolType extends React.Component {
     // component render method
     render() {
         return (
-            this.state.answered?
-                this.state.answer?
+            this.state.answer == 'true'?
                 <Segment.Group raised className='questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='green'>
@@ -66,19 +55,6 @@ export default class QuestionBoolType extends React.Component {
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
-
-            :
-            <Segment.Group raised className='questionIntItem'>
-                <Message attached='top' info header='Is the following statement true?'/>
-                <Segment attached='bottom'>
-                    <Header size = 'medium'>{this.props.question}</Header>
-                    <Button.Group size = 'large' floated = 'right' className='question-bool-type-buttons'>
-                        <Button positive onClick={this._onTrue}>True</Button>
-                        <Button.Or />
-                        <Button negative onClick={this._onFalse}>False</Button>
-                    </Button.Group>
-                </Segment>
-            </Segment.Group>
         );
     }
 }

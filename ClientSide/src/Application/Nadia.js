@@ -53,6 +53,13 @@ export default class Nadia {
             })
         },
 
+        editAnswer:(question, callback)=>{
+            Bus.command('inference/editAnswer', {question:question}).done((res)=>{
+                
+                callback(res);
+            })
+        },
+
         updateHistory:(ruleName, callback)=>{
             Bus.command('rule/updateHistory', {ruleName: ruleName, ruleText: ''}).done((res)=>{
                 if(res.update == 'done'){

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.NadiaRS.InferenceEngine.factValuePackage.FactValue;
 import com.NadiaRS.InferenceEngine.factValuePackage.FactValueType;
 import com.NadiaRS.InferenceEngine.inferencePackage.Assessment;
 import com.NadiaRS.InferenceEngine.inferencePackage.InferenceEngine;
@@ -29,6 +30,7 @@ import com.NadiaRS.InferenceEngine.ruleParser.RuleSetScanner;
 import com.NadiaRS.domain.RuleHistory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -48,12 +50,71 @@ public class InferenceController {
 	public ObjectNode[] viewSummary(HttpServletRequest httpRequest)
 	{
 		InferenceEngine ie = (InferenceEngine)httpRequest.getSession().getAttribute("inferenceEngine");
-		return ie.generateAssessmentSummary();
+		
+		List<ObjectNode> tempSummaryList = new ArrayList<>();
+		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
+		ie.getAssessmentState().getSummaryList().stream().forEachOrdered((item)->{
+			ObjectNode objectNode = new ObjectMapper().createObjectNode();
+			objectNode.put("nodeText", item);
+			objectNode.put("nodeValue", tempWorkingMemory.get(item).getValue().toString());
+			tempSummaryList.add(objectNode);
+		});
+		
+		//following lines are to transfer all possible left over value from editing answers process from workingMemory to summary list in GUI
+		tempWorkingMemory.keySet().stream().forEach(key->{
+			if(!ie.getAssessmentState().getSummaryList().contains(key))
+			{
+				ObjectNode objectNode = new ObjectMapper().createObjectNode();
+				objectNode.put("nodeText", key);
+				objectNode.put("nodeValue", tempWorkingMemory.get(key).getValue().toString());
+				tempSummaryList.add(objectNode);
+			}
+		});
+		
+		return tempSummaryList.stream().toArray(ObjectNode[]::new);
+	}
+	
+	@RequestMapping(value = "editAnswer", method = RequestMethod.POST)
+	public ObjectNode editAnswer(@RequestBody ObjectNode question, HttpServletRequest httpRequest)
+	{
+		InferenceEngine ie = (InferenceEngine)httpRequest.getSession().getAttribute("inferenceEngine");
+		Assessment ass = (Assessment)httpRequest.getSession().getAttribute("assessment");
+		
+		String questionName = question.get("question").asText();
+		
+		ie.editAnswer(questionName);
+		
+		ObjectNode objectNode = new ObjectMapper().createObjectNode();
+		ArrayNode questionsAndAnswers = objectNode.putArray("workingMemory");
+		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
+		tempWorkingMemory.keySet().stream().forEach(key->{
+			ObjectNode subObjectNode = new ObjectMapper().createObjectNode();
+			subObjectNode.put("questionText", key);
+			subObjectNode.put("answer", tempWorkingMemory.get(key).getValue().toString());
+			subObjectNode.put("answerValueType", tempWorkingMemory.get(key).getType().toString());
+			questionsAndAnswers.add(subObjectNode);
+		});
+		if(ie.getAssessmentState().getWorkingMemory().get(ass.getGoalNode().getNodeName())==null  || !ie.getAssessmentState().allMandatoryNodeDetermined())
+		{
+			objectNode.put("hasMoreQuestion", "true");
+		}
+		else
+		{
+			String goalNodeName = ass.getGoalNode().getNodeName();
+			objectNode.put("hasMoreQuestion", "false");
+			objectNode.put("goalRuleName", goalNodeName);
+			objectNode.put("goalRuleValue", ie.getAssessmentState().getWorkingMemory().get(goalNodeName).getValue().toString());
+			objectNode.put("goalRuleType", ie.findTypeOfElementToBeAsked(ass.getGoalNode()).get(goalNodeName).toString().toLowerCase());
+				
+		}
+		
+		return objectNode;
+
 	}
 	
 	
 	@RequestMapping(value="feedAnswer", method = RequestMethod.POST)
-	@ResponseBody
+//	@ResponseBody
 	public ObjectNode feedAnswer(@RequestBody ObjectNode answers, HttpServletRequest httpRequest)
 	{
 		InferenceEngine ie = (InferenceEngine)httpRequest.getSession().getAttribute("inferenceEngine");

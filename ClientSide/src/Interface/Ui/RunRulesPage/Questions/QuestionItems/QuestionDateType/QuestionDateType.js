@@ -12,20 +12,19 @@ import './QuestionDateType.scss';
 
 export default class QuestionDateType extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            dayIsDirty: false,
-            dayInputValue: '',
-            monthIsDirty: false,
-            monthInputValue: '',
-            yearIsDirty: false,
-            yearInputValue: '',
-            dateInvalid: false,
-            answered: false,
-        }
+      super(props);
     }
 
-    
+    state = {
+        dayIsDirty: false,
+        dayInputValue: '',
+        monthIsDirty: false,
+        monthInputValue: '',
+        yearIsDirty: false,
+        yearInputValue: '',
+        dateInvalid: false,
+        answered: false,
+    }
     
     // prop types and default values
     static propTypes = {
@@ -77,13 +76,6 @@ export default class QuestionDateType extends React.Component {
                         answered: !this.state.answered});
     }
      
-    _onEditAnswer=()=>{
-        debugger;
-        if(this.props.onEditAnswer){
-            this.props.onEditAnswer(this.props.question);
-        }
-    }
-    
     // component render method
     render() {
         let question = this.props.question+'?';
@@ -99,7 +91,6 @@ export default class QuestionDateType extends React.Component {
                             yearInputValue= {this.state.yearInputValue}
                             dateInvalid= {this.state.dateInvalid}/>
                 </Message>
-                <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
             </Segment.Group>
             :
             <Segment.Group raised className='questionIntItem'>

@@ -168,6 +168,35 @@ class RuleExecutionPage extends React.Component {
         }
         else{
           let goalRuleData = {goalRuleName: res.goalRuleName, goalRuleValue: res.goalRuleValue, goalRuleType: res.goalRuleType};
+          let goalRuleComponent = <QuestionItem key={res.goalRuleName} isGoalRule goalRuleData = {goalRuleData} />
+          let tempQuestionnaire = Clone(this.state.questionnaire);
+          tempQuestionnaire.unshift(goalRuleComponent);
+  
+          this.setState(
+            {
+              hasMoreQuestion: !this.state.hasMoreQuestion, 
+              goalRule: goalRuleData,
+              questionnaire: tempQuestionnaire,
+            }
+          );
+        }
+      });
+    }
+
+    _onEditAnswer=(question)=>{
+      this.setState({questionnaire:[],questions:[]});
+      Nadia.command.editAnswer(question,(res)=>{
+        if(res.hasMoreQuestion == 'true'){
+          res.workingMemory.map((item)=>{
+            let answeredQuestion = <AnsweredQuestionItem key={item.question} questionData = {item}  editAnswer={this._onEditAnswer}/>;
+            let tempQuestionnaire = Clone(this.state.questionnaire);
+            tempQuestionnaire.unshift(answeredQuestion);
+          });
+          this.setState({questionnaire: tempQuestionnaire});
+          this._getNextQuestion();
+        }
+        else{
+          let goalRuleData = {goalRuleName: res.goalRuleName, goalRuleValue: res.goalRuleValue, goalRuleType: res.goalRuleType};
           let goalRuleComponent = <QuestionItem key={res.goalRuleName} isGoalRule goalRuleData = {goalRuleData}/>
           let tempQuestionnaire = Clone(this.state.questionnaire);
           tempQuestionnaire.unshift(goalRuleComponent);
@@ -185,7 +214,7 @@ class RuleExecutionPage extends React.Component {
 
     _createQuestionnaire=(questionData)=>{
 
-      let nextQuestionComponent = <QuestionItem key={questionData.questionText} questionData = {questionData} feedAnswer={this._feedAnswer}/>;
+      let nextQuestionComponent = <QuestionItem key={questionData.questionText} questionData = {questionData} feedAnswer={this._feedAnswer} editAnswer={this._onEditAnswer}/>;
       let tempQuestionnaire = Clone(this.state.questionnaire);
       tempQuestionnaire.unshift(nextQuestionComponent);
       

@@ -1523,43 +1523,84 @@ public class InferenceEngine {
 		
 		return tempSummaryList.stream().toArray(ObjectNode[]::new);
     }
-    
+	
+	public void editAnswer(String question) 
+	{
+		List<String> tempSummaryList = this.getAssessmentState().getSummaryList();
+		int indexOfQuestionToBeEdited = tempSummaryList.indexOf(question);
+		HashMap<String, FactValue> tempWorkingMemory = this.getAssessmentState().getWorkingMemory();
+				
+		/*
+		 * following two lines are to reset 'exclusiveList' and 'inclusiveList' which are for tracking all relevant branches by cutting dependencies
+		 */
+		this.getAssessmentState().setExclusiveList(new ArrayList<String>());
+		this.getAssessmentState().setInclusiveList(new ArrayList<String>());
+		
+		tempWorkingMemory.remove(question); //need to remove values of 'question' key from workingMemory because it needs editing
+		
+		/*
+		 * the reason of doing following lines is to re-establish 'inclusiveList' and 'exclusiveList'
+		 * which manage cutting all irrelevant branches within the rule tree based on fed answers.
+		 * all branches up to the point of 'to-be-edited-question' need re-establishment and other branches after the 'question'
+		 * don't need to be re-established because those may not irrelevant to effect decision at the end unless they are appeared
+		 * during the questionnaire after all re-establishment.
+		 */
+		IntStream.range(0, tempSummaryList.size()).forEachOrdered(index->{
+			if(index < indexOfQuestionToBeEdited) {
+				Node node = this.getNextQuestion(this.getAssessment());
+				if(ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE))
+				{
+					ass.setAuxNodeToBeAsked(node);
+				}
+				List<String> questionnaireFromNode = this.getQuestionsFromNodeToBeAsked(node);
+				questionnaireFromNode.stream().forEachOrdered(questionItem->{
+					if(tempSummaryList.contains(questionItem))
+					{
+						FactValue fv = tempWorkingMemory.get(questionItem);
+						this.feedAnswerToNode(node, questionItem, fv.getValue().toString(), fv.getType(), ass);
+					}
+				});
+			}
+		});
+		
+	}
+	
     /*
      * this is to find a condition with a list of given keyword
      */
     public List<String> findCondition(String keyword)
     {
-    	int initialSize = nodeSet.getNodeSortedList().size();
-    	List<String> conditionList = new ArrayList<>(initialSize);
-    	List<String> questionList = new ArrayList<>(initialSize);
-    	for(Node node: nodeSet.getNodeSortedList())
-    	{
-    		if(nodeSet.getDependencyMatrix().getToChildDependencyList(node.getNodeId()).isEmpty())
-    		{
-    			questionList.add(node.getNodeName());
-    		}
-    	}
-    	
-    	String[] keywordArray = keyword.split("\\W+"); // split the keyword by none word character including whitespace.
-    	int keywordArrayLength = keywordArray.length;
-    	int numberOfMatched = 0;
-    	for(String ruleName: questionList)
-    	{
-    		numberOfMatched = 0;
-    		for(int i = 0; i < keywordArrayLength; i++)
-    		{
-    			if(ruleName.contains(keywordArray[i]))
-    			{
-    				numberOfMatched++;
-    			}
-    		}
-    		if(numberOfMatched == keywordArrayLength)
-    		{
-    			conditionList.add(ruleName);
-    		}
-    	}
-    	
-    	return conditionList;
+	    	int initialSize = nodeSet.getNodeSortedList().size();
+	    	List<String> conditionList = new ArrayList<>(initialSize);
+	    	List<String> questionList = new ArrayList<>(initialSize);
+	    	for(Node node: nodeSet.getNodeSortedList())
+	    	{
+	    		if(nodeSet.getDependencyMatrix().getToChildDependencyList(node.getNodeId()).isEmpty())
+	    		{
+	    			questionList.add(node.getNodeName());
+	    		}
+	    	}
+	    	
+	    	String[] keywordArray = keyword.split("\\W+"); // split the keyword by none word character including whitespace.
+	    	int keywordArrayLength = keywordArray.length;
+	    	int numberOfMatched = 0;
+	    	for(String ruleName: questionList)
+	    	{
+	    		numberOfMatched = 0;
+	    		for(int i = 0; i < keywordArrayLength; i++)
+	    		{
+	    			if(ruleName.contains(keywordArray[i]))
+	    			{
+	    				numberOfMatched++;
+	    			}
+	    		}
+	    		if(numberOfMatched == keywordArrayLength)
+	    		{
+	    			conditionList.add(ruleName);
+	    		}
+	    	}
+	    	
+	    	return conditionList;
     }
 }
 

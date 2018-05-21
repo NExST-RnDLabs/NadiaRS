@@ -8,14 +8,13 @@ import PropTypes from 'prop-types';
 
 export default class QuestionHashType extends React.Component {
     constructor(props) {
-        super(props);
-        this.state ={
-            answered: false,
-        }
+      super(props);
     }
 
 
-    
+    state ={
+        answered: false,
+    }
 
     // prop types and default values
     static propTypes = {
@@ -45,13 +44,6 @@ export default class QuestionHashType extends React.Component {
     _onCancel=()=>{
         this.setState({inputValue:{}, answered: !this.state.answered});
     }
-
-    _onEditAnswer=()=>{
-        debugger;
-        if(this.props.onEditAnswer){
-            this.props.onEditAnswer(this.props.question);
-        }
-    }
      
     // component render method
     render() {
@@ -65,7 +57,6 @@ export default class QuestionHashType extends React.Component {
                             <Icon name='sort alphabet ascending' />
                             <input />
                         </Input>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                     :
                     <Segment attached='bottom'>

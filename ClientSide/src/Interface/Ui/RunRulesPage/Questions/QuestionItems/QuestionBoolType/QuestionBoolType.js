@@ -8,13 +8,12 @@ import './QuestionBoolType.scss'
 
 export default class QuestionBoolType extends React.Component {
     constructor(props) {
-        super(props);
-        this.state ={
-            answered: false,
-        }
+      super(props);
     }
 
-    
+    state ={
+        answered: false,
+    }
     // prop types and default values
     static propTypes = {
         question: PropTypes.string.isRequired,
@@ -38,13 +37,6 @@ export default class QuestionBoolType extends React.Component {
             this.setState({answered: true, answer: false});
         }
     }
-
-    _onEditAnswer=()=>{
-        debugger;
-        if(this.props.onEditAnswer){
-            this.props.onEditAnswer(this.props.question);
-        }
-    }
      
     // component render method
     render() {
@@ -55,7 +47,6 @@ export default class QuestionBoolType extends React.Component {
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='green'>
                         <Header size = 'medium'>{this.props.question}</Header>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
                 :
@@ -63,7 +54,6 @@ export default class QuestionBoolType extends React.Component {
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='red'>
                         <Header size = 'medium'>{this.props.question}</Header>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
 

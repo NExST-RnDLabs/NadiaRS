@@ -44,9 +44,9 @@ export default class QuestionUrlType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
+        
         if(this.props.onEditAnswer){
-            this.props.onEditAnswer(this.state.question);
+            this.props.onEditAnswer(this.props.question);
         }
     }
      
@@ -58,12 +58,10 @@ export default class QuestionUrlType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 {this.state.answered?
-                    <Segment attached='bottom' inverted color='green'>
-                        <Message className='urlType-bottom-message' attached='bottom' color='olive'>
-                            <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
-                            <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
-                        </Message>
-                    </Segment>
+                    <Message className='answered-urlType-bottom-message' attached='bottom' color='olive'>
+                        <Header className='input-value' size = 'large'>{this.state.inputValue}</Header>
+                        <Button floated='right' color='yellow' onClick={this._onEditAnswer}>Edit</Button>                
+                    </Message>
                     :
                     this.state.inputError?
                         <Segment attached='bottom'>

@@ -20,3 +20,20 @@
         margin-top:2rem;
     }
 }
+
+.answered-dateType-bottom-message{
+    display: flex;
+    height: 7rem;
+    .form.dateField{
+        width: 65.3rem;
+        .fields{
+            width: 100%;
+        }
+    }
+    button{
+        // margin-left: 17.7rem !important;
+        margin: 1.555rem 2rem 0 7rem !important;
+        width: 8rem !important;
+        height: 3.2rem;
+    }
+}

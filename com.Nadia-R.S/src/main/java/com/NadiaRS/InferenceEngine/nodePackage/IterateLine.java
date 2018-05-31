@@ -38,6 +38,10 @@ public class IterateLine extends Node {
 		
 	}
 
+	public InferenceEngine getIterateInferenceEngine() {
+		return this.iterateIE;
+	}
+	
 	public String getGivenListName() {
 		return this.givenListName;
 	}
@@ -60,52 +64,60 @@ public class IterateLine extends Node {
 
 		thisNodeMap.put(this.nodeName, this);
 		thisNodeIdMap.put(this.nodeId, this.nodeName);
-		IntStream.range(1, this.givenListSize+1).forEachOrdered(nTh -> {
-			parentDM.getToChildDependencyList(this.nodeId).stream().forEach((item)->{
-				if(this.getNodeId()+1 != item) // not first question id
-				{
-					Node tempChildNode = parentNodeMap.get(parentNodeIdMap.get(item));
-					LineType lt = tempChildNode.getLineType();
-					
-					Node tempNode = null;
-					String nextNThInString = ordinal(nTh);
-
-					if(lt.equals(LineType.VALUE_CONCLUSION))
+		if(this.givenListSize > 0) 
+		{
+			IntStream.range(1, this.givenListSize+1).forEachOrdered(nTh -> {
+				parentDM.getToChildDependencyList(this.nodeId).stream().forEach((item)->{
+					if(this.getNodeId()+1 != item) // not first question id
 					{
-	    					tempNode = new ValueConclusionLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
+						Node tempChildNode = parentNodeMap.get(parentNodeIdMap.get(item));
+						LineType lt = tempChildNode.getLineType();
+						
+						Node tempNode = null;
+						String nextNThInString = ordinal(nTh);
+
+						if(lt.equals(LineType.VALUE_CONCLUSION))
+						{
+		    					tempNode = new ValueConclusionLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
+						}
+		    				else if(lt.equals(LineType.COMPARISON))
+		    				{
+		    					tempNode = new ComparisonLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
+		    					FactValue tempNodeFv = ((ComparisonLine)tempNode).getRHS(); 
+		    					if(tempNodeFv.getType().equals(FactValueType.STRING))
+		    					{
+		    						FactValue tempFv = FactValue.parse(nextNThInString+" "+this.getVariableName()+" "+tempNodeFv);
+		    						tempNode.setValue(tempFv);
+		    					}
+		    				}
+		    				else if(lt.equals(LineType.EXPR_CONCLUSION))
+						{
+							tempNode = new ExprConclusionLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
+						}
+
+	    				
+						thisNodeMap.put(tempNode.getNodeName(), tempNode);
+						thisNodeIdMap.put(tempNode.getNodeId(), tempNode.getNodeName());
+						tempDependencyList.add(new Dependency(this, tempNode, parentDM.getDependencyType(this.nodeId, item)));
+						
+						createIterateNodeSetAux(parentDM, parentNodeMap, parentNodeIdMap, thisNodeMap, thisNodeIdMap, tempDependencyList, item, tempNode.getNodeId(), nextNThInString);
+
 					}
-	    				else if(lt.equals(LineType.COMPARISON))
-	    				{
-	    					tempNode = new ComparisonLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
-	    					FactValue tempNodeFv = ((ComparisonLine)tempNode).getRHS(); 
-	    					if(tempNodeFv.getType().equals(FactValueType.STRING))
-	    					{
-	    						FactValue tempFv = FactValue.parse(nextNThInString+" "+this.getVariableName()+" "+tempNodeFv);
-	    						tempNode.setValue(tempFv);
-	    					}
-	    				}
-	    				else if(lt.equals(LineType.EXPR_CONCLUSION))
+					else // first question id
 					{
-						tempNode = new ExprConclusionLine(nextNThInString+" "+this.getVariableName()+" "+tempChildNode.getNodeName(), tempChildNode.getTokens());
+						Node firstIterateQuestionNode = parentNodeSet.getNodeByNodeId(parentNodeSet.getDependencyMatrix().getToChildDependencyList(this.getNodeId()).stream().min((id1, id2) -> Integer.compare(id1, id2)).get());
+						thisNodeMap.put(firstIterateQuestionNode.getNodeName(), firstIterateQuestionNode);
+						thisNodeIdMap.put(item, firstIterateQuestionNode.getNodeName());
+						tempDependencyList.add(new Dependency(this, firstIterateQuestionNode, parentDM.getDependencyType(this.nodeId, item)));
 					}
-
-    				
-					thisNodeMap.put(tempNode.getNodeName(), tempNode);
-					thisNodeIdMap.put(tempNode.getNodeId(), tempNode.getNodeName());
-					tempDependencyList.add(new Dependency(this, tempNode, parentDM.getDependencyType(this.nodeId, item)));
-					
-					createIterateNodeSetAux(parentDM, parentNodeMap, parentNodeIdMap, thisNodeMap, thisNodeIdMap, tempDependencyList, item, tempNode.getNodeId(), nextNThInString);
-
-				}
-				else // first question id
-				{
-					Node firstIterateQuestionNode = parentNodeSet.getNodeByNodeId(parentNodeSet.getDependencyMatrix().getToChildDependencyList(this.getNodeId()).stream().min((id1, id2) -> Integer.compare(id1, id2)).get());
-					thisNodeMap.put(firstIterateQuestionNode.getNodeName(), firstIterateQuestionNode);
-					thisNodeIdMap.put(item, firstIterateQuestionNode.getNodeName());
-					tempDependencyList.add(new Dependency(this, firstIterateQuestionNode, parentDM.getDependencyType(this.nodeId, item)));
-				}
-			});			
-		});
+				});			
+			});
+		}
+		else 
+		{
+			
+		}
+		
 		
 		int numberOfRules = Node.getStaticNodeId();
 		int[][] dependencyMatrix = new int[numberOfRules][numberOfRules];
@@ -281,7 +293,7 @@ public class IterateLine extends Node {
 					HashMap<String,FactValue> iterateWorkingMemory = this.iterateIE.getAssessmentState().getWorkingMemory();
 					HashMap<String,FactValue> parentWorkingMemory = parentAst.getWorkingMemory();
 					
-					transeferFactValue(iterateWorkingMemory, parentWorkingMemory);
+					transferFactValue(iterateWorkingMemory, parentWorkingMemory);
 					
 				}
 				
@@ -297,10 +309,10 @@ public class IterateLine extends Node {
 	 */
 	public <T> void iterateFeedAnswers(Node targetNode, String questionName, T nodeValue, FactValueType nodeValueType, NodeSet parentNodeSet, AssessmentState parentAst, Assessment ass)
 	{
-		
+		Node firstIterateQuestionNode = parentNodeSet.getNodeByNodeId(parentNodeSet.getDependencyMatrix().getToChildDependencyList(this.getNodeId()).stream().min((id1, id2) -> Integer.compare(id1, id2)).get());
 		if(this.iterateNodeSet == null)
 		{
-			Node firstIterateQuestionNode = parentNodeSet.getNodeByNodeId(parentNodeSet.getDependencyMatrix().getToChildDependencyList(this.getNodeId()).stream().min((id1, id2) -> Integer.compare(id1, id2)).get());
+			
 			if(questionName.equals(firstIterateQuestionNode.getNodeName()))
 			{
 				this.givenListSize = Integer.parseInt(nodeValue.toString());
@@ -311,18 +323,36 @@ public class IterateLine extends Node {
 			{
 				this.iterateIE.setAssessment(new Assessment(this.iterateNodeSet, this.getNodeName()));
 			}
-		} 
-		this.iterateIE.getAssessment().setNodeToBeAsked(targetNode);
-		this.iterateIE.feedAnswerToNode(targetNode, questionName, nodeValue, nodeValueType, this.iterateIE.getAssessment());
+		}
 		
+		if(targetNode.getNodeName().equals(firstIterateQuestionNode.getNodeName()) && Integer.parseInt(nodeValue.toString()) == 0) 
+		{
+			this.iterateIE.getAssessmentState().setFact(this.nodeName, FactValue.parse(false));
+		}
+		else
+		{
+			this.iterateIE.getAssessment().setNodeToBeAsked(targetNode);
+			this.iterateIE.feedAnswerToNode(targetNode, questionName, nodeValue, nodeValueType, this.iterateIE.getAssessment());			
+		}
 		HashMap<String,FactValue> iterateWorkingMemory = this.iterateIE.getAssessmentState().getWorkingMemory();
 		HashMap<String,FactValue> parentWorkingMemory = parentAst.getWorkingMemory();
-
-		transeferFactValue(iterateWorkingMemory, parentWorkingMemory);
+		
+		transferSummaryList(parentAst);
+		transferFactValue(iterateWorkingMemory, parentWorkingMemory);
 		
 	}
 	
-	public void transeferFactValue(HashMap<String, FactValue> workingMemory_one, HashMap<String, FactValue> workingMemory_two)
+	
+	public void transferSummaryList(AssessmentState parentAst) {
+		List<String> iterateSummaryList = this.iterateIE.getAssessmentState().getSummaryList();
+		List<String> parentSummaryList = parentAst.getSummaryList();
+		iterateSummaryList.stream().forEach(questionName->{
+			if(!parentSummaryList.contains(questionName)) {
+				parentSummaryList.add(questionName);
+			}
+		});
+	}
+	public void transferFactValue(HashMap<String, FactValue> workingMemory_one, HashMap<String, FactValue> workingMemory_two)
 	{
 		workingMemory_one.keySet().stream().forEach(key->{
 			FactValue tempFv = workingMemory_one.get(key);
@@ -364,7 +394,6 @@ public class IterateLine extends Node {
 	    		}
 		}
 		
-    		
     		return questionNode;
 	}
 	
@@ -421,7 +450,7 @@ public class IterateLine extends Node {
 																							    .collect(Collectors.toList());
 
 
-			if(this.givenListSize == numberOfDeterminedSecondLevelNode.size() && this.iterateIE.hasAllMandatoryChildAnswered(this.nodeId))
+			if((this.givenListSize == numberOfDeterminedSecondLevelNode.size() && this.iterateIE.hasAllMandatoryChildAnswered(this.nodeId))|| this.iterateIE.getAssessmentState().getWorkingMemory().containsKey(this.nodeName))
 			{
 				canBeSelfEvaluated = true;
 			}

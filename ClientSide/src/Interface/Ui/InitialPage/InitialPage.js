@@ -61,6 +61,19 @@ export default class InitialPage extends React.Component {
                             </Card.Meta>
                     </Card.Content>
                     </Card>
+                    <Card as= {Link} to='/TextMessagePage'>
+                        <Card.Content textAlign='center'>
+                            <Card.Header>
+                                Text Message Nadia
+                            </Card.Header>
+                            <Card.Description>
+                                <Icon color='blue' name='comments' size='massive' />
+                            </Card.Description>
+                            <Card.Meta>
+                                Dialogue
+                            </Card.Meta>
+                        </Card.Content>
+                    </Card>
                     <Card as= {Link} to='/'>
                         <Card.Content textAlign='center'>
                             <Card.Header>

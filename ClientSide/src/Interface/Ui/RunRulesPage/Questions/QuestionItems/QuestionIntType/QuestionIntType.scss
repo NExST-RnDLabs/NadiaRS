@@ -8,3 +8,19 @@
         margin: 1.7% 3% 0 3%;
     }
 }
+
+.answered-intType-bottom-message{
+    display: flex;
+    height: 7rem;
+    .input-value{
+        width: 65.3rem;
+        padding: 1.3rem 5rem 0 35rem !important; 
+        // margin: 1.3rem 0 0 0 !important;
+    }
+    button{
+        margin-left: 6.8rem !important;
+        margin-top: .8rem !important;
+        width: 8rem !important;
+        height: 3.2rem;
+    }
+}

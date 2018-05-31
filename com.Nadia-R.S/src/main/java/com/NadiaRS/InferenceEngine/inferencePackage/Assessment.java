@@ -1,5 +1,8 @@
 package com.NadiaRS.InferenceEngine.inferencePackage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.NadiaRS.InferenceEngine.nodePackage.Node;
 import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
 
@@ -22,6 +25,7 @@ public class Assessment {
 	 * However, better way needs to be found.
 	 */
 	private Node auxNodeToBeAsked;
+	private List<Integer> nodeIdListOfToBeAsked;
 	
 	public Assessment()
 	{
@@ -33,6 +37,7 @@ public class Assessment {
 		goalNodeIndex = ns.findNodeIndex(goalNodeName);
 		nodeToBeAsked = null;
 		auxNodeToBeAsked = null; 
+		nodeIdListOfToBeAsked = new ArrayList<>();
 
 	}
 	
@@ -41,6 +46,8 @@ public class Assessment {
 		goalNode = nodeSet.getNodeMap().get(goalNodeName);
 		goalNodeIndex = nodeSet.findNodeIndex(goalNodeName);
 		nodeToBeAsked = null; 
+		auxNodeToBeAsked = null; 
+		nodeIdListOfToBeAsked = new ArrayList<>();
 	}
 
 	public Node getGoalNode()
@@ -55,6 +62,11 @@ public class Assessment {
 	public void setNodeToBeAsked(Node nodeToBeAsked)
 	{
 		this.nodeToBeAsked = nodeToBeAsked;
+		if(!this.nodeIdListOfToBeAsked.contains(nodeToBeAsked.getNodeId()))
+		{
+			this.nodeIdListOfToBeAsked.add(nodeToBeAsked.getNodeId());
+		}
+		
 	}
 	public Node getNodeToBeAsked()
 	{
@@ -64,11 +76,17 @@ public class Assessment {
 	public void setAuxNodeToBeAsked(Node auxNodeToBeAsked)
 	{
 		this.auxNodeToBeAsked = auxNodeToBeAsked;
+
 	}
 	public Node getAuxNodeToBeAsked()
 	{
 		return this.auxNodeToBeAsked;
 	}
 	
-
+	public void setNodeIdListToBeAsked(List<Integer> nodeIdListToBeAsked) {
+		this.nodeIdListOfToBeAsked = nodeIdListToBeAsked;
+	}
+	public List<Integer> getNodeIdListToBeAsked(){
+		return this.nodeIdListOfToBeAsked;
+	}
 }

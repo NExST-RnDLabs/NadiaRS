@@ -28,7 +28,7 @@ export default class AnsweredQuestionUrlType extends React.Component {
     }
    
     _onEditAnswer=()=>{
-        debugger;
+        
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.state.question);
         }
@@ -42,7 +42,7 @@ export default class AnsweredQuestionUrlType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 <Segment attached='bottom' inverted color='green'>
-                    <Message className='urlType-bottom-message' attached='bottom' color='olive'>
+                    <Message className='answered-urlType-bottom-message' attached='bottom' color='olive'>
                         <Header floated='right' size = 'large'>{this.state.answer}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Message>

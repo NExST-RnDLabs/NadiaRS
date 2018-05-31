@@ -84,6 +84,7 @@ class RuleComponent extends React.Component {
         }
     }
 
+
     _createFields=()=>{
         let fields;
         let buttonGroup;

@@ -8,6 +8,7 @@ import {Form, Icon , Button, Segment , Header , Divider, List, Message} from 'se
 
 //component
 import QuestionItem from '../RunRulesPage/Questions/QuestionItem';
+import AnsweredQuestionItem from '../RunRulesPage/Questions/AnsweredQuestionItem';
 //application
 import Nadia from 'src/Application/Nadia';
 
@@ -186,10 +187,12 @@ class RuleExecutionPage extends React.Component {
     _onEditAnswer=(question)=>{
       this.setState({questionnaire:[],questions:[]});
       Nadia.command.editAnswer(question,(res)=>{
+        debugger;
         if(res.hasMoreQuestion == 'true'){
+          let tempQuestionnaire = Clone(this.state.questionnaire);
           res.workingMemory.map((item)=>{
             let answeredQuestion = <AnsweredQuestionItem key={item.question} questionData = {item}  editAnswer={this._onEditAnswer}/>;
-            let tempQuestionnaire = Clone(this.state.questionnaire);
+            
             tempQuestionnaire.unshift(answeredQuestion);
           });
           this.setState({questionnaire: tempQuestionnaire});

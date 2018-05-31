@@ -42,7 +42,7 @@ export default class AnsweredQuestionHashType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 <Segment attached='bottom' inverted color='green'>
-                    <Message className='hashType-bottom-message' attached='bottom' color='olive'>
+                    <Message className='answered-hashType-bottom-message' attached='bottom' color='olive'>
                         <Header floated='right' size = 'large'>{this.state.answer}</Header>
                     </Message>
                     <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>

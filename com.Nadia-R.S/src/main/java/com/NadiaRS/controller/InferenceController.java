@@ -82,18 +82,20 @@ public class InferenceController {
 		
 		String questionName = question.get("question").asText();
 		
-		ie.editAnswer(questionName);
+		List<String> questionList = ie.editAnswer(questionName);
 		
 		ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		ArrayNode questionsAndAnswers = objectNode.putArray("workingMemory");
 		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
-		tempWorkingMemory.keySet().stream().forEach(key->{
+		
+		questionList.stream().forEachOrdered(eachQuestion->{
 			ObjectNode subObjectNode = new ObjectMapper().createObjectNode();
-			subObjectNode.put("questionText", key);
-			subObjectNode.put("answer", tempWorkingMemory.get(key).getValue().toString());
-			subObjectNode.put("answerValueType", tempWorkingMemory.get(key).getType().toString());
+			subObjectNode.put("questionText", eachQuestion);
+			subObjectNode.put("answer", tempWorkingMemory.get(eachQuestion).getValue().toString());
+			subObjectNode.put("answerValueType", tempWorkingMemory.get(eachQuestion).getType().toString());
 			questionsAndAnswers.add(subObjectNode);
 		});
+		
 		if(ie.getAssessmentState().getWorkingMemory().get(ass.getGoalNode().getNodeName())==null  || !ie.getAssessmentState().allMandatoryNodeDetermined())
 		{
 			objectNode.put("hasMoreQuestion", "true");
@@ -173,17 +175,53 @@ public class InferenceController {
 		HashMap<String,FactValueType> questionFvtMap = ie.findTypeOfElementToBeAsked(nextQuestionNode);
 		List<String> questionnaire = ie.getQuestionsFromNodeToBeAsked(nextQuestionNode);
 		List<ObjectNode> questionnaireList = new ArrayList<>();
+		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
 		questionnaire.stream().forEachOrdered((question)->{
-			ObjectNode objectNode = new ObjectMapper().createObjectNode();
-			objectNode.put("questionText", question);
-			objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
-			questionnaireList.add(objectNode);
+			if(!tempWorkingMemory.containsKey(question)) {
+				ObjectNode objectNode = new ObjectMapper().createObjectNode();
+				objectNode.put("questionText", question);
+				objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
+				questionnaireList.add(objectNode);
+			}
 		});
 		
 
 
 		ObjectNode[] onArray = questionnaireList.stream().toArray(ObjectNode[]::new);
 		return onArray;
+	}
+	
+	@RequestMapping(value="readFileSetInferenceEngine", method = RequestMethod.GET)
+	@ResponseBody
+	public ObjectNode readFileSetInferenceEngine(HttpServletRequest httpReq, String filePath)
+	{	
+		
+		InferenceEngine ie = new InferenceEngine();
+		RuleSetReader ilr = new RuleSetReader();
+		ilr.setStreamSource(getClass().getClassLoader().getResourceAsStream(filePath));
+		RuleSetParser isf = new RuleSetParser();
+		RuleSetScanner rsc;
+		
+		rsc = new RuleSetScanner(ilr,isf);
+		rsc.scanRuleSet();
+		rsc.establishNodeSet();
+
+		ie.setNodeSet(isf.getNodeSet());
+		ie.getNodeSet().setNodeSetName(filePath.split(".")[0]);
+
+		Assessment ass = new Assessment();
+
+		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
+		ie.setAssessment(ass);
+		
+		httpReq.getSession().setAttribute("inferenceEngine", ie);
+		httpReq.getSession().setAttribute("assessment", ass);
+		
+		ObjectNode on = new ObjectMapper().createObjectNode();
+		on.put("InferenceEngine", "created");
+		
+		return on;
+		
 	}
 	
 	@RequestMapping(value="setInferenceEngine", method = RequestMethod.GET)

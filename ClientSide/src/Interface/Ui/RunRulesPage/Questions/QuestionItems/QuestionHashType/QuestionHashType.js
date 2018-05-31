@@ -47,7 +47,6 @@ export default class QuestionHashType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }
@@ -60,13 +59,10 @@ export default class QuestionHashType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 {this.state.answered?
-                    <Segment attached='bottom' inverted color='green'>
-                        <Input disabled iconPosition='left' placeholder='Please enter hashed values' value={this.state.inputValue}>
-                            <Icon name='sort alphabet ascending' />
-                            <input />
-                        </Input>
+                    <Message className='answered-hashType-bottom-message' attached='bottom' color='olive'>
+                        <Header className='input-value' size = 'large'>{this.state.inputValue}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
-                    </Segment>
+                    </Message>
                     :
                     <Segment attached='bottom'>
                         {this.state.inputError?

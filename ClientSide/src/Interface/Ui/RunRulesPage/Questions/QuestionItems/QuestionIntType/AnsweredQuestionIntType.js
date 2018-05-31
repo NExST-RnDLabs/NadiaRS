@@ -36,8 +36,8 @@ export default class AnsweredQuestionIntType extends React.Component {
         return (
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Message className='intType-bottom-message' attached='bottom' color='olive'>
-                    <Header floated='right' size = 'large'>{this.state.answer}</Header>
+                <Message className='answered-intType-bottom-message' attached='bottom' color='olive'>
+                    <Header className='input-value' size = 'large'>{this.state.answer}</Header>
                     <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                 </Message>
             </Segment.Group>

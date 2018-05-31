@@ -46,7 +46,6 @@ export default class QuestionDoubleType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }
@@ -56,16 +55,13 @@ export default class QuestionDoubleType extends React.Component {
     render() {
         let question = this.props.question+'?';
         return (
-            <Segment.Group raised className='questionIntItem'>
+            <Segment.Group raised className='questionDoubleItem'>
                <Message attached='top' info header= {question}/>
                {this.state.answered?
-                    <Segment attached='bottom' inverted color='green'>
-                        <Input  iconPosition='left' disabled value={this.state.inputValue}>
-                            <Icon name='sort numeric ascending' />
-                            <input />
-                        </Input>
+                    <Message className='answered-doubleType-bottom-message' attached='bottom' color='olive'>
+                        <Header className='input-value' size = 'large'>{this.state.inputValue}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
-                    </Segment>   
+                    </Message>
                 :
                     <Segment attached='bottom'>
                         {this.state.inputError?

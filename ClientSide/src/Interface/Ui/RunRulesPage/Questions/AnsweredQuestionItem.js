@@ -53,39 +53,39 @@ export default class AnsweredQuestionItem extends React.Component {
         let questionItem;
         let questionText = this.props.questionData.questionText;
         let answer = this.props.questionData.answer;
-        switch(this.props.questionData.answerValueType)
+        switch(this.props.questionData.answerValueType.toLowerCase())
         {
             case 'integer':
-                questionItem = <AnsweredQuestionIntType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionIntType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
             
             case 'boolean':
-                questionItem = <AnsweredQuestionBoolType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionBoolType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'date':
-                questionItem = <AnsweredQuestionDateType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionDateType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'defistring':
             case 'string':
-                questionItem = <AnsweredQuestionStringType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionStringType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'double':
-                questionItem = <AnsweredQuestionDoubleType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionDoubleType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'hash':
-                questionItem = <AnsweredQuestionHashType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionHashType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'url':
-                questionItem = <AnsweredQuestionUrlType question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionUrlType key ={questionText} question = {questionText} answer ={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'uuid':
-                questionItem = <AnsweredQuestionUuidType question = {questionText} answer={answer} onEditAnswer={this._onEditAnswer}/>
+                questionItem = <AnsweredQuestionUuidType key ={questionText} question = {questionText} answer={answer} onEditAnswer={this._onEditAnswer}/>
                 break;
         }
         return questionItem;

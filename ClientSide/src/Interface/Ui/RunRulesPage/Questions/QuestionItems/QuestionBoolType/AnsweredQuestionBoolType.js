@@ -30,7 +30,6 @@ export default class AnsweredQuestionBoolType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }
@@ -40,18 +39,18 @@ export default class AnsweredQuestionBoolType extends React.Component {
     render() {
         return (
             this.state.answer == 'true'?
-                <Segment.Group raised className='questionIntItem'>
+                <Segment.Group raised className='answered-questionBoolItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='green'>
-                        <Header size = 'medium'>{this.props.question}</Header>
+                        <Header className = 'question' size = 'medium'>{this.props.question}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
                 :
-                <Segment.Group raised className='questionIntItem'>
+                <Segment.Group raised className='answered-questionBoolItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='red'>
-                        <Header size = 'medium'>{this.props.question}</Header>
+                        <Header className = 'question' size = 'medium'>{this.props.question}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>

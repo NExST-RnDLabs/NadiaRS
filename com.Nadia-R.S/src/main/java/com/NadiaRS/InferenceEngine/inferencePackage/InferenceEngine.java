@@ -23,6 +23,8 @@ import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
 import com.NadiaRS.InferenceEngine.nodePackage.ValueConclusionLine;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 
 
@@ -705,7 +707,7 @@ public class InferenceEngine {
     					}
     					else if(lineType.equals(LineType.COMPARISON) 
     							&& ast.getWorkingMemory().containsKey(((ComparisonLine)tempNode).getLHS())
-    							&& ast.getWorkingMemory().containsKey(((ComparisonLine)tempNode).getRHS().getValue().toString())) 
+    							&& (((ComparisonLine)tempNode).getRHS().getType().equals(FactValueType.STRING)? ast.getWorkingMemory().containsKey(((ComparisonLine)tempNode).getRHS().getValue().toString()):true)) 
         				{
     						FactValue fv = tempNode.selfEvaluate(ast.getWorkingMemory(), scriptEngine);
 
@@ -1524,20 +1526,19 @@ public class InferenceEngine {
 		return tempSummaryList.stream().toArray(ObjectNode[]::new);
     }
 	
-	public void editAnswer(String question) 
+	public List<String> editAnswer(String question) 
 	{
-		List<String> tempSummaryList = this.getAssessmentState().getSummaryList();
-		int indexOfQuestionToBeEdited = tempSummaryList.indexOf(question);
 		HashMap<String, FactValue> tempWorkingMemory = this.getAssessmentState().getWorkingMemory();
-				
+		List<String> questionList = new ArrayList<>(); // this list is to track questions being asked in GUI		
 		/*
 		 * following two lines are to reset 'exclusiveList' and 'inclusiveList' which are for tracking all relevant branches by cutting dependencies
 		 */
 		this.getAssessmentState().setExclusiveList(new ArrayList<String>());
 		this.getAssessmentState().setInclusiveList(new ArrayList<String>());
-		
+		this.getAssessmentState().setSummaryList(new ArrayList<String>());
+		this.getAssessmentState().setWorkingMemory(new HashMap<String, FactValue>());
+		this.getNodeSet().transferFactMapToWorkingMemory(this.getAssessmentState().getWorkingMemory());// this line is important due to all preset facts like all lists need transfering into workingMemory;
 		tempWorkingMemory.remove(question); //need to remove values of 'question' key from workingMemory because it needs editing
-		
 		/*
 		 * the reason of doing following lines is to re-establish 'inclusiveList' and 'exclusiveList'
 		 * which manage cutting all irrelevant branches within the rule tree based on fed answers.
@@ -1545,24 +1546,62 @@ public class InferenceEngine {
 		 * don't need to be re-established because those may not irrelevant to effect decision at the end unless they are appeared
 		 * during the questionnaire after all re-establishment.
 		 */
-		IntStream.range(0, tempSummaryList.size()).forEachOrdered(index->{
-			if(index < indexOfQuestionToBeEdited) {
-				Node node = this.getNextQuestion(this.getAssessment());
-				if(ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE))
-				{
-					ass.setAuxNodeToBeAsked(node);
-				}
-				List<String> questionnaireFromNode = this.getQuestionsFromNodeToBeAsked(node);
-				questionnaireFromNode.stream().forEachOrdered(questionItem->{
-					if(tempSummaryList.contains(questionItem))
-					{
-						FactValue fv = tempWorkingMemory.get(questionItem);
-						this.feedAnswerToNode(node, questionItem, fv.getValue().toString(), fv.getType(), ass);
-					}
-				});
+		int targetNodeIndex = this.getAssessment().getNodeIdListToBeAsked().size()-1;;
+		for(int i = 0; i < targetNodeIndex ; i++)
+		{
+			Node tempNode = this.nodeSet.getNodeByNodeId(this.getAssessment().getNodeIdListToBeAsked().get(i));
+			int index = this.nodeSet.getNodeSortedList().indexOf(tempNode);
+//			if(this.nodeSet.getNodeByNodeId(this.getAssessment().getNodeIdListToBeAsked().get(i)).getLineType().equals(LineType.ITERATE))
+//			{
+//				IterateLine iterateNode = (IterateLine)this.nodeSet.getNodeByNodeId(this.getAssessment().getNodeIdListToBeAsked().get(i));
+//				iterateNode.getIterateInferenceEngine().getAssessmentState().setExclusiveList(new ArrayList<String>());
+//				iterateNode.getIterateInferenceEngine().getAssessmentState().setInclusiveList(new ArrayList<String>());
+//				iterateNode.getIterateInferenceEngine().getAssessmentState().setSummaryList(new ArrayList<String>());
+//				iterateNode.getIterateInferenceEngine().getAssessmentState().setWorkingMemory(new HashMap<String, FactValue>());
+//				
+//			}
+			
+			Node node = this.getNextQuestion(ass);
+			
+			
+			List<String>  questionnaireFromNode = this.getQuestionsFromNodeToBeAsked(node);
+			
+			if(questionnaireFromNode.contains(question)) 
+			{
+				targetNodeIndex = i;
 			}
-		});
-		
+			
+			if(i <= targetNodeIndex) 
+			{
+
+				if(this.ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE)) 
+				{
+					questionList.addAll(((IterateLine)this.ass.getNodeToBeAsked()).getIterateInferenceEngine().editAnswer(question));
+				}
+				else
+				{
+					final String finalQuestion = question;
+					questionnaireFromNode.stream().forEachOrdered(questionItem->{
+						if(!finalQuestion.equals(questionItem))
+						{
+							FactValue fv = tempWorkingMemory.get(questionItem);
+							String fvString = fv.getValue().toString();
+							if(fv.getType().equals(FactValueType.DATE)) 
+							{
+								String tempDateFv = fv.getValue().toString();
+								String[] tempDateFvArray = tempDateFv.split("-");
+								fvString = tempDateFvArray[2]+"/"+tempDateFvArray[1]+"/"+tempDateFvArray[0];
+							}
+							questionList.add(questionItem);
+							this.feedAnswerToNode(node, questionItem, fvString, fv.getType(), ass);
+						}
+					});
+				}
+			
+			}
+		}
+
+		return questionList;
 	}
 	
     /*

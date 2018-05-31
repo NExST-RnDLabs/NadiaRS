@@ -46,7 +46,7 @@ export default class QuestionUuidType extends React.Component {
 
     _onEditAnswer=()=>{
         if(this.props.onEditAnswer){
-            this.props.onEditAnswer(this.state.question);
+            this.props.onEditAnswer(this.props.question);
         }
     }
      
@@ -58,12 +58,10 @@ export default class QuestionUuidType extends React.Component {
                 <Message attached='top' info header= {question}/>
                 
                 {this.state.answered?
-                    <Segment attached='bottom' inverted color='green'>
-                         <Message className='uuidType-bottom-message' attached='bottom' color='olive'>
-                            <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
-                            <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
-                        </Message>
-                    </Segment>
+                    <Message className='answered-uuidType-bottom-message' attached='bottom' color='olive'>
+                        <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
+                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
+                    </Message>
                     :
                     this.state.inputError?
                         <Segment attached='bottom'>

@@ -19,6 +19,7 @@ import ViewRulesPage from './ViewRulesPage/ViewRulesPage';
 import RuleEditorPage from './RuleEditorPage/RuleEditorPage';
 import RuleExecutionPage from './RuleExecutionPage/RuleExecutionPage';
 import MachineLearningOnPage from './MachineLearningOnPage/MachineLearningOnPage';
+import TextMessagePage from './TextMessagePage/TextMessagePage';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -76,6 +77,7 @@ export default class App extends React.Component {
                     <Route path='/RuleEditorPage' component={()=> <RuleEditorPage key={Date.now()} ruleName={this.state.selectedRule}/>}/>
                     <Route path='/RuleExecutionPage' component={()=> <RuleExecutionPage key={Date.now()} ruleName={this.state.selectedRule} machineLearningOn={this.state.machineLearningOn}/>}/>
                     <Route path='/MachineLearningOnPage' component={()=> <MachineLearningOnPage key={Date.now()} machineLearningOn={this.state.machineLearningOn} onChange={this._machineLearningOn}/>}/>
+                    <Route path='/TextMessagePage' component={()=> <TextMessagePage key={Date.now()} onSelectRule={this._onSelectRule}/>} />
                   </Switch>
                 </Dimmer.Dimmable>
               </Sidebar.Pusher>

@@ -123,7 +123,7 @@ public class NodeSet {
 	}
 	public HashMap<String, FactValue> transferFactMapToWorkingMemory(HashMap<String, FactValue> workingMemory)
 	{
-		inputMap.forEach((k,v)->workingMemory.put(k, v));
+		factMap.forEach((k,v)->workingMemory.put(k, v));
 		
 		return workingMemory;
 	}

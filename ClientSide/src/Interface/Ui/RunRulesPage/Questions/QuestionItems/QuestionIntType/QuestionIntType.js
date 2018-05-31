@@ -46,7 +46,6 @@ export default class QuestionIntType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }
@@ -59,8 +58,8 @@ export default class QuestionIntType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 {this.state.answered?
-                    <Message className='intType-bottom-message' attached='bottom' color='olive'>
-                        <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
+                    <Message className='answered-intType-bottom-message' attached='bottom' color='olive'>
+                        <Header className='input-value' size = 'large'>{this.state.inputValue}</Header>
                         <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Message>
                     :

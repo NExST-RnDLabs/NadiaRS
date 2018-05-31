@@ -29,7 +29,7 @@ export default class QuestionUuidType extends React.Component {
     }
    
     _onEditAnswer=()=>{
-        debugger;
+        
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.state.question);
         }

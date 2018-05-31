@@ -1,10 +1,41 @@
 @import 'src/Interface/Styles/Styles';
 
-.ui.raised.segments.questionIntItem{
+.ui.raised.segments.questionBoolItem{
+    .ui.bottom.attached.segment{
+        height: 7rem;      
+        display: flex;
+        .question{
+            font-size: 2rem;
+            width: 65rem;
+            padding: 1.4rem 8rem 0 14rem !important; 
+        }
+        .or{
+            margin-top:.9rem;
+        }
+        button{
+            // margin-left: 6.8rem !important;
+            margin-top: .8rem !important;
+            width: 8rem !important;
+            height: 3.2rem;
+        }
+    }
+}
+
+.answered-questionBoolItem{
     .ui.bottom.attached.segment{
         height: 7rem;
-        .question-bool-type-buttons{
-            margin-right: 2rem;
+        display: flex;
+        .question{
+            font-size: 2rem;
+            width: 65rem;
+            padding: 1.4rem 8rem 0 14rem !important; 
         }
+        button{
+            margin-left: 7.5rem !important;
+            margin-top: .8rem !important;
+            width: 8rem !important;
+            height: 3.2rem;
+        }
+        
     }
 }

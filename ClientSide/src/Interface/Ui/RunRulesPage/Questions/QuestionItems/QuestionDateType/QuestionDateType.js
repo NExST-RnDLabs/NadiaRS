@@ -78,7 +78,6 @@ export default class QuestionDateType extends React.Component {
     }
      
     _onEditAnswer=()=>{
-        debugger;
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }
@@ -91,15 +90,15 @@ export default class QuestionDateType extends React.Component {
             this.state.answered?
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Message className='dateField' attached='bottom' color='olive'>
+                <Message className='answered-dateType-bottom-message' attached='bottom' color='olive'>
                     <DateInputFields 
                             readOnly
                             dayInputValue= {this.state.dayInputValue}
                             monthInputValue= {this.state.monthInputValue}
                             yearInputValue= {this.state.yearInputValue}
                             dateInvalid= {this.state.dateInvalid}/>
+                    <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
                 </Message>
-                <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
             </Segment.Group>
             :
             <Segment.Group raised className='questionIntItem'>

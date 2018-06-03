@@ -204,6 +204,8 @@ public class InferenceController {
 		
 		rsc = new RuleSetScanner(ilr,isf);
 		rsc.scanRuleSet();
+		
+
 		rsc.establishNodeSet();
 
 		ie.setNodeSet(isf.getNodeSet());

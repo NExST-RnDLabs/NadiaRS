@@ -236,7 +236,7 @@ public class InferenceEngine {
 	    						});
 	    					}
 	    				}
-	    				if(nodeId != ass.getGoalNode().getNodeId() && node.getLineType().equals(LineType.ITERATE) && !ast.getWorkingMemory().containsKey(node.getNodeName()))
+	    				if(nodeId != ass.getGoalNode().getNodeId() && node.getLineType().equals(LineType.ITERATE) && ast.getInclusiveList().contains(node.getNodeName()) && !ast.getWorkingMemory().containsKey(node.getNodeName()))
 	    				{	
 	    					FactValue givenListNameFv = this.ast.getWorkingMemory().get(((IterateLine)node).getGivenListName());
 	    					String givenListName = "";
@@ -417,6 +417,14 @@ public class InferenceEngine {
 	    		}
 	    		factValueTypeMap.put(nodeVariableName, fvt);
 	    		
+	    	}
+	    	else if(ass.getGoalNode().equals(node) && LineType.EXPR_CONCLUSION.equals(nodeLineType))// this case should be used only if the node (parameter) is a goal rule at this point of time(02/June/2018)
+	    	{
+	    		if(ast.getWorkingMemory().containsKey(nodeVariableName))
+	    		{
+	    			fvt= ast.getWorkingMemory().get(nodeVariableName).getType();
+	    			factValueTypeMap.put(node.getNodeName(), fvt);
+	    		}
 	    	}
 	    	
 	    	return factValueTypeMap;
@@ -876,7 +884,7 @@ public class InferenceEngine {
 	    					}
 		    				canDetermine = true;
 		    				
-		    				handleValuConclusionLineTrueCase(node, isPlainStatementFormat, nodeFactValueInString);
+//		    				handleValuConclusionLineTrueCase(node, isPlainStatementFormat, nodeFactValueInString);
 		    				
 		    			}
 		    			else if(isAllRelevantChildDependencyDetermined(node, orToChildDependencies) && !isAnyOrDependencyTrue(node, orToChildDependencies)) //FALSE case
@@ -914,7 +922,7 @@ public class InferenceEngine {
 	    					}
 		    				canDetermine = true;
 		    				
-		    				handleValueConclusionLineFalseCase(node, isPlainStatementFormat, nodeFactValueInString);	    					
+//		    				handleValueConclusionLineFalseCase(node, isPlainStatementFormat, nodeFactValueInString);	    					
 		    			}				
 		    		}
 	    		}	    		
@@ -1186,6 +1194,9 @@ public class InferenceEngine {
 	        	if(!trueOrChildList.isEmpty())
 	        	{
 	        		isAnyOrDependencyTrue = true;
+	        		boolean isPlainStatementFormat = ((ValueConclusionLine)node).getIsPlainStatementFormat();
+	        		String nodeFactValueInString = node.getFactValue().getValue().toString();
+	        		handleValuConclusionLineTrueCase(node, isPlainStatementFormat, nodeFactValueInString);
 	        		orChildDependencies.stream().forEachOrdered(i -> {
 	        			trueOrChildList.stream().forEachOrdered(n -> {
 	        				if(i != n)
@@ -1202,6 +1213,7 @@ public class InferenceEngine {
 	public void trimDependency(Node parentNode, int childNodeId)
     {
 		int parentNodeId = parentNode.getNodeId();
+		String tempChildNode = nodeSet.getNodeIdMap().get(childNodeId);
 		int dpType = nodeSet.getDependencyMatrix().getDependencyMatrixArray()[parentNodeId][childNodeId];
 		int mandatoryDependencyType = DependencyType.getMandatory();
 		List<Integer> parentDependencyList = nodeSet.getDependencyMatrix().getFromParentDependencyList(childNodeId);
@@ -1278,6 +1290,10 @@ public class InferenceEngine {
             if(falseAndList.size() > 0)
             {
 	    	        	isAnyAndDependencyFalse = true;
+	    	        	boolean isPlainStatementFormat = ((ValueConclusionLine)node).getIsPlainStatementFormat();
+	    	        	String nodeFactValueInString = node.getFactValue().getValue().toString();
+	    	        	handleValueConclusionLineFalseCase(node, isPlainStatementFormat, nodeFactValueInString);
+	    	        	
 	    	        	andChildDependencies.stream().forEachOrdered(i -> {
 	    	        		falseAndList.stream().forEachOrdered(f -> {
 	    	        			if(i != f)

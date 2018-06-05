@@ -81,6 +81,16 @@ public class RuleController {
 //		return rule!=null?rule.getTheLatestHistory():null;
 //	}
 	
+	@RequestMapping(value="findARuleFromFile", produces="application/json")
+	@ResponseBody
+	public List<Rule> getARuleFromFile()
+	{
+		Rule rule = new Rule("Acts triage new rules-3","Acts triage new rules-3");
+		List<Rule> ruleList = new ArrayList<>();
+		ruleList.add(rule);
+		return ruleList;
+	}
+	
 //	@RequestMapping(value="findAllRules", produces="application/json")
 //	@ResponseBody
 //	public List<Rule> getAllRules()

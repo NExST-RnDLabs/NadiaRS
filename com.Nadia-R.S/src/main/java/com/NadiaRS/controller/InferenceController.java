@@ -236,7 +236,7 @@ public class InferenceController {
 		InferenceEngine ie = new InferenceEngine();
 		RuleSetReader ilr = new RuleSetReader();
 //		ilr.setStreamSource(getClass().getClassLoader().getResourceAsStream("Acts triage new rules-3.txt"));
-		ilr.setFileSource("Acts triage new rules-3.txt");
+		ilr.setFileSource("./data/Acts triage new rules-3.txt");
 		RuleSetParser isf = new RuleSetParser();
 		RuleSetScanner rsc;
 		

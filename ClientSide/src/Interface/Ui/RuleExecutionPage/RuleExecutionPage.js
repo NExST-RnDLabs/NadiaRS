@@ -31,7 +31,6 @@ class RuleExecutionPage extends React.Component {
         });
       }
       else{
-        debugger;
         Nadia.query.setNadiaFromFile((res)=>{
           if(res.InferenceEngine == 'created'){
             // this._getNextQuestion();
@@ -223,7 +222,7 @@ class RuleExecutionPage extends React.Component {
     _onEditAnswer=(question)=>{
       this.setState({questionnaire:[],questions:[]});
       Nadia.command.editAnswer(question,(res)=>{
-        debugger;
+        
         if(res.hasMoreQuestion == 'true'){
           let tempQuestionnaire = Clone(this.state.questionnaire);
           res.workingMemory.map((item)=>{

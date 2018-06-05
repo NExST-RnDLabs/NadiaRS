@@ -17,7 +17,13 @@ export default class RunRulesPage extends React.Component {
     }
 
     componentDidMount = () => {
-      Nadia.query.getAllRules((res)=>{
+      // Nadia.query.getAllRules((res)=>{
+      //   let fields = res.map((item, index)=>{
+      //     return(<div key={index}><RuleComponent key={index} type='run rules' ruleDescription={item} onSelectRule={this._onSelectRule}/> </div>)
+      //     });
+      //   this.setState({fields: fields});
+      // });
+      Nadia.query.findARuleFromFile((res)=>{
         let fields = res.map((item, index)=>{
           return(<div key={index}><RuleComponent key={index} type='run rules' ruleDescription={item} onSelectRule={this._onSelectRule}/> </div>)
           });

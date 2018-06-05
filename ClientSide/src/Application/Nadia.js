@@ -75,6 +75,12 @@ export default class Nadia {
 
     // query (async - return via callback)
     static query = {
+        findARuleFromFile: (callback)=>{
+            Bus.query('rule/findARuleFromFile').done((res) => {
+                callback(res);
+            });  
+        },
+
         getAllRules: (callback) =>{
             Bus.query('rule/findAllRules').done((res) => {
                 callback(res);
@@ -140,7 +146,7 @@ export default class Nadia {
                 callback(res);
             })
         },
-        
+
         viewSummary: (callback)=>{
             Bus.query('inference/viewSummary').done((res)=>{
                 callback(res);

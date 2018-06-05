@@ -39,7 +39,7 @@ export default class QuestionStringType extends React.Component {
     }
 
     _onEditAnswer=()=>{
-        debugger;
+        
         if(this.props.onEditAnswer){
             this.props.onEditAnswer(this.props.question);
         }

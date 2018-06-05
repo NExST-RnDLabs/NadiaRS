@@ -41,8 +41,8 @@ import jersey.repackaged.com.google.common.collect.Lists;
 public class InferenceController {
 	
 	
-	@Autowired
-	private RuleController ruleController;
+//	@Autowired
+//	private RuleController ruleController;
 	
 	
 	@RequestMapping(value="viewSummary", method = RequestMethod.GET)
@@ -191,41 +191,42 @@ public class InferenceController {
 		return onArray;
 	
 	}
-	@RequestMapping(value="getNextQuestion", method = RequestMethod.GET)
-	@ResponseBody
-	public ObjectNode[] getNextQuestion(HttpServletRequest httpReq, @RequestParam(value="ruleName", required=true) String ruleName)
-	{
-		InferenceEngine ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
-		if(ie == null || !ie.getNodeSet().getNodeSetName().equals(ruleName))
-		{
-			setInferenceEngine(httpReq, ruleName);
-		}
-		ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
-		Assessment ass = (Assessment)httpReq.getSession().getAttribute("assessment");
-		
-		Node nextQuestionNode = ie.getNextQuestion(ass);
-		if(ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE))
-		{
-			ass.setAuxNodeToBeAsked(nextQuestionNode);
-		}
-		HashMap<String,FactValueType> questionFvtMap = ie.findTypeOfElementToBeAsked(nextQuestionNode);
-		List<String> questionnaire = ie.getQuestionsFromNodeToBeAsked(nextQuestionNode);
-		List<ObjectNode> questionnaireList = new ArrayList<>();
-		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
-		questionnaire.stream().forEachOrdered((question)->{
-			if(!tempWorkingMemory.containsKey(question)) {
-				ObjectNode objectNode = new ObjectMapper().createObjectNode();
-				objectNode.put("questionText", question);
-				objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
-				questionnaireList.add(objectNode);
-			}
-		});
-		
-
-
-		ObjectNode[] onArray = questionnaireList.stream().toArray(ObjectNode[]::new);
-		return onArray;
-	}
+	
+//	@RequestMapping(value="getNextQuestion", method = RequestMethod.GET)
+//	@ResponseBody
+//	public ObjectNode[] getNextQuestion(HttpServletRequest httpReq, @RequestParam(value="ruleName", required=true) String ruleName)
+//	{
+//		InferenceEngine ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
+//		if(ie == null || !ie.getNodeSet().getNodeSetName().equals(ruleName))
+//		{
+//			setInferenceEngine(httpReq, ruleName);
+//		}
+//		ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
+//		Assessment ass = (Assessment)httpReq.getSession().getAttribute("assessment");
+//		
+//		Node nextQuestionNode = ie.getNextQuestion(ass);
+//		if(ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE))
+//		{
+//			ass.setAuxNodeToBeAsked(nextQuestionNode);
+//		}
+//		HashMap<String,FactValueType> questionFvtMap = ie.findTypeOfElementToBeAsked(nextQuestionNode);
+//		List<String> questionnaire = ie.getQuestionsFromNodeToBeAsked(nextQuestionNode);
+//		List<ObjectNode> questionnaireList = new ArrayList<>();
+//		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
+//		questionnaire.stream().forEachOrdered((question)->{
+//			if(!tempWorkingMemory.containsKey(question)) {
+//				ObjectNode objectNode = new ObjectMapper().createObjectNode();
+//				objectNode.put("questionText", question);
+//				objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
+//				questionnaireList.add(objectNode);
+//			}
+//		});
+//		
+//
+//
+//		ObjectNode[] onArray = questionnaireList.stream().toArray(ObjectNode[]::new);
+//		return onArray;
+//	}
 	
 	@RequestMapping(value="setInferenceEngineFromFile", method = RequestMethod.GET)
 	@ResponseBody
@@ -263,81 +264,81 @@ public class InferenceController {
 		
 	}
 	
-	@RequestMapping(value="setInferenceEngine", method = RequestMethod.GET)
-	@ResponseBody
-	public ObjectNode setInferenceEngine(HttpServletRequest httpReq, String ruleName)
-	{	
-		
-		InferenceEngine ie = new InferenceEngine();
-		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
-		RuleSetReader ilr = new RuleSetReader();
-		RuleSetParser isf = new RuleSetParser();
-		RuleSetScanner rsc;
-		
-		ilr.setStringSource(ruleText);
-		rsc = new RuleSetScanner(ilr,isf);
-		rsc.scanRuleSet();
-		
+//	@RequestMapping(value="setInferenceEngine", method = RequestMethod.GET)
+//	@ResponseBody
+//	public ObjectNode setInferenceEngine(HttpServletRequest httpReq, String ruleName)
+//	{	
+//		
+//		InferenceEngine ie = new InferenceEngine();
+//		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
+//		RuleSetReader ilr = new RuleSetReader();
+//		RuleSetParser isf = new RuleSetParser();
+//		RuleSetScanner rsc;
+//		
+//		ilr.setStringSource(ruleText);
+//		rsc = new RuleSetScanner(ilr,isf);
+//		rsc.scanRuleSet();
+//		
+////		RuleHistory ruleHistory = ruleController.getTheLatestRuleHistoryByName(ruleName);
+////		HashMap<String, Record> historyMap = ruleHistory != null? ruleHistory.getHistoryMap(): null; 
+////		
+////		rsc.establishNodeSet(historyMap);
+//		rsc.establishNodeSet();
+//
+//		ie.setNodeSet(isf.getNodeSet());
+//		ie.getNodeSet().setNodeSetName(ruleName);
+//
+//		Assessment ass = new Assessment();
+//
+//		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
+//		ie.setAssessment(ass);
+//		
+//		httpReq.getSession().setAttribute("inferenceEngine", ie);
+//		httpReq.getSession().setAttribute("assessment", ass);
+//		
+//		ObjectNode on = new ObjectMapper().createObjectNode();
+//		on.put("InferenceEngine", "created");
+//		
+//		return on;
+//		
+//	}
+	
+//	@RequestMapping(value="setMachineLearningInferenceEngine", method = RequestMethod.GET)
+//	@ResponseBody
+//	public ObjectNode setMachineLearningInferenceEngine(HttpServletRequest httpReq, String ruleName)
+//	{	
+//		
+//		InferenceEngine ie = new InferenceEngine();
+//		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
+//		RuleSetReader ilr = new RuleSetReader();
+//		RuleSetParser isf = new RuleSetParser();
+//		RuleSetScanner rsc;
+//		
+//		ilr.setStringSource(ruleText);
+//		rsc = new RuleSetScanner(ilr,isf);
+//		rsc.scanRuleSet();
+//		
 //		RuleHistory ruleHistory = ruleController.getTheLatestRuleHistoryByName(ruleName);
 //		HashMap<String, Record> historyMap = ruleHistory != null? ruleHistory.getHistoryMap(): null; 
 //		
 //		rsc.establishNodeSet(historyMap);
-		rsc.establishNodeSet();
-
-		ie.setNodeSet(isf.getNodeSet());
-		ie.getNodeSet().setNodeSetName(ruleName);
-
-		Assessment ass = new Assessment();
-
-		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
-		ie.setAssessment(ass);
-		
-		httpReq.getSession().setAttribute("inferenceEngine", ie);
-		httpReq.getSession().setAttribute("assessment", ass);
-		
-		ObjectNode on = new ObjectMapper().createObjectNode();
-		on.put("InferenceEngine", "created");
-		
-		return on;
-		
-	}
-	
-	@RequestMapping(value="setMachineLearningInferenceEngine", method = RequestMethod.GET)
-	@ResponseBody
-	public ObjectNode setMachineLearningInferenceEngine(HttpServletRequest httpReq, String ruleName)
-	{	
-		
-		InferenceEngine ie = new InferenceEngine();
-		String ruleText = new String(ruleController.getTheLatestRuleFileByName(ruleName).getFile());
-		RuleSetReader ilr = new RuleSetReader();
-		RuleSetParser isf = new RuleSetParser();
-		RuleSetScanner rsc;
-		
-		ilr.setStringSource(ruleText);
-		rsc = new RuleSetScanner(ilr,isf);
-		rsc.scanRuleSet();
-		
-		RuleHistory ruleHistory = ruleController.getTheLatestRuleHistoryByName(ruleName);
-		HashMap<String, Record> historyMap = ruleHistory != null? ruleHistory.getHistoryMap(): null; 
-		
-		rsc.establishNodeSet(historyMap);
-//		rsc.establishNodeSet();
-
-		ie.setNodeSet(isf.getNodeSet());
-		ie.getNodeSet().setNodeSetName(ruleName);
-
-		Assessment ass = new Assessment();
-
-		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
-		ie.setAssessment(ass);
-		
-		httpReq.getSession().setAttribute("inferenceEngine", ie);
-		httpReq.getSession().setAttribute("assessment", ass);
-		
-		ObjectNode on = new ObjectMapper().createObjectNode();
-		on.put("InferenceEngine", "created");
-		
-		return on;
-		
-	}
+////		rsc.establishNodeSet();
+//
+//		ie.setNodeSet(isf.getNodeSet());
+//		ie.getNodeSet().setNodeSetName(ruleName);
+//
+//		Assessment ass = new Assessment();
+//
+//		ass.setAssessment(isf.getNodeSet(), isf.getNodeSet().getNodeSortedList().get(0).getNodeName());
+//		ie.setAssessment(ass);
+//		
+//		httpReq.getSession().setAttribute("inferenceEngine", ie);
+//		httpReq.getSession().setAttribute("assessment", ass);
+//		
+//		ObjectNode on = new ObjectMapper().createObjectNode();
+//		on.put("InferenceEngine", "created");
+//		
+//		return on;
+//		
+//	}
 }

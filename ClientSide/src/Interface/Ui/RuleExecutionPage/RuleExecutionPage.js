@@ -25,17 +25,27 @@ class RuleExecutionPage extends React.Component {
       {
         Nadia.query.setNadiaForMachineLearning(this.props.ruleName, (res)=>{
           if(res.InferenceEngine == 'created'){
-            this._getNextQuestion();
+            // this._getNextQuestion();
+            this._getNextQuestionFromFile();
           }
         });
       }
       else{
-        Nadia.query.setNadia(this.props.ruleName, (res)=>{
+        debugger;
+        Nadia.query.setNadiaFromFile((res)=>{
           if(res.InferenceEngine == 'created'){
-            this._getNextQuestion();
+            // this._getNextQuestion();
+            this._getNextQuestionFromFile();
           }
         });
       }
+      // else{
+      //   Nadia.query.setNadia(this.props.ruleName, (res)=>{
+      //     if(res.InferenceEngine == 'created'){
+      //       this._getNextQuestion();
+      //     }
+      //   });
+      // }
       
     }
 
@@ -136,6 +146,31 @@ class RuleExecutionPage extends React.Component {
       return this.state.questions.shift();
     }
 
+    _getNextQuestionFromFile=()=>{
+      let questionData;
+
+      if(this.state.questions.length != 0)
+      {
+        questionData = this._getNextQuestionFromBuffer();
+        this.setState({nextQuestion: questionData});
+        this._createQuestionnaire(questionData);
+      }
+      else{
+        Nadia.query.getNextQuestionFromFile((res)=>{
+           /*
+            * 'res' is an array of questions
+            * if a certain node(rule) contains a number of variables(questions) to be asked then
+            * 'res' contains a number of elements, otherwise the 'res' would be a length one array in other words,
+            * it will contain only one question
+            */
+          questionData = res.shift();
+
+          this.setState({questions: res, nextQuestion: questionData});
+          this._createQuestionnaire(questionData);
+        });
+      }
+    }
+
     _getNextQuestion=()=>{
 
       let questionData;
@@ -165,7 +200,8 @@ class RuleExecutionPage extends React.Component {
     _feedAnswer=(question, answer)=>{
       Nadia.command.feedAnswer(question, answer,(res)=>{
         if(res.hasMoreQuestion == 'true'){
-          this._getNextQuestion();
+          // this._getNextQuestion();
+          this._getNextQuestionFromFile();
         }
         else{
           let goalRuleData = {goalRuleName: res.goalRuleName, goalRuleValue: res.goalRuleValue, goalRuleType: res.goalRuleType};

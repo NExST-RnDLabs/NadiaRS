@@ -154,7 +154,43 @@ public class InferenceController {
 		}
 		return objectNode;
 	}
+	@RequestMapping(value="getNextQuestionFromFile", method = RequestMethod.GET)
+	@ResponseBody
+	public ObjectNode[] getNextQuestionFromFile(HttpServletRequest httpReq)
+	{
+
+		InferenceEngine ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
+		if(ie == null || !ie.getNodeSet().getNodeSetName().equals("Acts triage new rules-3"))
+		{
+			setInferenceEngineFromFile(httpReq);
+		}
+		ie = (InferenceEngine)httpReq.getSession().getAttribute("inferenceEngine");
+		Assessment ass = (Assessment)httpReq.getSession().getAttribute("assessment");
+		
+		Node nextQuestionNode = ie.getNextQuestion(ass);
+		if(ass.getNodeToBeAsked().getLineType().equals(LineType.ITERATE))
+		{
+			ass.setAuxNodeToBeAsked(nextQuestionNode);
+		}
+		HashMap<String,FactValueType> questionFvtMap = ie.findTypeOfElementToBeAsked(nextQuestionNode);
+		List<String> questionnaire = ie.getQuestionsFromNodeToBeAsked(nextQuestionNode);
+		List<ObjectNode> questionnaireList = new ArrayList<>();
+		HashMap<String, FactValue> tempWorkingMemory = ie.getAssessmentState().getWorkingMemory();
+		questionnaire.stream().forEachOrdered((question)->{
+			if(!tempWorkingMemory.containsKey(question)) {
+				ObjectNode objectNode = new ObjectMapper().createObjectNode();
+				objectNode.put("questionText", question);
+				objectNode.put("questionValueType", questionFvtMap.get(question).toString().toLowerCase());
+				questionnaireList.add(objectNode);
+			}
+		});
+		
+
+
+		ObjectNode[] onArray = questionnaireList.stream().toArray(ObjectNode[]::new);
+		return onArray;
 	
+	}
 	@RequestMapping(value="getNextQuestion", method = RequestMethod.GET)
 	@ResponseBody
 	public ObjectNode[] getNextQuestion(HttpServletRequest httpReq, @RequestParam(value="ruleName", required=true) String ruleName)
@@ -191,14 +227,15 @@ public class InferenceController {
 		return onArray;
 	}
 	
-	@RequestMapping(value="readFileSetInferenceEngine", method = RequestMethod.GET)
+	@RequestMapping(value="setInferenceEngineFromFile", method = RequestMethod.GET)
 	@ResponseBody
-	public ObjectNode readFileSetInferenceEngine(HttpServletRequest httpReq, String filePath)
+	public ObjectNode setInferenceEngineFromFile(HttpServletRequest httpReq)
 	{	
 		
 		InferenceEngine ie = new InferenceEngine();
 		RuleSetReader ilr = new RuleSetReader();
-		ilr.setStreamSource(getClass().getClassLoader().getResourceAsStream(filePath));
+//		ilr.setStreamSource(getClass().getClassLoader().getResourceAsStream("Acts triage new rules-3.txt"));
+		ilr.setFileSource("Acts triage new rules-3.txt");
 		RuleSetParser isf = new RuleSetParser();
 		RuleSetScanner rsc;
 		
@@ -209,7 +246,7 @@ public class InferenceController {
 		rsc.establishNodeSet();
 
 		ie.setNodeSet(isf.getNodeSet());
-		ie.getNodeSet().setNodeSetName(filePath.split(".")[0]);
+		ie.getNodeSet().setNodeSetName("Acts triage new rules-3");
 
 		Assessment ass = new Assessment();
 

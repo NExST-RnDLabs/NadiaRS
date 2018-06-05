@@ -105,6 +105,18 @@ export default class Nadia {
             })
         },
 
+        setNadiaFromFile:(callback)=>{
+            Bus.query('inference/setInferenceEngineFromFile').done((res)=>{
+                if(res.InferenceEngine == 'created'){
+                    // Bus.publish('Toast', {
+                    //     status: 'info',
+                    //     text: 'Nadia has been successfully set.'
+                    //   });
+                    callback(res);
+                }  
+            })
+        },
+
         setNadiaForMachineLearning:(ruleName, callback)=>{
             Bus.query('inference/setMachineLearningInferenceEngine',{ruleName: ruleName}).done((res)=>{
                 if(res.InferenceEngine == 'created'){
@@ -123,6 +135,12 @@ export default class Nadia {
             })
         },
 
+        getNextQuestionFromFile:(callback)=>{
+            Bus.query('inference/getNextQuestionFromFile').done((res)=>{
+                callback(res);
+            })
+        },
+        
         viewSummary: (callback)=>{
             Bus.query('inference/viewSummary').done((res)=>{
                 callback(res);

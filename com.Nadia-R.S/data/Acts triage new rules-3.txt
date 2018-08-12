@@ -1,0 +1,148 @@
+//The following table outlines the applicable legislation for various types of service between the extension of Repatriation coverage to peacetime service in the permanent ADF (on or after 1 July 1951) and the introduction of the MRCA to cover all types of ADF service, on 1 July 2004
+
+INPUT onset date AS DATE
+INPUT discharge date AS DATE
+INPUT enlistment date AS DATE
+INPUT service start date AS DATE
+INPUT service end date AS DATE
+INPUT service type for the condition AS TEXT
+INPUT yearly period of service for onset date AS NUMBER
+INPUT discharge type of service for onset date AS TEXT
+INPUT srca service type AS TEXT
+INPUT vea service type AS TEXT
+INPUT number of operational services AS NUMBER
+FIXED vea operational service AS LIST
+	ITEM 6A
+	ITEM 6B
+	ITEM 6C
+	ITEM 6D
+	ITEM 6DA
+	ITEM 6DB
+	ITEM 6E
+	ITEM 6F
+
+The determination IS CALC ('MRCA claim:'+ mrca claim+', '+'SRCA claim:'+srca claim+', '+'VEA claim:'+ vea claim)
+	NEEDS mrca claim
+	NEEDS srca claim
+	NEEDS vea claim
+
+mrca claim
+	OR mrca injury
+	OR mrca accumulative
+
+mrca injury
+	AND Have a condition from an accident
+	AND onset date >= enlistment date
+	AND onset date <= discharge date
+	AND onset date >= 1/07/2004
+	AND discharge date >= 1/07/2004
+
+mrca accumulative
+	AND NOT Have a condition from an accident
+	AND onset date >= enlistment date
+	AND onset date >= 1/07/2004
+	AND discharge date >= 1/07/2004
+
+srca claim
+	OR srca injury
+	OR srca accumulative
+
+srca injury
+	AND Have a condition from an accident
+	AND NOT enlistment date >= 01/07/2004
+	AND onset date >= enlistment date
+	AND onset date <= discharge date
+	AND onset date requirement
+		AND enlistment date < 1/07/2004 
+		AND enlistment date > 30/06/1951
+	AND service requirement = false
+
+service requirement IS false
+	OR NOT service type for the condition IS IN LIST: vea operational service
+	OR NOT onset date < 7/04/1994
+	OR NOT onset date >= 1/07/1951
+
+srca accumulative
+	AND NOT Have a condition from an accident
+	AND NOT enlistment date >= 01/07/2004
+	AND onset date >= enlistment date
+	AND NOT vea only service requirement
+		AND NOT have any peacetime service period
+		AND ALL operation service ITERATE: LIST OF service history
+			AND number of operational services
+			AND operation start date >= 01/07/1951
+			AND operation end date <= 06/04/1994
+			AND operation type IS IN LIST: vea operational service
+		
+vea claim
+	OR vea injury
+	OR vea accumulative
+
+vea injury
+	AND Have a condition from an accident
+	AND NOT enlistment date >= 01/07/2004
+	AND onset date >= enlistment date
+	AND onset date <= discharge date
+	AND NOT vea injury subrule one
+		AND enlistment date >= 01/07/1951
+		AND enlistment date < 22/05/1986
+		AND discharge date >= 07/04/1994
+		AND onset date <= 6/12/1972
+		AND NOT service type for the condition requirement
+	AND NOT vea injury subrule two
+		AND enlistment date >= 22/05/1986
+		AND NOT service type for the condition requirement
+		AND vea injury subrule two virtual rule one
+			OR vea injury subrule two virtual rule two
+				AND onset date >= 07/04/1994
+				AND onset date < 01/07/2004
+				AND yearly service period requirement
+					AND discharge date >= 07/04/1994
+					AND yearly period of service by 6/04/1994 >= 3
+						AND yearly period of service by 6/04/1994 IS CALC (6/04/1994 - enlistment date)
+							NEEDS enlistment date
+			OR vea injury subrule two virtual rule three
+				AND yearly period of service by 6/04/1994 > 0
+				AND yearly period of service by 6/04/1994 < 3
+				AND NOT discharge type = "medical discharge"
+				AND onset date < 01/01/2004
+	AND NOT vea injury subrule three
+		AND enlistment date >= 07/04/1994
+		AND onset date < 01/07/2004
+		AND NOT service type for the condition requirement
+	AND NOT vea injury subrule four
+		AND onset date < 01/07/2004
+		AND service type for the condition = "part time reservist"
+
+service type for the condition requirement
+	OR service type for the condition IS IN LIST: vea operational service
+	OR service type for the condition = "Schedule 3"
+	OR service type for the condition = "69A"
+	OR service type for the condition = "British nuclear test service"	
+
+vea accumulative
+	AND NOT Have a condition from an accident
+	AND NOT enlistment date >= 01/07/2004
+	AND onset date >= enlistment date
+	AND NOT vea accumulative subrule one
+		AND enlistment date >= 01/07/1951
+		AND enlistment date < 06/12/1972
+		AND have only peacetime service
+	AND NOT vea accumulative subrule two
+		AND enlistment date >= 22/05/1986
+		AND have only peacetime service
+		AND Virtual Rule one
+			OR Virtual Rule two
+				AND discharge date > 6/04/1994
+				AND yearly period of service by 6/04/1994 >= 3
+					AND yearly period of service by 6/04/1994 IS CALC (6/04/1994 - enlistment date)
+						NEEDS enlistment date
+			OR Virtual Rule three
+				AND yearly period of service by 6/04/1994 > 0
+				AND yearly period of service by 6/04/1994 < 3
+				AND NOT discharge type = "medical discharge"
+	AND NOT vea accumulative subrule three
+		AND enlistment date >= 07/04/1994
+		AND have only peacetime service
+	AND NOT vea accumulative subrule four
+		AND have only part time reservist service

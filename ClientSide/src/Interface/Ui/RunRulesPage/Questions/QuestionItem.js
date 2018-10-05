@@ -12,10 +12,10 @@ import QuestionIntType from './QuestionItems/QuestionIntType/QuestionIntType';
 import QuestionBoolType from './QuestionItems/QuestionBoolType/QuestionBoolType';
 import QuestionDateType from './QuestionItems/QuestionDateType/QuestionDateType';
 import QuestionStringType from './QuestionItems/QuestionStringType/QuestionStringType';
-import QuestionDoubleType from './QuestionItems/QuestionDoubleType';
-import QuestionHashType from './QuestionItems/QuestionHashType';
-import QuestionUrlType from './QuestionItems/QuestionUrlType';
-import QuestionUuidType from './QuestionItems/QuestionUuidType';
+import QuestionDoubleType from './QuestionItems/QuestionDoubleType/QuestionDoubleType';
+import QuestionHashType from './QuestionItems/QuestionHashType/QuestionHashType';
+import QuestionUrlType from './QuestionItems/QuestionUrlType/QuestionUrlType';
+import QuestionUuidType from './QuestionItems/QuestionUuidType/QuestionUuidType';
 
 import GoalRuleBoolType from './GoalRuleItems/GoalRuleBoolType';
 import GoalRuleDateType from './GoalRuleItems/GoalRuleDateType';
@@ -49,6 +49,12 @@ export default class QuestionItem extends React.Component {
     _onSaveClick=(question, inputValue)=>{
         if(this.props.feedAnswer){
             this.props.feedAnswer(question, inputValue);
+        }
+    }
+
+    _onEditAnswer=(question)=>{
+        if(this.props.editAnswer){
+            this.props.editAnswer(question)
         }
     }
 
@@ -87,36 +93,36 @@ export default class QuestionItem extends React.Component {
         switch(this.props.questionData.questionValueType)
         {
             case 'integer':
-                questionItem = <QuestionIntType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionIntType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
             
             case 'boolean':
-                questionItem = <QuestionBoolType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionBoolType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'date':
-                questionItem = <QuestionDateType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionDateType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'defistring':
             case 'string':
-                questionItem = <QuestionStringType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionStringType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'double':
-                questionItem = <QuestionDoubleType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionDoubleType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'hash':
-                questionItem = <QuestionHashType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionHashType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'url':
-                questionItem = <QuestionUrlType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionUrlType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
 
             case 'uuid':
-                questionItem = <QuestionUuidType question = {questionText} onSave={this._onSaveClick}/>
+                questionItem = <QuestionUuidType question = {questionText} onSave={this._onSaveClick} onEditAnswer={this._onEditAnswer}/>
                 break;
         }
         return questionItem;

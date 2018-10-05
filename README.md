@@ -1,6 +1,13 @@
 # Nadia-R.S Rule/Inference Engine
 Open source project Nadia Rule/Policy Engine with React.js and Spring.
 This project is based on original project [Nadia Rule/Inference Engine.](https://github.com/DeanLee77/Nadia) 
+This project is based on original project [Nadia Rule/Inference Engine.](https://github.com/DeanLee77/Nadia).
+<br/>
+<br/>
+Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLabs](https://youtu.be/xyWjscJ3LxI) <br/>
+or <br/>
+another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
+>>>>>>> .merge_file_mLDoRp
 
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:
@@ -49,6 +56,7 @@ There is a number of key components as follows;
 Suppose there are following rules:
 
 
+<<<<<<< .merge_file_JzXi95
 1. IF B or C is true THEN A is true.
 2. IF D and E are true THEN C is true.
 3. IF F is true THEN D is false.
@@ -66,6 +74,39 @@ An inference engine using forward chaining searches the inference rules until it
 * 'C is true' statement is false
 * 'B is true' statement is unknown
 * 'A is true' statement is unknown
+=======
+1. IF either <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement B' is true; or <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement C' is true <br/>
+   THEN <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement A' is true.
+2. IF  both<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement D' is true; and <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement E' is true <br/>
+   THEN <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement C' is true.
+3. IF <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement F' is true<br/> 
+   THEN <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement D' is false.
+4. IF<br/> 
+     &nbsp;&nbsp;&nbsp;&nbsp; 'statement G' is false <br/>
+   THEN <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;'statement E' is true.
+
+#### Backward-chaining:
+An inference engine when using backward chaining searches the inference rules until it finds one which has a consequent (Then clause) that matches a desired goal. For instance, if we want to know whether or not the rule of 'statement A' is 'true' or 'not true(false)', an engine finds out which rule has to be checked to conclude. In this case, the engine needs information about the rule of 'statement B' is 'true' or 'not true(false)', or 'statement F' and 'statement G' are 'true' or 'not true(false)' respectively.
+
+#### Forward-chaining
+An inference engine using forward chaining searches the inference rules until it finds one where the antecedent (If clause) is known to be true. For instance, if we do have facts that 'statement G' is true and 'statement F' is true then the engine concludes as follows;
+* 'statement G' is true
+* 'statement F' is true
+* 'statement E' is false due to that 'statement G' is not false
+* 'statement D' is false due to that 'statement F' is true
+* 'statement C' is false due to that 'statement D' is true and 'statement E' is false
+* 'statement B' is unknown due to that there is not given information to infer about 'statement B'
+* 'statement A' is false with given information of 'statement B' and 'statement C', however it could be changed based on conclusion  of 'statement B' because 'statement B' is unknown.
+>>>>>>> .merge_file_mLDoRp
 
 ## 7. License
 Copyright (c) 2017-2018 individual contributors.

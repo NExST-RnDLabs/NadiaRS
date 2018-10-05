@@ -8,13 +8,11 @@ import './QuestionIntType.scss';
 
 export default class QuestionIntType extends React.Component {
     constructor(props) {
-      super(props);
-    }
-
-
-    state ={
-        answered: false,
-        inputValue: '',
+        super(props);
+        this.state ={
+            answered: false,
+            inputValue: '',
+        }
     }
 
     // prop types and default values
@@ -46,6 +44,13 @@ export default class QuestionIntType extends React.Component {
     _onCancel=()=>{
         this.setState({inputValue:{}, answered: !this.state.answered});
     }
+
+    _onEditAnswer=()=>{
+        debugger;
+        if(this.props.onEditAnswer){
+            this.props.onEditAnswer(this.props.question);
+        }
+    }
      
     // component render method
     render() {
@@ -56,6 +61,7 @@ export default class QuestionIntType extends React.Component {
                 {this.state.answered?
                     <Message className='intType-bottom-message' attached='bottom' color='olive'>
                         <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
+                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Message>
                     :
                     <Segment attached='bottom'>

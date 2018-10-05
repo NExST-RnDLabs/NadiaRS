@@ -9,14 +9,13 @@ import './QuestionStringType.scss';
 
 export default class QuestionStringType extends React.Component {
     constructor(props) {
-      super(props);
+        super(props);
+        this.state ={
+            answered: false,
+            inputValue:'',
+        }
     }
 
-
-    state ={
-        answered: false,
-        inputValue:'',
-    }
 
     // prop types and default values
     static propTypes = {
@@ -38,6 +37,13 @@ export default class QuestionStringType extends React.Component {
     _onCancel=()=>{
         this.setState({inputValue:{}, answered: !this.state.answered});
     }
+
+    _onEditAnswer=()=>{
+        debugger;
+        if(this.props.onEditAnswer){
+            this.props.onEditAnswer(this.state.question);
+        }
+    }
      
     // component render method
     render() {
@@ -48,6 +54,7 @@ export default class QuestionStringType extends React.Component {
                 {this.state.answered?
                     <Message className='stringType-bottom-message' attached='bottom' color='olive'>
                         <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
+                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
                     </Message>
                     :
                     <Segment attached='bottom'>

@@ -53,6 +53,16 @@ export default class Nadia {
             })
         },
 
+<<<<<<< .merge_file_Q8qHyM
+=======
+        editAnswer:(question, callback)=>{
+            Bus.command('inference/editAnswer', {question:question}).done((res)=>{
+                
+                callback(res);
+            })
+        },
+
+>>>>>>> .merge_file_m2fs05
         updateHistory:(ruleName, callback)=>{
             Bus.command('rule/updateHistory', {ruleName: ruleName, ruleText: ''}).done((res)=>{
                 if(res.update == 'done'){

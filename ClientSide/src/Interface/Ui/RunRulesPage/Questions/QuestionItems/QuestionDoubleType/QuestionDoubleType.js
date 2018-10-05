@@ -7,13 +7,14 @@ import PropTypes from 'prop-types';
 
 export default class QuestionDoubleType extends React.Component {
     constructor(props) {
-      super(props);
+        super(props);
+        this.state ={
+            answered: false,
+        }
     }
 
 
-    state ={
-        answered: false,
-    }
+    
 
     // prop types and default values
     static propTypes = {
@@ -43,6 +44,13 @@ export default class QuestionDoubleType extends React.Component {
     _onCancel=()=>{
         this.setState({inputValue:{}, answered: !this.state.answered});
     }
+
+    _onEditAnswer=()=>{
+        debugger;
+        if(this.props.onEditAnswer){
+            this.props.onEditAnswer(this.props.question);
+        }
+    }
      
     // component render method
     render() {
@@ -56,6 +64,7 @@ export default class QuestionDoubleType extends React.Component {
                             <Icon name='sort numeric ascending' />
                             <input />
                         </Input>
+                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>   
                 :
                     <Segment attached='bottom'>

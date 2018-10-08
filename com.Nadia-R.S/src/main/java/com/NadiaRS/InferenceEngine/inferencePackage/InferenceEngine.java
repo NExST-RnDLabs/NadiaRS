@@ -250,7 +250,7 @@ public class InferenceEngine {
 	    					}
 	    					else
 	    					{
-	    						if(!this.ast.getWorkingMemory().containsKey(node.getNodeName()))
+	    						if(!this.ast.getWorkingMemory().containsKey(node.getNodeName()) && this.ast.getExclusiveList().contains(node.getNodeName()))
 		    					{
 		    						ass.setNodeToBeAsked(node);
 			    					int indexOfRuleToBeAsked = i;
@@ -301,9 +301,12 @@ public class InferenceEngine {
     		// ComparionLine type
     		else if(lineTypeOfNodeToBeAsked.equals(LineType.COMPARISON))
     		{
-			questionList.add(((ComparisonLine)nodeToBeAsked).getLHS());
+    			if(this.ast.getWorkingMemory().containsKey(((ComparisonLine)nodeToBeAsked).getLHS()))
+    			{
+    				questionList.add(((ComparisonLine)nodeToBeAsked).getLHS());	
+    			}
 			
-    			if(!TypeAlreadySet(nodeToBeAsked.getFactValue()))
+    			if(!TypeAlreadySet(nodeToBeAsked.getFactValue()) && !this.ast.getWorkingMemory().containsKey(((ComparisonLine)nodeToBeAsked).getRHS().getValue().toString()))
     			{
     				questionList.add(nodeToBeAsked.getFactValue().getValue().toString());
     			}

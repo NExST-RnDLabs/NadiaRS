@@ -54,8 +54,6 @@ There is a number of key components as follows;
 ### How Backward-chaining and Forward-chaining work
 Suppose there are following rules:
 
-
-<<<<<<< .merge_file_JzXi95
 1. IF B or C is true THEN A is true.
 2. IF D and E are true THEN C is true.
 3. IF F is true THEN D is false.

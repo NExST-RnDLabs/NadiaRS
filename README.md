@@ -105,7 +105,7 @@ An inference engine using forward chaining searches the inference rules until it
 * 'statement C' is false due to that 'statement D' is true and 'statement E' is false
 * 'statement B' is unknown due to that there is not given information to infer about 'statement B'
 * 'statement A' is false with given information of 'statement B' and 'statement C', however it could be changed based on conclusion  of 'statement B' because 'statement B' is unknown.
->>>>>>> .merge_file_mLDoRp
+
 
 ## 7. License
 Copyright (c) 2017-2018 individual contributors.

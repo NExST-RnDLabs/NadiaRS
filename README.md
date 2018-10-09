@@ -73,7 +73,7 @@ An inference engine using forward chaining searches the inference rules until it
 * 'C is true' statement is false
 * 'B is true' statement is unknown
 * 'A is true' statement is unknown
-=======
+
 1. IF either <br/>
       &nbsp;&nbsp;&nbsp;&nbsp;'statement B' is true; or <br/>
       &nbsp;&nbsp;&nbsp;&nbsp;'statement C' is true <br/>

@@ -51,19 +51,19 @@ export default class QuestionBoolType extends React.Component {
         return (
             this.state.answered?
                 this.state.answer?
-                <Segment.Group raised className='questionIntItem'>
+                <Segment.Group raised className='answered-questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='green'>
                         <Header size = 'medium'>{this.props.question}</Header>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
+                        <Button className = 'answered-edit-button' color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
                 :
-                <Segment.Group raised className='questionIntItem'>
+                <Segment.Group raised className='answered-questionIntItem'>
                     <Message attached='top' info header='Is the following statement true?'/>
                     <Segment attached='bottom' inverted color='red'>
                         <Header size = 'medium'>{this.props.question}</Header>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
+                        <Button className = 'answered-edit-button' color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>
                     </Segment>
                 </Segment.Group>
 

@@ -2,9 +2,31 @@
 
 .ui.raised.segments.questionIntItem{
     .ui.bottom.attached.segment{
+        // display: flex;
         height: 7rem;
         .question-bool-type-buttons{
             margin-right: 2rem;
         }
+    }  
+}
+
+.ui.raised.segments.answered-questionIntItem{
+    
+    .ui.bottom.attached.segment{
+        display: flex;
+        height: 7rem;
+        .ui.medium.header{
+            display: inline-flex;
+            max-width: 56rem;
+            padding: 0 56rem 0 2rem;
+        }
+
+        .answered-edit-button{
+            margin:1.555rem 2rem 0 16rem !important;
+            padding-bottom: 2rem;
+            width: 8rem !important;
+            height: 3.2rem;
+        }
     }
+    
 }

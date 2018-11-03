@@ -394,6 +394,7 @@ public class RuleSetParser implements IScanFeeder {
 		{
 			fv = FactValue.parse(itemText);
 		}
+		
 		String stringToGetFactValue = (parentText.substring(5, parentText.indexOf("AS"))).trim();
 		if(metaType.equals(MetaType.INPUT))
 		{

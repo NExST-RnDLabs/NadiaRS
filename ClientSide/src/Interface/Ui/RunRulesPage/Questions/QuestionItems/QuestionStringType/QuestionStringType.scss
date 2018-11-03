@@ -12,3 +12,20 @@
         margin: 1.7% 3% 0 3%;
     }
 }
+
+.answered-stringType-bottom-message{
+    display: flex;
+    height: 7rem;
+    .header{
+        // margin-right: 5rem;
+        max-width: 56rem;
+        padding-right: 56rem;
+    }
+
+    .answered-edit-button{
+        margin:1.555rem 2rem 0 16rem !important;
+        padding-bottom: 2rem;
+        width: 8rem !important;
+        height: 3.2rem;
+    }
+}

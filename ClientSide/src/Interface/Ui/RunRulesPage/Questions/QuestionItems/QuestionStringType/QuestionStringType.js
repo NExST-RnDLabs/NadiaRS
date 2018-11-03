@@ -52,9 +52,9 @@ export default class QuestionStringType extends React.Component {
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
                 {this.state.answered?
-                    <Message className='stringType-bottom-message' attached='bottom' color='olive'>
+                    <Message className='answered-stringType-bottom-message' attached='bottom' color='olive'>
                         <Header floated='right' size = 'large'>{this.state.inputValue}</Header>
-                        <Button color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
+                        <Button className = 'answered-edit-button'color='yellow' floated='right' onClick={this._onEditAnswer}>Edit</Button>                
                     </Message>
                     :
                     <Segment attached='bottom'>

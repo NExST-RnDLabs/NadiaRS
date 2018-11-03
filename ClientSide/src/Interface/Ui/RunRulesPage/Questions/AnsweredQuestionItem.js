@@ -93,6 +93,7 @@ export default class AnsweredQuestionItem extends React.Component {
     
     // component render method
     render() {
+        debugger;
         return (
             <Segment className='questionItem'>
                 {this._createQuestionItem()}

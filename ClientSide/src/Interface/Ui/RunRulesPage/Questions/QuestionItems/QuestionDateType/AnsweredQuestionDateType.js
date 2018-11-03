@@ -44,10 +44,11 @@ export default class AnsweredQuestionDateType extends React.Component {
         let dayInputValue = dateAnswerArray[2];
         let monthInputValue = dateAnswerArray[1];
         let yearInputValue = dateAnswerArray[0];
+        debugger;
         return (
             <Segment.Group raised className='questionIntItem'>
                 <Message attached='top' info header= {question}/>
-                <Message className='dateField' attached='bottom' color='olive'>
+                <Message className='answered-dateType-bottom-message' attached='bottom' color='olive'>
                     <DateInputFields 
                             readOnly
                             dayInputValue= {dayInputValue}

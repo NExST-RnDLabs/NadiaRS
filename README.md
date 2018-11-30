@@ -8,6 +8,10 @@ Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLa
 or <br/>
 another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
 
+# ***Relevant NADIA project list***
+[NADIA Java](https://github.com/DeanLee77/Nadia) <br/>
+[NADIA C sharp](https://github.com/DeanLee77/NADIA-C.Sharp)
+
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:
 

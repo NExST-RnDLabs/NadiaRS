@@ -8,6 +8,10 @@ Video is also avaiable at [NADIA Policy / Business rules Engine from NExST.R&DLa
 or <br/>
 another link is [ Introduction of NADIA Policy / Business rules Engine from NExST.R&DLabs.](https://youtu.be/O-itMgYHRvc)
 
+# ***Relevant NADIA project list***
+[NADIA Java](https://github.com/DeanLee77/Nadia) <br/>
+[NADIA C sharp](https://github.com/DeanLee77/NADIA-C.Sharp)
+
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:
 
@@ -21,11 +25,13 @@ In order to install the project in your workspace, you may need to do followings
  2. Install Node.js including npm(node package manager);
  3. Install one of your preferable text editor;
  4. Install PostgreSQL, and set your database name and password. Once finished setting Database then you need to modify database related attributes in application.properties file in 'src/main/resource'folder;
- 5. once above tasks are done open up 'ClientSide' folder in command line/terminal then type 'npm install'. It will install all necessary packages for client side including 'React';
- 6. when you done up until this point, then you may need to build the project at server side. Please import the project into your worksapce and go to Gradle build folder in Gradle Tasks window and open it up then click build then the project will be built;
- 7. you now can run server for the project locally;
- 8. you need to start Node server to see the actual GUI. Please open up 'ClientSide' folder in command line/terminal again and type 'npm start';
- 9. you can now be able to play with 'Nadia' in your browser once you typed 'localhost:3000' in URL section of your browser.
+ 5. If your system is on Windows and Python has not been installed, then you need to install Python 2.7.
+ 6. Once you have installed Python 2.7 then open up your command line/terminal then type 'npm install -g windows-build-tools', and 'npm config set python /path/to/executable/python2.7';
+ 7. once above tasks are done open up 'ClientSide' folder in command line/terminal then type 'npm install'. It will install all necessary packages for client side including 'React';
+ 8. when you done up until this point, then you may need to build the project at server side. Please import the project into your worksapce and go to Gradle build folder in Gradle Tasks window and open it up then click build then the project will be built;
+ 9. you now can run server for the project locally;
+ 10. you need to start Node server to see the actual GUI. Please open up 'ClientSide' folder in command line/terminal again and type 'npm start';
+ 11. you can now be able to play with 'Nadia' in your browser once you typed 'localhost:3000' in URL section of your browser.
  
  *Please note that there will be Demo video available soon.
 ## 3. Roadmap

@@ -29,9 +29,10 @@ In order to install the project in your workspace, you may need to do followings
  6. Once you have installed Python 2.7 then open up your command line/terminal then type 'npm install -g windows-build-tools', and 'npm config set python /path/to/executable/python2.7';
  7. once above tasks are done open up 'ClientSide' folder in command line/terminal then type 'npm install'. It will install all necessary packages for client side including 'React';
  8. when you done up until this point, then you may need to build the project at server side. Please import the project into your worksapce and go to Gradle build folder in Gradle Tasks window and open it up then click build then the project will be built;
- 9. you now can run server for the project locally;
- 10. you need to start Node server to see the actual GUI. Please open up 'ClientSide' folder in command line/terminal again and type 'npm start';
- 11. you can now be able to play with 'Nadia' in your browser once you typed 'localhost:3000' in URL section of your browser.
+ 9. all relevant database tables need to be created before running 'NADIA', and 'DDL' file is at 'com.Nadia-R.S/src/main/resources/database/' folder;
+ 10. you now can run server for the project locally;
+ 11. you need to start Node server to see the actual GUI. Please open up 'ClientSide' folder in command line/terminal again and type 'npm start';
+ 12. you can now be able to play with 'Nadia' in your browser once you typed 'localhost:3000' in URL section of your browser.
  
  *Please note that there will be Demo video available soon.
 ## 3. Roadmap
@@ -46,7 +47,7 @@ Add more features as follows;
 If you would like to contribute to this project, then please create your own branch and name the branch clearly. Once the work is done in the branch then do 'pull request' and send an email to 'nexst.rndlabs@gmail.com'.
 
 ## 5. Make your own Rules/Policies
-Please have a look at a file of testing rule. Within the example file, all indented rules uses 'Tab' key for indentation. The rule scanner considers of an indented rule as a child rule of previous rule in a rule text.
+Please have a look at a file of testing rule. Within the example file, all indented rules uses 'Tab' key for indentation. The rule scanner considers of an indented rule as a child rule of previous rule in a rule text. All relevant steps to make your own rules are described in a number of '.png' files in the project named 'Nadia Rule Generation STEP 1....7', Hence please refer to steps when you create your own rules. 
 
 ## 6. How does it work
 There is a number of key components as follows;

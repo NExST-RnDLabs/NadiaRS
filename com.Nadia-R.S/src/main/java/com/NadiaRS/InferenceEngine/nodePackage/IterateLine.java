@@ -80,7 +80,7 @@ public class IterateLine extends Node {
 	    					FactValue tempNodeFv = ((ComparisonLine)tempNode).getRHS(); 
 	    					if(tempNodeFv.getType().equals(FactValueType.STRING))
 	    					{
-	    						FactValue tempFv = FactValue.parse(nextNThInString+" "+this.getVariableName()+" "+tempNodeFv);
+	    						FactValue tempFv = FactValue.parse(nextNThInString+" "+this.getVariableName()+" "+tempNodeFv.getValue());
 	    						tempNode.setValue(tempFv);
 	    					}
 	    				}

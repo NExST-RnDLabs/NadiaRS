@@ -224,11 +224,7 @@ public class TopoSort {
             			sortedList.add(currentNode);
             			visitedList.add(id);
         			}
-//            		else
-//            		{
-//            			sortedList.remove(currentNode);
-//            			sortedList.add(currentNode); // move the current node to at the last due to it is linked to the latest defined node.
-//            		}
+
         			deepening(nodeMap, nodeIdMap, copyOfDependencyMatrix, sortedList, visitedList, id);
 
             }); 
@@ -254,11 +250,7 @@ public class TopoSort {
 	    			sortedList.add(currentNode);
 	    			visitedList.add(id);
 			}
-//	    		else
-//	    		{
-//	    			sortedList.remove(currentNode);
-//	    			sortedList.add(currentNode); // move the current node to at the last due to it is linked to the latest defined node.
-//	    		}
+
 			deepening(nodeMap, nodeIdMap, dependencyMatrix, sortedList, visitedList, id);
         }); 
 	}

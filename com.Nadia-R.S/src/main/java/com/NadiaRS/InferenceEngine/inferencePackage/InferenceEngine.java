@@ -123,7 +123,7 @@ public class InferenceEngine {
 	    			variableNameList.add(node.getVariableName());
 		    		FactValueType nodeFactValueType = node.getFactValue().getType();
 		    		
-		    		if(!(nodeFactValueType.equals(FactValueType.BOOLEAN) || !nodeFactValueType.equals(FactValueType.DEFI_STRING)))
+		    		if(nodeFactValueType.equals(FactValueType.STRING) || nodeFactValueType.equals(FactValueType.TEXT))
 		    		{
 		    			variableNameList.add(node.getFactValue().getValue().toString());
 		    		}
@@ -284,7 +284,7 @@ public class InferenceEngine {
 	    	} 
 	    	
 	    	Node nextQuestionNode = ass.getNodeToBeAsked();
-	    	if(nextQuestionNode.getLineType().equals(LineType.ITERATE))
+	    	if(nextQuestionNode != null && nextQuestionNode.getLineType().equals(LineType.ITERATE))
 		{
 			ass.setAuxNodeToBeAsked(nextQuestionNode);
 		}

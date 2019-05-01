@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.NadiaRS.InferenceEngine.nodePackage.DependencyMatrix;
 import com.NadiaRS.InferenceEngine.nodePackage.DependencyType;
 import com.NadiaRS.InferenceEngine.nodePackage.Node;
 import com.NadiaRS.InferenceEngine.nodePackage.Record;
@@ -562,7 +563,38 @@ public class TopoSort {
         return highlyPossible;
     }
     
+    public static List<Integer> findAllLeafChild(int parentNodeId, DependencyMatrix dependencyMatrix)
+    {
+    		List<Integer> childListOfTheParent = dependencyMatrix.getToChildDependencyList(parentNodeId);
+    		List<Integer> listOfLeafChild = new ArrayList<>();
+    		childListOfTheParent.stream().forEach(child ->{
+    			if(dependencyMatrix.getToChildDependencyList(child).isEmpty())
+    			{
+    				listOfLeafChild.add(child);
+    			}
+    			else
+    			{
+    				findAllLeafChildAux(child, dependencyMatrix, listOfLeafChild);
+    			}
+    		});
+    		
+    		return listOfLeafChild;
+    }
     
+    public static void findAllLeafChildAux(int parentNodeId, DependencyMatrix dependencyMatrix, List<Integer> listOfLeafChild)
+    {
+    		List<Integer> childListOfTheParent = dependencyMatrix.getToChildDependencyList(parentNodeId);
+		childListOfTheParent.stream().forEach(child ->{
+			if(dependencyMatrix.getToChildDependencyList(child).isEmpty())
+			{
+				listOfLeafChild.add(child);
+			}
+			else
+			{
+				findAllLeafChildAux(child, dependencyMatrix, listOfLeafChild);
+			}
+		});
+    }
 
 }
 

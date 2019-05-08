@@ -7,7 +7,7 @@ var appPath = path.resolve(__dirname, 'src');
 
 var config = {
     context: __dirname,
-    entry: [ 'babel-polyfill',
+    entry: [ '@babel/polyfill',
 
     	// Our application entry point
     	path.resolve(appPath, 'index.js')],
@@ -32,12 +32,12 @@ var config = {
 
             // babel-loader gives you ES6/7 syntax and JSX transpiling
             {
-                test: /\.js$/,
-                use: "babel-loader",
-                exclude: [nodeModulesPath],
-                options: {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                loader: "babel-loader",
+                query: {
                     cacheDirectory: true,
-                    presets: ["react", "es2015", "stage-0"]
+                    presets: ["@babel/preset-env", "@babel/preset-react"]
                 }
             },
 

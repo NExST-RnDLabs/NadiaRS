@@ -13,3 +13,4 @@ ReactDOM.render(
     <App />
 </Router>
 , document.getElementById('content'));
+module.hot.accept();

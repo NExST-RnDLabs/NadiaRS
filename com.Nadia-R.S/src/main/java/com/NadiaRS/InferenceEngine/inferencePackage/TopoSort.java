@@ -392,9 +392,8 @@ public class TopoSort {
     		Node theMostPositive = null;
         int yesCount = 0;
         int noCount = 0;
-        float theMostPossibility = 0;
-        int sum = 0;
-        float result = 0;
+        int theLargestYesCount = 0;
+        int theSmallestNoCount = 0;
         
         for(Node node: childNodeList)
         {
@@ -416,15 +415,13 @@ public class TopoSort {
         		Record recordOfNode = recordListOfNodes.get(prefix+node.getNodeName());
             yesCount = recordOfNode != null?recordOfNode.getTrueCount(): 0;
             noCount = recordOfNode != null? recordOfNode.getFalseCount(): 0;
-            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
-
-            result = (float)yesCount/yesPlusNoCount;
-            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
-            {
-                theMostPossibility = result;
-                sum =  yesCount + noCount;
-                theMostPositive = node;
-            }
+            
+            if((yesCount > theLargestYesCount) || (yesCount == theLargestYesCount && noCount < theSmallestNoCount))
+            	{
+            		theLargestYesCount = yesCount;
+            		theSmallestNoCount = noCount;
+            		theMostPositive = node;
+            	}
         }
         childNodeList.remove(theMostPositive);
         return theMostPositive;
@@ -435,24 +432,22 @@ public class TopoSort {
     		Node theMostPositive = null;
         int yesCount = 0;
         int noCount = 0;
-        float theMostPossibility = 0;
-        int sum = 0;
-        float result = 0;
-        
+        int theLargestYesCount = 0;
+        int theSmallestNoCount = 0;
+    	
+    		
         for(Node node: childNodeList)
         {
         		Record recordOfNode = recordListOfNodes.get(node.getNodeName());
             yesCount = recordOfNode != null?recordOfNode.getTrueCount(): 0;
             noCount = recordOfNode != null? recordOfNode.getFalseCount(): 0;
-            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
-
-            result = (float)yesCount/yesPlusNoCount;
-            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
-            {
-                theMostPossibility = result;
-                sum =  yesCount + noCount;
-                theMostPositive = node;
-            }
+            
+            if((yesCount > theLargestYesCount) || (yesCount == theLargestYesCount && noCount < theSmallestNoCount))
+	        	{
+	        		theLargestYesCount = yesCount;
+	        		theSmallestNoCount = noCount;
+	        		theMostPositive = node;
+	        	}
         }
         childNodeList.remove(theMostPositive);
         return theMostPositive;
@@ -464,9 +459,8 @@ public class TopoSort {
     		Node theMostNegative = null;
         int yesCount = 0;
         int noCount = 0;
-        float theMostPossibility = 0;
-        int sum = 0;
-        float result = 0;
+        int theLargestNoCount = 0;
+        int theSmallestYesCount = 0;
        		
         for(Node node: childNodeList)
         {
@@ -489,17 +483,12 @@ public class TopoSort {
             yesCount = recordOfNode!= null?recordOfNode.getTrueCount(): 0;
             noCount = recordOfNode!= null?recordOfNode.getFalseCount(): 0;
             
-            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
-            result = (float)noCount/yesPlusNoCount;
-
-            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
-            {
-                theMostPossibility = result;
-                sum =  yesPlusNoCount==-1?yesPlusNoCount:yesCount + noCount;
-                theMostNegative = node;                
-            }
-            
-            
+            if((noCount > theLargestNoCount) || (noCount == theLargestNoCount && yesCount < theSmallestYesCount))
+	        	{
+            		theSmallestYesCount = yesCount;
+	        		theLargestNoCount = noCount;
+	        		theMostNegative = node;
+	        	}
         }
         childNodeList.remove(theMostNegative);
         return theMostNegative;
@@ -510,9 +499,8 @@ public class TopoSort {
     		Node theMostNegative = null;
         int yesCount = 0;
         int noCount = 0;
-        float theMostPossibility = 0;
-        int sum = 0;
-        float result = 0;
+        int theLargestNoCount = 0;
+        int theSmallestYesCount = 0;
        		
         for(Node node: childNodeList)
         {
@@ -521,46 +509,15 @@ public class TopoSort {
             yesCount = recordOfNode!= null?recordOfNode.getTrueCount(): 0;
             noCount = recordOfNode!= null?recordOfNode.getFalseCount(): 0;
             
-            int yesPlusNoCount = (yesCount+noCount)==0?-1:(yesCount+noCount);
-            result = (float)noCount/yesPlusNoCount;
-
-            if(analysis(result, theMostPossibility, yesPlusNoCount, sum))
-            {
-                theMostPossibility = result;
-                sum =  yesPlusNoCount==-1?yesPlusNoCount:yesCount + noCount;
-                theMostNegative = node;                
-            }
-            
-            
+            if((noCount > theLargestNoCount) || (noCount == theLargestNoCount && yesCount < theSmallestYesCount))
+	        	{
+            		theSmallestYesCount = yesCount;
+	        		theLargestNoCount = noCount;
+	        		theMostNegative = node;
+	        	}
         }
         childNodeList.remove(theMostNegative);
         return theMostNegative;
-    }
-    
-    public static boolean analysis(float result, float theMostPossibility, int yesCountNoCount, int sum)
-    {
-        boolean highlyPossible = false;
-        /*
-         * firstly select an option having more cases and high possibility
-         */
-        if(result > theMostPossibility && yesCountNoCount >= sum)
-        {
-            highlyPossible = true;
-        }
-        /*
-	    	 * secondly, even though the number of being used case is fewer, and it has a high possibility
-	    	 * then still select the option
-	    	 */
-        else if(result >= theMostPossibility && result == 0 && theMostPossibility == 0 && yesCountNoCount > sum)
-        {
-        	 	highlyPossible = true;
-        }
-        else if(result >= theMostPossibility && result == 0 && yesCountNoCount == -1 && sum <= 0 && sum != -1  )
-        {
-            highlyPossible = true;
-        }
-        
-        return highlyPossible;
     }
     
     public static List<Integer> findAllLeafChild(int parentNodeId, DependencyMatrix dependencyMatrix)

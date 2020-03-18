@@ -199,9 +199,9 @@ public class InferenceEngine {
     public Node getNextQuestion(Assessment ass)
     {
 	    	if(!ast.getInclusiveList().contains(ass.getGoalNode().getNodeName()))
-		{
+	    	{
 	    		ast.getInclusiveList().add(ass.getGoalNode().getNodeName());
-		}
+	    	}
     	
 	    	/*
 	    	 * Default goal rule of a rule set which is a parameter of InferenceEngine will be evaluated by forwardChaining when any rule is evaluated within the rule set
@@ -210,84 +210,84 @@ public class InferenceEngine {
 	    	{
 	    		for (int i = ass.getGoalNodeIndex(); i < nodeSet.getNodeSortedList().size(); i++)
 	  	       {
-	    				Node node = nodeSet.getNodeSortedList().get(i);
-	  	            
-	  	
-	  	            /*
-	  	             * Step1. does the rule currently being been checked have child rules && not yet evaluated && is in the inclusiveList?
-	  	             *     if no then ask a user to evaluate the rule, 
-	  	             *                and do back propagating with a result of the evaluation (note that this part will be handled in feedAnswer())
-	  	             *     if yes then move on to following step
-	  	             *     
-	  	             * Step2. does the rule currently being been checked have child rules? 
-	  	             *     if yes then add the child rules into the inclusiveList
-	  	             */
-	    				int nodeId = node.getNodeId();
-	    				if(i != ass.getGoalNodeIndex())
-	    				{
-	    					List<Integer> parentDependencyList = nodeSet.getDependencyMatrix().getFromParentDependencyList(nodeId);
-	    					if(!parentDependencyList.isEmpty())
+    				Node node = nodeSet.getNodeSortedList().get(i);
+  	            
+  	
+  	            /*
+  	             * Step1. does the rule currently being been checked have child rules && not yet evaluated && is in the inclusiveList?
+  	             *     if no then ask a user to evaluate the rule, 
+  	             *                and do back propagating with a result of the evaluation (note that this part will be handled in feedAnswer())
+  	             *     if yes then move on to following step
+  	             *     
+  	             * Step2. does the rule currently being been checked have child rules? 
+  	             *     if yes then add the child rules into the inclusiveList
+  	             */
+    				int nodeId = node.getNodeId();
+    				if(i != ass.getGoalNodeIndex())
+    				{
+    					List<Integer> parentDependencyList = nodeSet.getDependencyMatrix().getFromParentDependencyList(nodeId);
+    					if(!parentDependencyList.isEmpty())
+    					{
+    						
+    						parentDependencyList.parallelStream().forEachOrdered(parentId -> {
+    							if((nodeSet.getDependencyMatrix().getDependencyType(parentId, nodeId)&DependencyType.getMandatory()) == DependencyType.getMandatory()
+    									&& !ast.isInclusiveList(node.getNodeName())
+    									&& !isIterateLineChild(node.getNodeId()))
+    							{
+    								ast.addItemToMandatoryList(node.getNodeName());
+    							}
+    						});
+    					}
+    				}
+    				if(nodeId != ass.getGoalNode().getNodeId() && node.getLineType().equals(LineType.ITERATE) && !ast.getWorkingMemory().containsKey(node.getNodeName()))
+    				{	
+    					FactValue givenListNameFv = this.ast.getWorkingMemory().get(((IterateLine)node).getGivenListName());
+    					String givenListName = "";
+    					if(givenListNameFv != null)
+    					{
+    						givenListName = givenListNameFv.toString().trim();
+    					}
+    					if(givenListName.length() > 0)
+    					{
+    						((IterateLine)node).iterateFeedAnswers(givenListName, this.nodeSet, this.ast, ass);
+    					}
+    					else
+    					{
+    						if(!this.ast.getWorkingMemory().containsKey(node.getNodeName()) && !this.ast.getExclusiveList().contains(node.getNodeName()))
 	    					{
-	    						
-	    						parentDependencyList.parallelStream().forEachOrdered(parentId -> {
-	    							if((nodeSet.getDependencyMatrix().getDependencyType(parentId, nodeId)&DependencyType.getMandatory()) == DependencyType.getMandatory()
-	    									&& !ast.isInclusiveList(node.getNodeName())
-	    									&& !isIterateLineChild(node.getNodeId()))
-	    							{
-	    								ast.addItemToMandatoryList(node.getNodeName());
-	    							}
-	    						});
-	    					}
-	    				}
-	    				if(nodeId != ass.getGoalNode().getNodeId() && node.getLineType().equals(LineType.ITERATE) && !ast.getWorkingMemory().containsKey(node.getNodeName()))
-	    				{	
-	    					FactValue givenListNameFv = this.ast.getWorkingMemory().get(((IterateLine)node).getGivenListName());
-	    					String givenListName = "";
-	    					if(givenListNameFv != null)
-	    					{
-	    						givenListName = givenListNameFv.toString().trim();
-	    					}
-	    					if(givenListName.length() > 0)
-	    					{
-	    						((IterateLine)node).iterateFeedAnswers(givenListName, this.nodeSet, this.ast, ass);
-	    					}
-	    					else
-	    					{
-	    						if(!this.ast.getWorkingMemory().containsKey(node.getNodeName()) && !this.ast.getExclusiveList().contains(node.getNodeName()))
-		    					{
-		    						ass.setNodeToBeAsked(node);
-			    					int indexOfRuleToBeAsked = i;
-				  	            	System.out.println("indexOfRuleToBeAsked : "+indexOfRuleToBeAsked);
+	    						ass.setNodeToBeAsked(node);
+		    					int indexOfRuleToBeAsked = i;
+			  	            	System.out.println("indexOfRuleToBeAsked : "+indexOfRuleToBeAsked);
 
-				  	            	Node nextQuestionFromIterateNode = ((IterateLine)node).getIterateNextQuestion(this.nodeSet, this.ast);
-				  	  			ass.setAuxNodeToBeAsked(nextQuestionFromIterateNode); //this is to treat the node as IterateLine node
+			  	            	Node nextQuestionFromIterateNode = ((IterateLine)node).getIterateNextQuestion(this.nodeSet, this.ast);
+			  	  			ass.setAuxNodeToBeAsked(nextQuestionFromIterateNode); //this is to treat the node as IterateLine node
 
-		    						return nextQuestionFromIterateNode;
-		    					}
-	    					}	    					
-	    				}
-	    				else if(!hasChildren(nodeId) && ast.getInclusiveList().contains(node.getNodeName()) 
-	  	            			&& !canEvaluate(node))
-	  	            {
-	  	            		ass.setNodeToBeAsked(node);
-		  	            	int indexOfRuleToBeAsked = i;
-		  	            	System.out.println("indexOfRuleToBeAsked : "+indexOfRuleToBeAsked);
-		  	          	
-		  	            	return ass.getNodeToBeAsked();
+	    						return nextQuestionFromIterateNode;
+	    					}
+    					}	    					
+    				}
+    				else if(!hasChildren(nodeId) && ast.getInclusiveList().contains(node.getNodeName()) 
+  	            			&& !canEvaluate(node))
+    				{
+  	            		ass.setNodeToBeAsked(node);
+	  	            	int indexOfRuleToBeAsked = i;
+	  	            	System.out.println("indexOfRuleToBeAsked : "+indexOfRuleToBeAsked);
+	  	          	
+	  	            	return ass.getNodeToBeAsked();
 	  	            }
 		            else if(hasChildren(nodeId) && !ast.getWorkingMemory().containsKey(node.getVariableName()) 
-	            			&& !ast.getWorkingMemory().containsKey(node.getNodeName()) && ast.getInclusiveList().contains(node.getNodeName()))
+            			&& !ast.getWorkingMemory().containsKey(node.getNodeName()) && ast.getInclusiveList().contains(node.getNodeName()))
 		            {
-		            		addChildRuleIntoInclusiveList(node);
+	            		addChildRuleIntoInclusiveList(node);
 		            }
 	  	       }
 	    	} 
 	    	
 	    	Node nextQuestionNode = ass.getNodeToBeAsked();
 	    	if(nextQuestionNode != null && nextQuestionNode.getLineType().equals(LineType.ITERATE))
-		{
-			ass.setAuxNodeToBeAsked(nextQuestionNode);
-		}
+			{
+				ass.setAuxNodeToBeAsked(nextQuestionNode);
+			}
 	    	
 	    	return nextQuestionNode;
     }

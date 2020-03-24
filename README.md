@@ -51,6 +51,9 @@ If you would like to contribute to this project, then please create your own bra
 ## 5. Make your own Rules/Policies
 Please have a look at a file of testing rule. Within the example file, all indented rules uses 'Tab' key for indentation. The rule scanner considers of an indented rule as a child rule of previous rule in a rule text. All relevant steps to make your own rules are described in a number of '.png' files in the project named 'Nadia Rule Generation STEP 1....7', Hence please refer to steps when you create your own rules. 
 
+## Note:
+If you need a commercial or coustomised version of Nadia engine, then please contact on 'nexst.rndlabs@gmail.com'.
+
 ## 6. How does it work
 There is a number of key components as follows;
 

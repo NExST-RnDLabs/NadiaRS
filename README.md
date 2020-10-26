@@ -12,7 +12,9 @@ another link is [ Introduction of NADIA Policy / Business rules Engine from NExS
 # ***Relevant NADIA project list***
 [NADIA Java](https://github.com/DeanLee77/Nadia) <br/>
 [NADIA C sharp](https://github.com/DeanLee77/NADIA-C.Sharp)<br/>
-[NADIA Python (In Progress)](https://github.com/DeanLee77/NADIA-Python/)
+[NADIA Python (In Progress)](https://github.com/DeanLee77/NADIA-Python/)<br/>
+[NADIA C/C++ (In Progress)](https://github.com/DeanLee77/NADIA-CPP)
+
 
 ## 1. Introduction
 This project is building a Rules(Policies)/Inference Engine with ease of use and maintain rules/policies. It aims to be:
@@ -50,6 +52,9 @@ If you would like to contribute to this project, then please create your own bra
 
 ## 5. Make your own Rules/Policies
 Please have a look at a file of testing rule. Within the example file, all indented rules uses 'Tab' key for indentation. The rule scanner considers of an indented rule as a child rule of previous rule in a rule text. All relevant steps to make your own rules are described in a number of '.png' files in the project named 'Nadia Rule Generation STEP 1....7', Hence please refer to steps when you create your own rules. 
+
+## Note:
+If you need a commercial or coustomised version of Nadia engine, then please contact on 'nexst.rndlabs@gmail.com'.
 
 ## 6. How does it work
 There is a number of key components as follows;
@@ -115,5 +120,5 @@ An inference engine using forward chaining searches the inference rules until it
 
 
 ## 7. License
-Copyright (c) 2017-2019 individual contributors.
+Copyright (c) 2017-2020 individual contributors.
 Nadia-R.S is open source project and released under AGPL 3.0 License.

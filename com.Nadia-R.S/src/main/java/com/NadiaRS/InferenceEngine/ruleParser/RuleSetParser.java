@@ -25,6 +25,8 @@ import com.NadiaRS.InferenceEngine.nodePackage.Node;
 import com.NadiaRS.InferenceEngine.nodePackage.NodeSet;
 import com.NadiaRS.InferenceEngine.nodePackage.ValueConclusionLine;
 
+import ruleParser.Tokenizer;
+
 
 
 /*
@@ -464,7 +466,17 @@ public class RuleSetParser implements IScanFeeder {
 				{
 					
 					String parentNodeOfVirtualNodeName = node.getNodeName();
-					Node virtualNode = new ValueConclusionLine("VirtualNode-"+parentNodeOfVirtualNodeName, Tokenizer.getTokens("VirtualNode-"+parentNodeOfVirtualNodeName));
+					LineType nodeLineType = node.getLineType();
+					Node virtualNode;
+					if(nodeLineType.equals(LineType.EXPR_CONCLUSION))
+					{
+						virtualNode = new ExprConclusionLine("VirtualNode-"+parentNodeOfVirtualNodeName, Tokenizer.getTokens("VirtualNode-"+parentNodeOfVirtualNodeName));
+					}
+					else
+					{
+						virtualNode = new ValueConclusionLine("VirtualNode-"+parentNodeOfVirtualNodeName, Tokenizer.getTokens("VirtualNode-"+parentNodeOfVirtualNodeName));
+					}					
+					
 					this.nodeSet.getNodeIdMap().put(virtualNode.getNodeId(), "VirtualNode-"+parentNodeOfVirtualNodeName);
 					virtualNodeMap.put("VirtualNode-"+parentNodeOfVirtualNodeName, virtualNode);
 					if(mandatoryAnd > 0)
